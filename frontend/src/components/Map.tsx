@@ -9,6 +9,7 @@ const Map = () => {
     <ReactMap
       mapboxAccessToken={MAPBOX_API_TOKEN}
       {...mapViewState}
+      data-testid="map"
       // mapStyle="mapbox://styles/mapbox/streets-v12"
       mapStyle="mapbox://styles/mapbox/streets-v12"
       //   interactiveLayerIds={["unfiltered-data"]}
