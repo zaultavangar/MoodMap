@@ -1,8 +1,12 @@
 import { Map as ReactMap } from "react-map-gl";
 import { useMapView } from "~/hooks/useMapView";
+
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
 
+/**
+ * Map component displays a heatmap of the sentiment of a topic in a given geographical area
+ */
 const Map = () => {
   const { mapViewState, handleMapMove } = useMapView();
   return (
