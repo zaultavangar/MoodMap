@@ -21,7 +21,13 @@ const SearchButton = () => {
 /**
  * Searchbar component allows users to search news articles based on a given keyword
  */
-const Searchbar = () => {
+const Searchbar = ({
+  searchQuery,
+  onChange,
+}: {
+  searchQuery: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}) => {
   return (
     <Paper
       component="form"
@@ -36,8 +42,8 @@ const Searchbar = () => {
         id="outlined-basic"
         placeholder="Search the news by keyword"
         inputProps={{ "aria-label": "search the news by keyword" }}
-        // value={searchQuery}
-        // onChange={handleSearchChange}
+        value={searchQuery}
+        onChange={onChange}
       />
       <SearchButton />
     </Paper>
