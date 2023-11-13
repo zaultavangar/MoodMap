@@ -12,6 +12,8 @@ const Header = () => {
     setSearchQuery(event.target.value);
   };
 
+  const canDisplaySearchResults = searchQuery !== "" && results.length > 0;
+
   useEffect(() => {
     const foundKeywords = keywords.filter((keyword) =>
       keyword.toLowerCase().includes(searchQuery.toLowerCase())
@@ -35,7 +37,7 @@ const Header = () => {
       <Grid xs={12} md={6}>
         <Searchbar searchQuery={searchQuery} onChange={handleSearchChange} />
       </Grid>
-      {searchQuery !== "" && results.length > 0 && (
+      {canDisplaySearchResults && (
         <Grid xs={12} md={6}>
           <SearchResults results={results} />
         </Grid>
