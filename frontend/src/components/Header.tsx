@@ -3,6 +3,7 @@ import Searchbar from "./Searchbar";
 import SearchResults from "./SearchResults";
 import { useEffect, useState } from "react";
 import { keywords } from "~/data/keywords";
+import { Box } from "@mui/material";
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<string[]>([]);
@@ -12,8 +13,8 @@ const Header = () => {
   };
 
   useEffect(() => {
-    const foundKeywords = keywords.filter(
-      (keyword) => keyword.toLowerCase() === searchQuery.toLowerCase()
+    const foundKeywords = keywords.filter((keyword) =>
+      keyword.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setResults(foundKeywords);
   }, [searchQuery]);
@@ -22,9 +23,10 @@ const Header = () => {
     <Grid
       container
       component="header"
-      spacing={2}
+      rowSpacing={2}
       sx={{
         zIndex: 4,
+        flexDirection: "column",
         position: "relative",
         padding: "1rem",
         flexGrow: 1,
@@ -33,7 +35,7 @@ const Header = () => {
       <Grid xs={12} md={6}>
         <Searchbar searchQuery={searchQuery} onChange={handleSearchChange} />
       </Grid>
-      {results.length > 0 && (
+      {searchQuery !== "" && results.length > 0 && (
         <Grid xs={12} md={6}>
           <SearchResults results={results} />
         </Grid>
