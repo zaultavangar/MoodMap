@@ -4,6 +4,8 @@ import { useMapView } from "~/hooks/useMapView";
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
 
+const COLOR_MODE = import.meta.env.VITE_COLOR_MODE;
+
 /**
  * Map component displays a heatmap of the sentiment of a topic in a given geographical area
  */
@@ -15,7 +17,7 @@ const Map = () => {
       {...mapViewState}
       data-testid="map"
       // mapStyle="mapbox://styles/mapbox/streets-v12"
-      mapStyle="mapbox://styles/mapbox/streets-v12"
+      mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v11`}
       //   interactiveLayerIds={["unfiltered-data"]}
       style={{
         position: "absolute",
