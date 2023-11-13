@@ -4,6 +4,7 @@ const Header = () => {
   return (
     <Grid
       container
+      component="header"
       sx={{
         zIndex: 4,
         position: "relative",
