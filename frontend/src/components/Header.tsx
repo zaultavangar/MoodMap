@@ -3,7 +3,6 @@ import Searchbar from "./Searchbar";
 import SearchResults from "./SearchResults";
 import { useEffect, useState } from "react";
 import { keywords } from "~/data/keywords";
-import { Box } from "@mui/material";
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<string[]>([]);

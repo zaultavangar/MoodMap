@@ -1,3 +1,4 @@
+// import { useTheme } from "@mui/material";
 import { Map as ReactMap } from "react-map-gl";
 import { useMapView } from "~/hooks/useMapView";
 
@@ -10,6 +11,7 @@ const COLOR_MODE = import.meta.env.VITE_COLOR_MODE;
  * Map component displays a heatmap of the sentiment of a topic in a given geographical area
  */
 const Map = () => {
+  // const {theme} = useTheme();
   const { mapViewState, handleMapMove } = useMapView();
   return (
     <main>
@@ -17,9 +19,8 @@ const Map = () => {
         mapboxAccessToken={MAPBOX_API_TOKEN}
         {...mapViewState}
         data-testid="map"
-        // mapStyle="mapbox://styles/mapbox/streets-v12"
         mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v11`}
-        //   interactiveLayerIds={["unfiltered-data"]}
+        // mapStyle={`mapbox://styles/mapbox/${theme.palette.mode}-v11`}
         style={{
           position: "absolute",
           top: 0,
