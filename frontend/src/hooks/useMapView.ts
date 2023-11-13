@@ -14,7 +14,7 @@ export function useMapView({
   const [mapViewState, setMapViewState] = useState({
     longitude: long,
     latitude: lat,
-    zoom: 12,
+    zoom: 5,
     // Changes the tilt of the map
     // pitch: 60,
   });

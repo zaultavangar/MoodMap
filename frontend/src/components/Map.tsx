@@ -18,6 +18,8 @@ const Map = () => {
       <ReactMap
         mapboxAccessToken={MAPBOX_API_TOKEN}
         {...mapViewState}
+        minZoom={5}
+        maxZoom={7}
         data-testid="map"
         mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v11`}
         // mapStyle={`mapbox://styles/mapbox/${theme.palette.mode}-v11`}
