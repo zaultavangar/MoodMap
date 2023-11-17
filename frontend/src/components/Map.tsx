@@ -1,6 +1,8 @@
 // import { useTheme } from "@mui/material";
-import { Map as ReactMap } from "react-map-gl";
+import { Layer, Map as ReactMap, Source } from "react-map-gl";
+import { mockGeojson } from "~/data/mockGeojson";
 import { useMapView } from "~/hooks/useMapView";
+import { heatmapLayer } from "./heatmapLayer";
 
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
@@ -34,7 +36,11 @@ const Map = () => {
           overflow: "hidden",
         }}
         onMove={handleMapMove}
-      ></ReactMap>
+      >
+        <Source type="geojson" data={mockGeojson}>
+          <Layer {...heatmapLayer} />
+        </Source>
+      </ReactMap>
     </main>
   );
 };
