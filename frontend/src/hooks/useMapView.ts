@@ -7,10 +7,15 @@ const ProvidenceLatLong = {
   lat: 41.82454500035089,
 };
 
+const GazaLatLong = {
+  long: 34.47,
+  lat: 31.5,
+};
+
 export function useMapView({
   long,
   lat,
-}: { long: number; lat: number } = ProvidenceLatLong) {
+}: { long: number; lat: number } = GazaLatLong) {
   const [mapViewState, setMapViewState] = useState({
     longitude: long,
     latitude: lat,
