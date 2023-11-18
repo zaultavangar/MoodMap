@@ -1,6 +1,7 @@
-import { Paper, InputBase, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import SearchIcon from "@mui/icons-material/Search";
+import { IconButton, InputBase, Paper } from "@mui/material";
 
 const MenuButton = () => {
   return (
@@ -14,6 +15,14 @@ const SearchButton = () => {
   return (
     <IconButton type="button" aria-label="search">
       <SearchIcon />
+    </IconButton>
+  );
+};
+
+const DateFilterButton = () => {
+  return (
+    <IconButton type="button" aria-label="filter by year">
+      <ScheduleIcon />
     </IconButton>
   );
 };
@@ -46,6 +55,7 @@ const Searchbar = ({
         onChange={onChange}
       />
       <SearchButton />
+      <DateFilterButton />
     </Paper>
   );
 };
