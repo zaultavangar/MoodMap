@@ -1,6 +1,14 @@
 import { useState } from "react";
 
+export type ArticleSummary = {
+  title: string;
+  description: string;
+  //url: string;
+};
+
 export type HeatmapInfo = {
+  region: string;
+  articles: ArticleSummary[];
   longitude: number;
   latitude: number;
   sentiment: number;
