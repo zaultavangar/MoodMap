@@ -1,7 +1,14 @@
 // import { useTheme } from "@mui/material";
-import { Layer, Map as ReactMap, Source } from "react-map-gl";
+import {
+  Layer,
+  MapLayerMouseEvent,
+  Map as ReactMap,
+  Source,
+} from "react-map-gl";
 import { mockGeojson } from "~/data/mockGeojson";
+import { useHeatmapPopup } from "~/hooks/useHeatmapPopup";
 import { useMapView } from "~/hooks/useMapView";
+import HeatmapPopup from "./HeatmapPopup";
 import { heatmapLayer } from "./heatmapLayer";
 
 // Accesing the mapbox API token
@@ -15,6 +22,22 @@ const COLOR_MODE = import.meta.env.VITE_COLOR_MODE;
 const Map = () => {
   // const {theme} = useTheme();
   const { mapViewState, handleMapMove } = useMapView();
+  const { heatmapInfo, handlePopupOpen, handlePopupClose } = useHeatmapPopup();
+  const handleMapClick = (e: MapLayerMouseEvent) => {
+    e.preventDefault();
+    const area = e.features && e.features[0];
+    if (!area) {
+      return;
+    }
+    // TODO: Do Zod runtime validation here so there's no issues with the popup
+    handlePopupOpen({
+      longitude: e.lngLat.lng,
+      latitude: e.lngLat.lat,
+      region: area.properties?.region,
+      articles: area.properties?.articles,
+      sentiment: area.properties?.sentiment,
+    });
+  };
   return (
     <main>
       <ReactMap
@@ -23,6 +46,7 @@ const Map = () => {
         minZoom={5}
         maxZoom={7}
         data-testid="map"
+        interactiveLayerIds={["heatmap"]}
         mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v11`}
         // mapStyle={`mapbox://styles/mapbox/${theme.palette.mode}-v11`}
         style={{
@@ -36,10 +60,14 @@ const Map = () => {
           overflow: "hidden",
         }}
         onMove={handleMapMove}
+        onClick={handleMapClick}
       >
         <Source type="geojson" data={mockGeojson}>
           <Layer {...heatmapLayer} />
         </Source>
+        {heatmapInfo && (
+          <HeatmapPopup info={heatmapInfo} onClose={handlePopupClose} />
+        )}
       </ReactMap>
     </main>
   );
