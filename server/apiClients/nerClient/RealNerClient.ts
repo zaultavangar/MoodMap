@@ -13,7 +13,7 @@ export class RealNerClient implements NerClient {
         data,
         {
           headers: {
-            Authorization: "Bearer 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"
+            Authorization: `Bearer ${process.env.HG_API_KEY}`
           }
         }
       );

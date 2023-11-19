@@ -14,7 +14,7 @@ export class RealSentimentClient implements SentimentClient{
         data,
         {
           headers: {
-            Authorization: "Bearer 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"
+            Authorization: `Bearer ${process.env.HG_API_KEY}`
           }
         }
       );
