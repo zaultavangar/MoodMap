@@ -21,7 +21,7 @@ export class RealGuardianClient implements GuardianClient{
   
   private static readonly section = 'world';
   private static readonly pageSize = 200;
-  private static readonly API_KEY = 'da553cc9-959c-41ad-a737-db9fecde8185'; // TODO: make private
+  private static readonly API_KEY = process.env.GUARDIAN_API_KEY; // TODO: make private
   private static readonly fields = 'trailText,bodyText,thumbnail';
 
   async handleGuardianApiRequest(fromDate: string, toDate: string): Promise<ApiResponse<GuardianArticle[]>> {
