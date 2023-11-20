@@ -3,7 +3,6 @@ package com.example.backend.controller;
 import com.example.backend.guardianClient.GuardianService;
 import com.example.backend.response.MoodMapResponse;
 import com.example.backend.response.ResponseCode;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.lang.NonNull;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import the.guardian.api.http.content.ContentResponse;
 import the.guardian.api.http.editions.EditionsResponse;
+
+import javax.annotation.Resource;
 
 
 @RestController
@@ -52,5 +53,10 @@ public class MoodMapController {
                 ResponseCode.ERROR_CALLING_GUARDIAN_CONTENT_API.getCode(),
                 ResponseCode.ERROR_CALLING_GUARDIAN_CONTENT_API.getErrorMessage());
         return response;
+    }
+
+    @GetMapping("/baidu")
+    public void testout() {
+        guardianService.testInsert("world","","2023-11-20");
     }
 }
