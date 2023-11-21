@@ -1,13 +1,16 @@
 package com.example.backend.guardianService;
 
 import com.example.backend.entity.ArticleEntity;
+import com.example.backend.exceptions.GuardianApiException;
 import com.example.backend.guardianService.responseRelated.AugmentedContentItem;
+import com.example.backend.guardianService.responseRelated.AugmentedContentResponse;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import the.guardian.api.client.GuardianApi;
 import the.guardian.api.entity.Content;
+import the.guardian.api.http.AbstractResponse;
 import the.guardian.api.http.content.ContentResponse;
 import the.guardian.api.http.editions.EditionsResponse;
 
@@ -17,66 +20,28 @@ import java.util.stream.Collectors;
 
 
 @Service
-public interface GuardianService {
+public class GuardianService {
 
-    public AugmentedContentItem[] fetchArticlesByDateRange(String fromDate, String toDate) throws Exception;
+    @Resource
+    private GuardianApi guardianClient;
 
-    // @Resource
-    // private GuardianApi guardianClient;
+    public ContentResponse fetchArticlesByDateRange(String fromDate, String toDate) throws Exception{
+      // Error handling for dates?
+      Content content = guardianClient.content();
+      content.setFromDate(fromDate);
+      content.setToDate(toDate);
+      content.setSection("world");
+      content.setPage(1);
+      content.setPageSize(5); // TODO: FIX
+      content.setShowFields("trailText,bodyText,thumbnail");
 
-    // @Resource
-    // private ArticleService articleService;
+      AbstractResponse response = content.fetch();
+      if (response instanceof ContentResponse){
+        ContentResponse contentRes = (ContentResponse) response;
+        return contentRes;
+      } 
+      throw new GuardianApiException("Unable to retrieve articles from the Guardian API.");
+        
+    }
 
-    // public EditionsResponse fetchByEdition(String editions) {
-    //     EditionsResponse editionsResponse;
-    //     if (StringUtils.isEmpty(editions)) {
-    //         return null;
-    //     }
-    //     try {
-    //         editionsResponse = (EditionsResponse) guardianClient.editions().setQuery(editions).fetch();
-    //         return editionsResponse;
-    //     }catch (Exception e) {
-    //         return null;
-    //     }
-    // }
-
-    // public ContentResponse fetchByContent(String keyWord, String tag, String fromDate) {
-    //     Content content = guardianClient.content();
-    //     if (!StringUtils.isEmpty(keyWord)) {
-    //         content.setQuery(keyWord);
-    //     }
-    //     if (!StringUtils.isEmpty(tag)) {
-    //         content.setTag(tag);
-    //     }
-    //     if (!StringUtils.isEmpty(fromDate)) {
-    //         content.setFromDate(fromDate);
-    //     }
-    //     content.setShowFields("short-url").setShowTags("contributor").setShowFields("starRating,headline,thumbnail,short-url");
-    //     try {
-    //         ContentResponse response = (ContentResponse) content.fetch();
-    //         return response;
-    //     } catch (Exception e) {
-    //         return null;
-    //     }
-    // }
-
-
-    // public List<ArticleInfor> testInsert(String keyWord, String fromDate, String toDate) {
-    //     ContentResponse response = fetchByContent(keyWord, "", "2023-11-20");
-    //     if (response != null && response.getStatus().equals("ok")) {
-
-    //         List<ArticleInfor> articleInfoList = List.of(response.getResults()).stream()
-    //                 .map(content -> {
-    //                     ArticleInfor current = new ArticleInfor();
-    //                     BeanUtils.copyProperties(content,current);
-    //                     return current;
-    //                 })
-    //                 .collect(Collectors.toList());
-
-    //         articleService.insert(articleInfoList);
-    //         return null;
-
-    //     }
-    //     return null;
-    // }
 }

@@ -1,13 +1,20 @@
 package com.example.backend.controller;
 
 import com.example.backend.dbServices.ArticleDbService;
+import com.example.backend.dbServices.FeatureDbService;
 import com.example.backend.entity.ArticleEntity;
 import com.example.backend.guardianService.GuardianService;
+import com.example.backend.guardianService.responseRelated.AugmentedContentResponse;
+import com.example.backend.mapboxGeocodingService.MapboxGeocodingService;
+import com.example.backend.processor.Processor;
 import com.example.backend.response.RestApiResponse;
 import com.example.backend.response.RestApiSuccessResponse;
 import com.example.backend.response.ResponseCode;
 import com.example.backend.response.RestApiFailureResponse;
 
+import com.example.backend.sentimentAnalysisService.SentimentAnalysisService;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,11 +45,23 @@ public class ApiController {
     private final GuardianService guardianService;
     private final ArticleDbService articleDbService;
 
+    private final FeatureDbService featureDbService;
+
+    private final SentimentAnalysisService sentimentAnalysisService;
+
+    private final MapboxGeocodingService mapboxGeocodingService;
+
     @Autowired
     public ApiController(GuardianService guardianService,
-                         ArticleDbService articleDbService) {
+                         ArticleDbService articleDbService,
+         SentimentAnalysisService sentimentAnalysisService,
+         MapboxGeocodingService mapboxGeocodingService,
+          FeatureDbService featureDbService) {
         this.guardianService = guardianService;
         this.articleDbService = articleDbService;
+        this.sentimentAnalysisService = sentimentAnalysisService;
+        this.mapboxGeocodingService = mapboxGeocodingService;
+        this.featureDbService = featureDbService;
     }
 
     @GetMapping("/search")
@@ -83,41 +102,35 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/getArticleContent")
+    public RestApiResponse handleGetGuardianResponse(
+        @RequestParam(required = true) String fromDate, 
+        @RequestParam(required =  true) String toDate){
+        try {
+            ContentResponse response = guardianService.fetchArticlesByDateRange(fromDate, toDate);
+            if (response == null || !response.getStatus().equals("ok")){
+                return new RestApiFailureResponse(500, "Error retrieving articles from the Guardian API");
+            }
+            return new RestApiSuccessResponse<ContentResponse>(response);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return new RestApiFailureResponse(500, e.getMessage());
+        }
+    }
 
-    // @GetMapping("/test")
-    // public RestApiResponse test(@RequestParam @NonNull String editions) {
-    //     EditionsResponse editionsResponse = guardianService.fetchByEdition(editions);
-    //     if (editionsResponse != null && editionsResponse.getStatus().equals("ok")) {
-    //         RestApiResponse response = RestApiResponse.successResponse();
-    //         if (editionsResponse.getTotal() != 0) {
-    //             response.setData(editionsResponse.getResults());
-    //         }
-    //         return response;
-    //     }
-    //     RestApiResponse response = RestApiResponse.failResponse(1001, "empty list");
-    //     return response;
-    // }
+    @GetMapping("/processArticles")
+    public void handleProcess(){
+         try {
+           Processor processor = new Processor(
+               guardianService,
+               articleDbService,
+               sentimentAnalysisService,
+               mapboxGeocodingService,
+               featureDbService);
+           processor.processArticles("2023-11-20", "2023-11-20");
+         } catch (IOException e){
+           System.out.println("Error initializing the processor: " + e.getMessage());
+         }
 
-    // @GetMapping("/getContent")
-    // public RestApiResponse getContent(@RequestParam @DefaultValue("") @Nullable String keyWord,
-    //                                   @RequestParam @DefaultValue("") @Nullable String tag,
-    //                                   @RequestParam @DefaultValue("") @Nullable String fromDate) {
-    //     ContentResponse contentResponse = guardianService.fetchByContent(keyWord, tag, fromDate);
-    //     if (contentResponse != null && contentResponse.getStatus().equals("ok")) {
-    //         RestApiResponse response = RestApiResponse.successResponse();
-    //         if (contentResponse.getTotal() != 0) {
-    //             response.setData(contentResponse.getResults());
-    //         }
-    //         return response;
-    //     }
-    //     RestApiResponse response = RestApiResponse.failResponse(
-    //             ResponseCode.ERROR_CALLING_GUARDIAN_CONTENT_API.getCode(),
-    //             ResponseCode.ERROR_CALLING_GUARDIAN_CONTENT_API.getErrorMessage());
-    //     return response;
-    // }
-
-    // @GetMapping("/baidu")
-    // public void testout() {
-    //     guardianService.testInsert("world","","2023-11-20");
-    // }
+        }
 }

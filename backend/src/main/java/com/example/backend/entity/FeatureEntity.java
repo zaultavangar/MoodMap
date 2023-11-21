@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import com.example.backend.mapboxGeocodingService.Geometry;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,15 +13,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mongodb.client.model.geojson.Geometry;
-
-
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "features")
-
 public class FeatureEntity {
     
     @Id
@@ -33,20 +29,13 @@ public class FeatureEntity {
     @GeoSpatialIndexed
     private Geometry geometry;
 
-    public void setText(String text) {
-      properties.put("text", text);
+    public void setLocation(String location) {
+      properties.put("location", location);
     }
 
-    public String getText() {
-        return properties.getOrDefault("text", null);
+    public String getLocation() {
+        return properties.getOrDefault("location", "");
     }
 
-    public void setPlaceName(String placeName) {
-        properties.put("placeName", placeName);
-    }
-
-    public String getPlaceName() {
-        return properties.getOrDefault("placeName", null);
-    }
 
 }

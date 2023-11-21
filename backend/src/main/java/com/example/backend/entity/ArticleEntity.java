@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,6 @@ public class ArticleEntity {
     @Id
     private ObjectId _id;
 
-    // private String id;
-
-    // private String type;
-
     private LocalDateTime webPublicationDate;
 
     @TextIndexed
@@ -32,15 +29,9 @@ public class ArticleEntity {
 
     private String webUrl;
 
-    private String thumbnail;
+    private Double sentimentScore;
 
-    private String trailText;
-
-    @TextIndexed
-    private String bodyText;
-
-    private Float sentimentScore;
-
+    
     private List<String> associatedLocations;
 
 }
