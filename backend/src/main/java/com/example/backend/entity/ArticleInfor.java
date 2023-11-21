@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -25,8 +27,9 @@ public class ArticleInfor {
 
     private String sectionName;
 
-    private String webPublicationDate;
+    private Date webPublicationDate;
 
+    @TextIndexed
     private String webTitle;
 
     private String webUrl;
@@ -39,6 +42,10 @@ public class ArticleInfor {
 
     private String hosted;
 
-    private String relatedCountry;
+    private Double sentimentScore;
+
+    private String regionName;
+
+    private String countryName;
 
 }

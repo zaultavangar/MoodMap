@@ -1,17 +1,17 @@
 package com.example.backend.controller;
 
+import com.example.backend.Service.ArticleService;
 import com.example.backend.guardianClient.GuardianService;
 import com.example.backend.response.MoodMapResponse;
 import com.example.backend.response.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import the.guardian.api.http.content.ContentResponse;
-import the.guardian.api.http.editions.EditionsResponse;
 
 import javax.annotation.Resource;
 
@@ -23,25 +23,29 @@ public class MoodMapController {
     @Resource
     private GuardianService guardianService;
 
-    @GetMapping("/test")
-    public MoodMapResponse test(@RequestParam @NonNull String editions) {
-        EditionsResponse editionsResponse = guardianService.fetchByEdition(editions);
-        if (editionsResponse != null && editionsResponse.getStatus().equals("ok")) {
-            MoodMapResponse response = MoodMapResponse.successResponse();
-            if (editionsResponse.getTotal() != 0) {
-                response.setData(editionsResponse.getResults());
-            }
-            return response;
-        }
-        MoodMapResponse response = MoodMapResponse.failResponse(1001, "empty list");
-        return response;
-    }
+    @Resource
+    private ArticleService articleService;
 
+    /**
+     * Example of how to write MoodMap project endpoint
+     * @param toDate
+     * @param fromDate
+     * @return
+     */
     @GetMapping("/getContent")
-    public MoodMapResponse getContent(@RequestParam @DefaultValue("") @Nullable String keyWord,
-                                      @RequestParam @DefaultValue("") @Nullable String tag,
-                                      @RequestParam @DefaultValue("") @Nullable String fromDate) {
-        ContentResponse contentResponse = guardianService.fetchByContent(keyWord, tag, fromDate);
+    public MoodMapResponse getContent(@RequestParam @DefaultValue("") @Nullable String toDate,
+                                      @RequestParam @DefaultValue("") @Nullable String fromDate,
+                                      @RequestParam @DefaultValue("") @Nullable String page,
+                                      @RequestParam @DefaultValue("") @Nullable String pageSize) {
+        int pageNum = 0;
+        int pageSizeNum = 0;
+        if (!StringUtils.isEmpty(page)) {
+            pageNum = Integer.valueOf(page);
+        }
+        if (!StringUtils.isEmpty(pageSize)) {
+            pageSizeNum = Integer.valueOf(pageSize);
+        }
+        ContentResponse contentResponse = guardianService.fetchByContent(fromDate, toDate, pageNum, pageSizeNum);
         if (contentResponse != null && contentResponse.getStatus().equals("ok")) {
             MoodMapResponse response = MoodMapResponse.successResponse();
             if (contentResponse.getTotal() != 0) {
@@ -55,8 +59,9 @@ public class MoodMapController {
         return response;
     }
 
-    @GetMapping("/baidu")
-    public void testout() {
-        guardianService.testInsert("world","","2023-11-20");
+    @GetMapping("testInsert")
+    public void testInsertion(@RequestParam @DefaultValue("") @Nullable String toDate,
+                              @RequestParam @DefaultValue("") @Nullable String fromDate) {
+        articleService.saveArticle(fromDate,toDate, null, null);
     }
 }
