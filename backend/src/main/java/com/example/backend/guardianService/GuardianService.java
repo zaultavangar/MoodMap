@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public interface GuardianService {
 
-    public AugmentedContentItem[] fetchArticlesByDangeRange(String fromDate, String toDate) throws Exception;
+    public AugmentedContentItem[] fetchArticlesByDateRange(String fromDate, String toDate) throws Exception;
 
     // @Resource
     // private GuardianApi guardianClient;

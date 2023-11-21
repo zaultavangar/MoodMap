@@ -19,7 +19,7 @@ public class RealGuardianService implements GuardianService{
     private GuardianApi guardianClient;
 
     @Override
-    public AugmentedContentItem[] fetchArticlesByDangeRange(String fromDate, String toDate) throws Exception{
+    public AugmentedContentItem[] fetchArticlesByDateRange(String fromDate, String toDate) throws Exception{
       // Error handling for dates?
       Content content = guardianClient.content();
       content.setFromDate(fromDate);

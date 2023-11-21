@@ -26,7 +26,7 @@ public class Processor {
 
   public void processArticles(String fromDate, String toDate){
     try {
-      AugmentedContentItem[] articles = guardianService.fetchArticlesByDangeRange(fromDate, toDate);
+      AugmentedContentItem[] articles = guardianService.fetchArticlesByDateRange(fromDate, toDate);
     } catch (Exception e){
       // throw error, can't get articles
     }
