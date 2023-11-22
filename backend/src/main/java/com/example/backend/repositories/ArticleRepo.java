@@ -1,4 +1,6 @@
 package com.example.backend.repositories;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -9,19 +11,19 @@ import com.example.backend.entity.ArticleEntity;
 
 public interface ArticleRepo extends MongoRepository<ArticleEntity, ObjectId> {
 
-  @Query("{'webPublicationDate': {$gte: ?0, $lte: ?1} }")
-  List<ArticleEntity> findByDateRange(String fromDate, String toDate);
+  @Query("{'webPublicationDate': {'$gte': ?0, '$lte': ?1} }")
+  List<ArticleEntity> findByDateRange(LocalDateTime fromDate, LocalDateTime toDate);
 
-  @Query("{ 'text' : { $search : ?0 } }")
+  @Query("{ 'webTitle' : { '$regex': ?0, '$options': 'i' } }")
   List<ArticleEntity> searchByInput(String input);
 
-  @Query("{'$text': { '$search': ?0 }, 'webPublicationDate': { '$gte': ?1, '$lte': ?2 } }")
-  List<ArticleEntity> searchByInputAndDateRange(String input, String fromDate, String toDate);
+  @Query("{'webPublicationDate': {'$gte': ?1, '$lte': ?2}, 'webTitle': { '$regex': ?0, '$options': 'i' }}")
+  List<ArticleEntity> searchByInputAndDateRange(String input, LocalDateTime fromDate, LocalDateTime toDate);
 
-  @Query("{'associatedLocations': ?0}")
+  @Query("{'associatedLocations': {'$regex': ?0, '$options': 'i'}}")
   List<ArticleEntity> searchByLocation(String location);
 
-  @Query("{'associatedLocations': ?0, 'webPublicationDate': { '$gte': ?1, '$lte': ?2 } }")
-  List<ArticleEntity> searchByLocationAndDateRange(String location, String fromDate, String toDate);
+  @Query("{'webPublicationDate': { '$gte': ?1, '$lte': ?2 }, 'associatedLocations': {'$regex': ?0, '$options': 'i'} }")
+  List<ArticleEntity> searchByLocationAndDateRange(String location, LocalDateTime fromDate, LocalDateTime toDate);
 }
 

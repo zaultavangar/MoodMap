@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,7 @@ import the.guardian.api.http.editions.EditionsResponse;
 
 import java.security.Guard;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,8 +73,12 @@ public class ApiController {
         @RequestParam(required = false) String toDate){
         try {
             // TODO: Change to handle case with and without dates
-            List<ArticleEntity> articles = articleDbService.searchByInput(input);
-            return new RestApiSuccessResponse<List<ArticleEntity>>(articles);
+            if (StringUtils.isEmpty(fromDate) || StringUtils.isEmpty(toDate)) {
+                List<ArticleEntity> articles = articleDbService.searchByInput(input);
+                return new RestApiSuccessResponse<>(articles);
+            }
+            List<ArticleEntity> articleEntityList = articleDbService.searchByInput(input, fromDate, toDate);
+            return new RestApiSuccessResponse<>(articleEntityList);
         } catch (Exception e){
             return new RestApiFailureResponse(400, e.getMessage()); 
         }
@@ -84,9 +90,13 @@ public class ApiController {
         @RequestParam(required = false) String fromDate,
         @RequestParam(required = false) String toDate){
         try {
-            // TODO: Change to handle case with and without dates
-            List<ArticleEntity> articles = articleDbService.searchByLocation(location);
-            return new RestApiSuccessResponse<List<ArticleEntity>>(articles);
+            List<ArticleEntity> articles = new ArrayList<>();
+            if (StringUtils.isEmpty(fromDate) || StringUtils.isEmpty(toDate)) {
+                articles = articleDbService.searchByLocation(location);
+                return new RestApiSuccessResponse<>(articles);
+            }
+            articles = articleDbService.searchByLocation(location, fromDate, toDate);
+            return new RestApiSuccessResponse<>(articles);
         } catch (Exception e){
             return new RestApiFailureResponse(400, e.getMessage()); 
         }
@@ -131,7 +141,7 @@ public class ApiController {
                sentimentAnalysisService,
                mapboxGeocodingService,
                featureDbService);
-           processor.processArticles("2023-11-20", "2023-11-20");
+           processor.processArticles("2023-11-10", "2023-11-19");
          } catch (IOException e){
            System.out.println("Error initializing the processor: " + e.getMessage());
          }

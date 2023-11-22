@@ -31,7 +31,6 @@ public class ArticleEntity {
 
     private Double sentimentScore;
 
-    
     private List<String> associatedLocations;
 
 }
