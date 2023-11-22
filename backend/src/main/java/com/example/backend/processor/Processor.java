@@ -140,7 +140,9 @@ public class Processor {
     FeatureEntity dbFeature = new FeatureEntity();
     dbFeature.setType(feature.getType());
     dbFeature.setGeometry(feature.getGeometry());
-    dbFeature.setLocation(feature.getText());
+    String location = feature.getText();
+    dbFeature.setLocation(location);
+    dbFeature.setPropertiesLocation(location);;
     return dbFeature;
   }
 

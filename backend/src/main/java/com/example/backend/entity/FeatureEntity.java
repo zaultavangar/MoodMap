@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -24,16 +25,18 @@ public class FeatureEntity {
 
     private String type;
 
+    @Indexed(unique = true)
+    private String location;
+
     private Map<String, String> properties = new HashMap<>();
 
     @GeoSpatialIndexed
     private Geometry geometry;
-
-    public void setLocation(String location) {
+    public void setPropertiesLocation(String location) {
       properties.put("location", location);
     }
 
-    public String getLocation() {
+    public String getPropertiesLocation() {
         return properties.getOrDefault("location", "");
     }
 

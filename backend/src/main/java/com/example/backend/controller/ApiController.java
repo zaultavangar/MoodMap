@@ -70,7 +70,8 @@ public class ApiController {
         @RequestParam(required = false) String fromDate,
         @RequestParam(required = false) String toDate){
         try {
-            List<ArticleEntity> articles = articleDbService.searchByInput(input, Optional.of(fromDate), Optional.of(toDate));
+            // TODO: Change to handle case with and without dates
+            List<ArticleEntity> articles = articleDbService.searchByInput(input);
             return new RestApiSuccessResponse<List<ArticleEntity>>(articles);
         } catch (Exception e){
             return new RestApiFailureResponse(400, e.getMessage()); 
@@ -83,7 +84,8 @@ public class ApiController {
         @RequestParam(required = false) String fromDate,
         @RequestParam(required = false) String toDate){
         try {
-            List<ArticleEntity> articles = articleDbService.searchByLocation(location, Optional.of(fromDate), Optional.of(toDate));
+            // TODO: Change to handle case with and without dates
+            List<ArticleEntity> articles = articleDbService.searchByLocation(location);
             return new RestApiSuccessResponse<List<ArticleEntity>>(articles);
         } catch (Exception e){
             return new RestApiFailureResponse(400, e.getMessage()); 
@@ -95,6 +97,7 @@ public class ApiController {
         @RequestParam(required = true) String fromDate, 
         @RequestParam(required =  true) String toDate){
         try {
+            // TODO: Change to handle case with and without dates
             List<ArticleEntity> articles = articleDbService.searchByDateRange(fromDate, toDate);
             return new RestApiSuccessResponse<List<ArticleEntity>>(articles);
         } catch (Exception e){
@@ -102,6 +105,7 @@ public class ApiController {
         }
     }
 
+    // TODO: remove, we could but probably don't need this because the processor calls the fetchArticles method itself
     @GetMapping("/getArticleContent")
     public RestApiResponse handleGetGuardianResponse(
         @RequestParam(required = true) String fromDate, 
@@ -131,6 +135,36 @@ public class ApiController {
          } catch (IOException e){
            System.out.println("Error initializing the processor: " + e.getMessage());
          }
-
-        }
+    }
+//
+//    @GetMapping("/testSearch")
+//    public void handleTestSearch(){
+//      try {
+//        List<ArticleEntity> articles = articleDbService.searchByInput("poet");
+//        System.out.println(articles);
+//      } catch (Exception e){
+//        System.out.println(e.getMessage());
+//      }
+//
+//    }
+//
+//  @GetMapping("/testSearchByDateRange")
+//  public void handleTestByDateRangeSearch(){
+//    try {
+//      List<ArticleEntity> articles = articleDbService.searchByDateRange("2023-11-21", "2023-11-21");
+//      System.out.println(articles);
+//    } catch (Exception e){
+//      System.out.println("Error searching");
+//    }
+//  }
+//
+//  @GetMapping("/testSearchByLocation")
+//  public void handleTestByLocationSearch(){
+//    try {
+//      List<ArticleEntity> articles = articleDbService.searchByLocation("Gaza", null, null);
+//      System.out.println(articles);
+//    } catch (Exception e){
+//      System.out.println("Error searching");
+//    }
+//  }
 }

@@ -57,8 +57,6 @@ public class ArticleDbService{
       } 
    }
 
-
-
    @Cacheable(cacheNames = "articles", key = "{#fromDate, #toDate}")
    public List<ArticleEntity> searchByDateRange(String fromDate, String toDate) throws Exception{
       if (StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
@@ -69,23 +67,24 @@ public class ArticleDbService{
       throw new UsageException("fromDate and toDate must be specified to create a date range");
    }
 
-
-   public List<ArticleEntity> searchByInput(
-      String input, 
-      Optional<String> fromDate, 
-      Optional<String> toDate) throws Exception {
+   public List<ArticleEntity> searchByInput(String input) throws UsageException{
       if (StringUtils.hasLength(input)){
-         List<ArticleEntity> articles = new ArrayList<>();
-         if (fromDate.isPresent() && toDate.isPresent() && StringUtils.hasLength(fromDate.get()) && StringUtils.hasLength(toDate.get())){
-            formatDates(fromDate.get(), toDate.get());  // checks if dates can be properly formatted
-            articles = articleRepo.searchByInputAndDateRange(input, fromDate.get(), toDate.get());
-         } else {
-            articles = articleRepo.searchByInput(input);
-         }
+         List<ArticleEntity> articles = articleRepo.searchByInput(input);
          return articles;
       }
       throw new UsageException("Input must be specified");
    }
+
+   public List<ArticleEntity> searchByInput(String input, String fromDate, String toDate) throws UsageException{
+      if (StringUtils.hasLength(input) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
+         // TODO: fix formatting function for date format YYYY-MM-DD
+         formatDates(fromDate, toDate);  // checks if dates can be properly formatted
+         List<ArticleEntity> articles = articleRepo.searchByInputAndDateRange(input, fromDate, toDate);
+         return articles;
+      }
+      throw new UsageException("Input, fromDate, and toDate must be specified");
+   }
+
 
   /**
    * Searches the articles collection in MongoDB by a location (e.g. France, Brazil).
@@ -94,22 +93,24 @@ public class ArticleDbService{
    * @return a list of articles associated with the location and matching the date range (if present)
    */
 
-   public List<ArticleEntity> searchByLocation(
-      String location, 
-      Optional<String> fromDate, 
-      Optional<String> toDate) throws Exception {
-      if (StringUtils.hasLength(location)){
-         List<ArticleEntity> articles = new ArrayList<>();
-         if (fromDate.isPresent() && toDate.isPresent() && StringUtils.hasLength(fromDate.get()) && StringUtils.hasLength(toDate.get())){
-         formatDates(fromDate.get(), toDate.get());  // checks if dates can be properly formatted
-         articles = articleRepo.searchByLocationAndDateRange(location, fromDate.get(), toDate.get());
-         } else {
-         articles = articleRepo.searchByLocation(location);
-         }
-         return articles;
-      }
-      throw new UsageException("Location must be specified");
-   }
+  public List<ArticleEntity> searchByLocation(String location) throws UsageException{
+     if (StringUtils.hasLength(location)){
+        List<ArticleEntity> articles = articleRepo.searchByLocation(location);
+        return articles;
+     }
+     throw new UsageException("Location must be specified");
+  }
+
+  public List<ArticleEntity> searchByLocation(String location, String fromDate, String toDate) throws UsageException{
+     if (StringUtils.hasLength(location) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
+        // TODO: fix formatting function for date format YYYY-MM-DD
+        formatDates(fromDate, toDate);  // checks if dates can be properly formatted
+        List<ArticleEntity> articles = articleRepo.searchByLocationAndDateRange(location, fromDate, toDate);
+        return articles;
+     }
+     throw new UsageException("Location must be specified");
+  }
+
 
    private void formatDates(String fromDate, String toDate) throws DateTimeParseException{
       DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
