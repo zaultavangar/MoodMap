@@ -57,7 +57,7 @@ public class Processor {
       this.sentimentAnalysisService = sentimentAnalysisService;
       this.mapboxGeocodingService = mapboxGeocodingService;
       this.featureDbService = featureDbService;
-      loadNationalityToCountryMap("backend/src/main/java/com/example/backend/processor/data/countries.csv");
+      loadNationalityToCountryMap("/Users/sunzhenhao/Desktop/CSCI1340/MoodMap/backend/src/main/java/com/example/backend/processor/data/countries.csv");
 
   }
 
@@ -91,7 +91,6 @@ public class Processor {
           break;
         }
       }
-
     } catch (Exception e){
       // throw error, can't get articles
     }

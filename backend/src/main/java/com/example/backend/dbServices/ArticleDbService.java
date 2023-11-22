@@ -1,9 +1,13 @@
 package com.example.backend.dbServices;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,11 +61,12 @@ public class ArticleDbService{
       } 
    }
 
-   @Cacheable(cacheNames = "articles", key = "{#fromDate, #toDate}")
+   //@Cacheable(cacheNames = "articles", key = "{#fromDate, #toDate}")
    public List<ArticleEntity> searchByDateRange(String fromDate, String toDate) throws Exception{
       if (StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
-         formatDates(fromDate, toDate); // checks if dates can be properly formatted
-         List<ArticleEntity> articles = articleRepo.findByDateRange(fromDate, toDate);
+         LocalDateTime from = convertLocalTime(fromDate);
+         LocalDateTime to = convertLocalTime(toDate);
+         List<ArticleEntity> articles = articleRepo.findByDateRange(from, to);
          return articles;
       }
       throw new UsageException("fromDate and toDate must be specified to create a date range");
@@ -77,9 +82,9 @@ public class ArticleDbService{
 
    public List<ArticleEntity> searchByInput(String input, String fromDate, String toDate) throws UsageException{
       if (StringUtils.hasLength(input) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
-         // TODO: fix formatting function for date format YYYY-MM-DD
-         formatDates(fromDate, toDate);  // checks if dates can be properly formatted
-         List<ArticleEntity> articles = articleRepo.searchByInputAndDateRange(input, fromDate, toDate);
+         LocalDateTime from = convertLocalTime(fromDate);
+         LocalDateTime to = convertLocalTime(toDate);
+         List<ArticleEntity> articles = articleRepo.searchByInputAndDateRange(input, from, to);
          return articles;
       }
       throw new UsageException("Input, fromDate, and toDate must be specified");
@@ -103,9 +108,9 @@ public class ArticleDbService{
 
   public List<ArticleEntity> searchByLocation(String location, String fromDate, String toDate) throws UsageException{
      if (StringUtils.hasLength(location) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
-        // TODO: fix formatting function for date format YYYY-MM-DD
-        formatDates(fromDate, toDate);  // checks if dates can be properly formatted
-        List<ArticleEntity> articles = articleRepo.searchByLocationAndDateRange(location, fromDate, toDate);
+        LocalDateTime from = convertLocalTime(fromDate);
+        LocalDateTime to = convertLocalTime(toDate);
+        List<ArticleEntity> articles = articleRepo.searchByLocationAndDateRange(location, from, to);
         return articles;
      }
      throw new UsageException("Location must be specified");
@@ -118,4 +123,9 @@ public class ArticleDbService{
       LocalDateTime.parse(toDate, formatter);
    }
 
+   private LocalDateTime convertLocalTime(String inputTime) {
+      LocalDate localDate = LocalDate.parse(inputTime);
+      LocalDateTime localDateTime = localDate.atStartOfDay();
+      return localDateTime;
+   }
 }
