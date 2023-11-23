@@ -1,19 +1,14 @@
 package com.example.backend.dbServices;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.bson.types.ObjectId;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -30,7 +25,7 @@ public class ArticleDbService{
    @Resource
    private ArticleRepo articleRepo;
 
-   public void insertMany(List<ArticleEntity> articlesList){
+   public void saveManyArticles(List<ArticleEntity> articlesList){
       try {
          if (articlesList != null && !CollectionUtils.isEmpty(articlesList)){
          articleRepo.saveAll(articlesList);
@@ -44,21 +39,36 @@ public class ArticleDbService{
       }
    }
 
-
-   public void insertOne(ArticleEntity article){
+   public Optional<ArticleEntity> findById(ObjectId articleId){
       try {
-         if (article == null){
-         System.err.println("Article is null");
-         return;
-         }
+         return articleRepo.findById(articleId);
+      }
+      catch (Exception e){
+         System.out.println(e.getMessage());
+      }
+      return null;
+   }
+
+   public void deleteById(ObjectId articleId){
+      System.out.println("Deleting " + articleId);
+      try {
+         articleRepo.deleteById(articleId);
+      } catch (Exception e){
+         System.out.println(e.getMessage());
+      }
+   }
+
+   public ArticleEntity saveArticle(ArticleEntity article){
+      try { // maybe check if article is null
          System.out.println(article);
-         Object saved = articleRepo.save(article);
-         System.out.println("Successfully added article to database: " + saved);
+         ArticleEntity saved = articleRepo.save(article);
+         return saved;
       } catch (IllegalArgumentException e){
          System.err.println("Error inserting into Articles collection: " + e.getMessage());
       } catch (OptimisticLockingFailureException e){
          System.err.println("Error inserting into Articles collection: " + e.getMessage());
-      } 
+      }
+      return null;
    }
 
    //@Cacheable(cacheNames = "articles", key = "{#fromDate, #toDate}")

@@ -32,7 +32,7 @@ public class GuardianService {
       content.setToDate(toDate);
       content.setSection("world");
       content.setPage(1);
-      content.setPageSize(200); // TODO: FIX
+      content.setPageSize(5); // TODO: FIX
       content.setShowFields("trailText,bodyText,thumbnail");
 
       AbstractResponse response = content.fetch();

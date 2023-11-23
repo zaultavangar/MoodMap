@@ -18,6 +18,7 @@ import java.io.IOException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.lang.NonNull;
@@ -44,26 +45,32 @@ import javax.annotation.Resource;
 @RequestMapping("/api")
 public class ApiController {
 
+    private RabbitTemplate rabbitTemplate;
     private final GuardianService guardianService;
     private final ArticleDbService articleDbService;
-
     private final FeatureDbService featureDbService;
 
     private final SentimentAnalysisService sentimentAnalysisService;
 
     private final MapboxGeocodingService mapboxGeocodingService;
 
+    private final Processor processor;
+
     @Autowired
-    public ApiController(GuardianService guardianService,
-                         ArticleDbService articleDbService,
+    public ApiController(Processor processor,
+        GuardianService guardianService,
+        ArticleDbService articleDbService,
          SentimentAnalysisService sentimentAnalysisService,
          MapboxGeocodingService mapboxGeocodingService,
-          FeatureDbService featureDbService) {
+          FeatureDbService featureDbService,
+          RabbitTemplate rabbitTemplate) {
         this.guardianService = guardianService;
         this.articleDbService = articleDbService;
         this.sentimentAnalysisService = sentimentAnalysisService;
         this.mapboxGeocodingService = mapboxGeocodingService;
         this.featureDbService = featureDbService;
+        this.rabbitTemplate = rabbitTemplate;
+        this.processor = processor;
     }
 
     @GetMapping("/search")
@@ -134,17 +141,8 @@ public class ApiController {
 
     @GetMapping("/processArticles")
     public void handleProcess(){
-         try {
-           Processor processor = new Processor(
-               guardianService,
-               articleDbService,
-               sentimentAnalysisService,
-               mapboxGeocodingService,
-               featureDbService);
-           processor.processArticles("2023-11-10", "2023-11-19");
-         } catch (IOException e){
-           System.out.println("Error initializing the processor: " + e.getMessage());
-         }
+      processor.processArticles("2023-11-10", "2023-11-19");
+
     }
 //
 //    @GetMapping("/testSearch")
