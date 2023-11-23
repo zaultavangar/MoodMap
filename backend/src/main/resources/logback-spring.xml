@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+    <!-- INFO_LOG appender configuration -->
+
+    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>info.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %level [%file:%line] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ERROR_LOG appender configuration -->
+
+    <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>error.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %level [%file:%line] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root logger configuration -->
+
+    <root level="info">
+        <appender-ref ref="INFO_LOG" />
+    </root>
+
+    <!-- Specific logger configuration -->
+
+    <logger name="com.example.backend" level="error" additivity="false">
+        <appender-ref ref="ERROR_LOG" />
+    </logger>
+
+</configuration>

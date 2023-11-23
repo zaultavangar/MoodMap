@@ -30,6 +30,14 @@ public class ArticleDbService{
    @Resource
    private ArticleRepo articleRepo;
 
+   public void saveAllArticle(List<ArticleEntity> articleEntityList) {
+      try {
+         articleRepo.saveAll(articleEntityList);
+      }catch (Exception e) {
+         System.out.println("Error inserting a batch of articles into database");
+      }
+   }
+
    public void insertMany(List<ArticleEntity> articlesList){
       try {
          if (articlesList != null && !CollectionUtils.isEmpty(articlesList)){

@@ -5,6 +5,7 @@ import com.example.backend.exceptions.GuardianApiException;
 import com.example.backend.guardianService.responseRelated.AugmentedContentItem;
 import com.example.backend.guardianService.responseRelated.AugmentedContentResponse;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -15,6 +16,7 @@ import the.guardian.api.http.content.ContentResponse;
 import the.guardian.api.http.editions.EditionsResponse;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,4 +46,15 @@ public class GuardianService {
         
     }
 
+    public ContentResponse fetchArticleByPageNumAndDate(String fromDate, String toDate, int sizeNum) throws Exception {
+        Content content = guardianClient.content();
+        content.setFromDate(fromDate);
+        content.setToDate(toDate);
+        content.setSection("world");
+        content.setPage(sizeNum);
+        content.setPageSize(200);
+        //content.setShowFields("trailText,bodyText,thumbnail");
+        ContentResponse response = (ContentResponse) content.fetch();
+        return response;
+    }
 }

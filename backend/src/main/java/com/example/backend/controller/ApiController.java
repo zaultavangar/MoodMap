@@ -15,6 +15,8 @@ import com.example.backend.response.RestApiFailureResponse;
 import com.example.backend.sentimentAnalysisService.SentimentAnalysisService;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import com.google.common.cache.Cache;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,16 +55,20 @@ public class ApiController {
 
     private final MapboxGeocodingService mapboxGeocodingService;
 
+    private final Cache<String, Object> cache;
+
     @Autowired
     public ApiController(GuardianService guardianService,
                          ArticleDbService articleDbService,
          SentimentAnalysisService sentimentAnalysisService,
          MapboxGeocodingService mapboxGeocodingService,
+                         Cache<String, Object> cache,
           FeatureDbService featureDbService) {
         this.guardianService = guardianService;
         this.articleDbService = articleDbService;
         this.sentimentAnalysisService = sentimentAnalysisService;
         this.mapboxGeocodingService = mapboxGeocodingService;
+        this.cache = cache;
         this.featureDbService = featureDbService;
     }
 
@@ -139,9 +145,9 @@ public class ApiController {
                guardianService,
                articleDbService,
                sentimentAnalysisService,
-               mapboxGeocodingService,
+               mapboxGeocodingService, cache,
                featureDbService);
-           processor.processArticles("2023-11-10", "2023-11-19");
+           processor.processAllArticle("2023-11-23", "2023-11-23", true);
          } catch (IOException e){
            System.out.println("Error initializing the processor: " + e.getMessage());
          }

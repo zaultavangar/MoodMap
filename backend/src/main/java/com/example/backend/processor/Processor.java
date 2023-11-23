@@ -1,5 +1,6 @@
 package com.example.backend.processor;
 
+import ch.qos.logback.classic.Logger;
 import com.example.backend.dbServices.FeatureDbService;
 import com.example.backend.entity.FeatureEntity;
 import com.example.backend.exceptions.HuggingFaceApiException;
@@ -15,11 +16,14 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.google.common.cache.Cache;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.backend.dbServices.ArticleDbService;
@@ -32,9 +36,11 @@ import the.guardian.api.http.content.ContentItem;
 import the.guardian.api.http.content.ContentResponse;
 import edu.stanford.nlp.simple.*;
 
+import javax.annotation.Resource;
+
 @Service
+@Slf4j
 public class Processor {
-  
   private final GuardianService guardianService;
   private final ArticleDbService articleDbService;
 
@@ -44,12 +50,17 @@ public class Processor {
   private final MapboxGeocodingService mapboxGeocodingService;
   private final Map<String, String> nationalityToCountryMap;
 
+  private final Cache<String, Object> cache;
+
+  private int MAX_BATCH_ARTICLE_SIZE = 200;
+
   @Autowired
   public Processor(
       GuardianService guardianService,
       ArticleDbService articleDbService,
       SentimentAnalysisService sentimentAnalysisService,
       MapboxGeocodingService mapboxGeocodingService,
+      Cache<String, Object> cache,
       FeatureDbService featureDbService) throws IOException{
       this.guardianService = guardianService;
       this.articleDbService = articleDbService;
@@ -57,6 +68,7 @@ public class Processor {
       this.sentimentAnalysisService = sentimentAnalysisService;
       this.mapboxGeocodingService = mapboxGeocodingService;
       this.featureDbService = featureDbService;
+      this.cache = cache;
       loadNationalityToCountryMap("/Users/sunzhenhao/Desktop/CSCI1340/MoodMap/backend/src/main/java/com/example/backend/processor/data/countries.csv");
 
   }
@@ -96,7 +108,84 @@ public class Processor {
     }
   }
 
-  public void processArticle(ContentItem articleItem){
+  // first check the total number and then use for loop to get each page of articles
+  public void processAllArticle(String fromDate, String toDate, boolean isTest) {
+    try {
+      log.info("start recording");
+      log.error("wrong message");
+      ContentResponse response = guardianService.fetchArticleByPageNumAndDate(fromDate, toDate, 1);
+      if (response == null || !response.getStatus().equals("ok")) {
+        System.out.println("Error retrieving articles from the Guardian API.");
+        return;
+      }
+      if (isTest) {
+        getEntitiesAndInsert(response.getResults());
+      }else {
+        int total = response.getTotal();
+        for (int i = 1; i < (total/MAX_BATCH_ARTICLE_SIZE) + 2; i++) {
+          System.out.println("Start processing batch size: " + i);
+          ContentResponse currentResponse = guardianService.fetchArticleByPageNumAndDate(fromDate,toDate,i);
+          if (currentResponse == null || !currentResponse.getStatus().equals("ok")) {
+            System.out.println("Fail processing batch size: " + i);
+            continue;
+          }
+          getEntitiesAndInsert(response.getResults());
+          System.out.println("Finish processing batch size: " + i);
+        }
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  // by using stream to convert ContentItem[] to list of ArticleEntity and insert into db
+  public void getEntitiesAndInsert(ContentItem[] articles) {
+    List<ArticleEntity> articleEntityList =List.of(articles).stream().map(contentItem -> {
+      if (contentItem.getType().equals("liveblog")) {
+        return null;
+      }
+      return getOneArticleEntity(contentItem);
+    }).filter(Objects::nonNull).collect(Collectors.toList());
+    articleDbService.saveAllArticle(articleEntityList);
+  }
+
+  // get extra entity and convert contentItem to ArticleEntity object
+  public ArticleEntity getOneArticleEntity(ContentItem contentItem) {
+    try {
+      String headline = contentItem.getWebTitle();
+      List<String> locations = getEntities(headline);
+      if (locations.size() == 0) return null;
+      Double sentimentScore = getSentimentScore(headline);
+      int addedFeatures = 0;
+      for (String location: locations){
+        Object object = cache.getIfPresent(location);
+        GeoJson geoJson;
+        if (object != null) {
+          System.out.println("hit location: " + location);
+          geoJson = (GeoJson) object;
+        }else {
+          geoJson = mapboxGeocodingService.getFeatureForLocation(location);
+          cache.put(location, geoJson);
+          System.out.println("cache miss: " + location);
+        }
+        FeatureEntity feature = convertFeatureToDbEntity(geoJson);
+        if (feature == null) continue;
+        // TODO: CHECK IF FEATURE ALREADY EXISTS
+        featureDbService.insertOne(feature);
+        addedFeatures++;
+      }
+      if (addedFeatures > 0){
+        ArticleEntity article = convertArticleToDbEntity(contentItem, sentimentScore, locations);
+        return article;
+      }
+      System.out.println("Article not inserted, no associated features found");
+    }catch (Exception e) {
+      System.out.println("Could not process article " + contentItem.getId() + ". " + e.getMessage());
+    }
+    return null;
+  }
+
+    public void processArticle(ContentItem articleItem){
     try {
       String headline = articleItem.getWebTitle();
       System.out.println(headline);
