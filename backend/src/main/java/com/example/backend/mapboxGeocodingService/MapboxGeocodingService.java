@@ -3,12 +3,15 @@ package com.example.backend.mapboxGeocodingService;
 import com.example.backend.exceptions.MapboxApiException;
 import java.io.IOException;
 import javax.annotation.Resource;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
+@EnableCaching
 public class MapboxGeocodingService {
 
   private static final String API_BASE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
@@ -19,6 +22,7 @@ public class MapboxGeocodingService {
   @Resource
   private RestTemplate restTemplate;
 
+  @Cacheable(value = "locationCache", key = "#location")
   public GeoJson getFeatureForLocation(String location) throws IOException, MapboxApiException {
     String encodedLocation = UriComponentsBuilder
         .fromUriString(location)
@@ -29,6 +33,7 @@ public class MapboxGeocodingService {
         .fromHttpUrl(API_BASE_URL + encodedLocation + ".json")
         .queryParam("access_token", config.getApiKey())
         .queryParam("limit", 1)
+        .queryParam("types", "country,region,district,locality")
         .toUriString();
 
     ResponseEntity<GeoJson> response = restTemplate.getForEntity(url, GeoJson.class);

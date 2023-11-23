@@ -16,6 +16,6 @@ public class ScheduledArticleTask {
     public void scheduledTask() {
         System.out.println("Running scheduled task at 5 AM EST");
         // Your task logic here
-        processor.processArticles("2023-11-20", "2023-11-21");
+        processor.processArticles("2023-11-20", "2023-11-21", false);
     }
 }

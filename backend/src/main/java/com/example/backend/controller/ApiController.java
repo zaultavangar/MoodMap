@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -41,6 +42,7 @@ import javax.annotation.Resource;
 
 
 @RestController
+@EnableCaching
 @Slf4j
 @RequestMapping("/api")
 public class ApiController {
@@ -122,57 +124,11 @@ public class ApiController {
         }
     }
 
-    // TODO: remove, we could but probably don't need this because the processor calls the fetchArticles method itself
-    @GetMapping("/getArticleContent")
-    public RestApiResponse handleGetGuardianResponse(
-        @RequestParam(required = true) String fromDate, 
-        @RequestParam(required =  true) String toDate){
-        try {
-            ContentResponse response = guardianService.fetchArticlesByDateRange(fromDate, toDate);
-            if (response == null || !response.getStatus().equals("ok")){
-                return new RestApiFailureResponse(500, "Error retrieving articles from the Guardian API");
-            }
-            return new RestApiSuccessResponse<ContentResponse>(response);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            return new RestApiFailureResponse(500, e.getMessage());
-        }
-    }
 
     @GetMapping("/processArticles")
     public void handleProcess(){
-      processor.processArticles("2023-11-10", "2023-11-19");
+      processor.processArticles("2023-11-18", "2023-11-19", false);
 
     }
-//
-//    @GetMapping("/testSearch")
-//    public void handleTestSearch(){
-//      try {
-//        List<ArticleEntity> articles = articleDbService.searchByInput("poet");
-//        System.out.println(articles);
-//      } catch (Exception e){
-//        System.out.println(e.getMessage());
-//      }
-//
-//    }
-//
-//  @GetMapping("/testSearchByDateRange")
-//  public void handleTestByDateRangeSearch(){
-//    try {
-//      List<ArticleEntity> articles = articleDbService.searchByDateRange("2023-11-21", "2023-11-21");
-//      System.out.println(articles);
-//    } catch (Exception e){
-//      System.out.println("Error searching");
-//    }
-//  }
-//
-//  @GetMapping("/testSearchByLocation")
-//  public void handleTestByLocationSearch(){
-//    try {
-//      List<ArticleEntity> articles = articleDbService.searchByLocation("Gaza", null, null);
-//      System.out.println(articles);
-//    } catch (Exception e){
-//      System.out.println("Error searching");
-//    }
-//  }
+
 }

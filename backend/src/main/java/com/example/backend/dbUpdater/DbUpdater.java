@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class DbUpdater {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DbUpdater.class);
 
   private final FeatureDbService featureDbService;
   private final SentimentAnalysisService sentimentAnalysisService;
@@ -72,14 +72,14 @@ public class DbUpdater {
   @RabbitListener(queues = {"${rabbitmq.queue.name}"})
   public void receiveProcessorMessage(String articleIdStr){
     ObjectId articleId = new ObjectId(articleIdStr);
-    LOGGER.info("Message received -> " + articleId);
+    log.info("Message received ->  {}", articleId);
 
     Optional<ArticleEntity> articleEntity = articleDbService.findById(articleId);
     if (articleEntity.isPresent()){
       ArticleEntity article = articleEntity.get();
       processArticle(article);
     } else {
-      LOGGER.info("Article ID " + articleId + " not found.");
+      log.error("(Preprocessing) Article ID {} not found.", articleId);
     }
   }
 
@@ -90,34 +90,35 @@ public class DbUpdater {
       List<String> locations = getEntities(headline);
       if (locations.size() == 0) { // no locations, remove article from DB
         articleDbService.deleteById(article.get_id());
-        LOGGER.info("No associated locations found for article "+ article.get_id() + ". Deleting from DB...");
+        log.info("(Preprocessing) No associated locations found for article {}. Deleting from DB...", article.get_id());
         return;
       }
       int addedFeatures = 0;
       for (String location: locations){
-        GeoJson geoJson = mapboxGeocodingService.getFeatureForLocation(location);
-        System.out.println("GeoJson: " + geoJson);
+        GeoJson geoJson = getFeatureForLocationFromMapbox(location);
         FeatureEntity feature = convertFeatureToDbEntity(geoJson);
-        System.out.println("Feature: " + feature);
         if (feature == null) continue;
-        // TODO: CHECK IF FEATURE ALREADY EXISTS BEFORE INSERTING
-        featureDbService.insertOne(feature);
+        Optional<FeatureEntity> existingFeature = featureDbService.findFeatureByLocation(feature.getLocation());
+        if (!existingFeature.isPresent()){ // check if feature already exists in DB
+          featureDbService.saveOne(feature);
+        }
         addedFeatures++;
       }
       if (addedFeatures == 0){ // no features, remove article from DB
         articleDbService.deleteById(article.get_id());
-        LOGGER.info("No features found for article "+ article.get_id() + ". Deleting from DB...");
+        log.info("(Preprocessing) No features found for article {}. Deleting from DB... ", article.get_id());
         return;
       }
       Double sentimentScore = getSentimentScore(headline);
-      System.out.println(sentimentScore);
 
       updateArticle(article, sentimentScore, locations); // Update article fields and update document in DB
-
-      // MODIFY DB ARTICLE
     } catch (Exception e){
-      System.err.println("Could not process article " + article.get_id() + ". " + e.getMessage());
+      log.error("Could not process article {}. {}", article.get_id(), e.getMessage());
     }
+  }
+
+  public GeoJson getFeatureForLocationFromMapbox(String location) throws Exception{
+    return mapboxGeocodingService.getFeatureForLocation(location);
   }
 
   public void updateArticle(ArticleEntity article, Double sentimentScore, List<String> locations){
@@ -125,7 +126,7 @@ public class DbUpdater {
     updatedArticle.setSentimentScore(sentimentScore);
     updatedArticle.setAssociatedLocations(locations);
     articleDbService.saveArticle(updatedArticle);
-    LOGGER.info("Article " + updatedArticle.get_id() + " updated successfully");
+    log.info("Article {} updated successfully.", updatedArticle.get_id());
   }
 
   public List<String> getEntities(String articleTitle){
@@ -133,15 +134,20 @@ public class DbUpdater {
     List<String> nerTags = headline.nerTags();
     List<String> words = headline.words();
     List<String> locationEntities = new ArrayList<>();
+    StringBuilder locationBuilder = new StringBuilder();
+
     for (int i=0; i< nerTags.size(); i++){
-      if (nerTags.get(i).equals("LOCATION")
-          || nerTags.get(i).equals("COUNTRY")
-          || nerTags.get(i).equals("CITY")
-          || nerTags.get(i).equals("STATE_OR_PROVINCE")){
-        locationEntities.add(words.get(i));
+      if (isLocationEntity(nerTags.get(i))) {
+        locationBuilder.append(words.get(i));
+        // handles locations w/ more than 1 word, e.g. West Bank
+        while (i + 1 < nerTags.size() && isLocationEntity(nerTags.get(i + 1))) {
+          locationBuilder.append(" ").append(words.get(i + 1));
+          i++;
+        }
+        locationEntities.add(locationBuilder.toString());
+        locationBuilder.setLength(0);
       }
       else if (nerTags.get(i).equals("NATIONALITY")){
-
         String nationality = words.get(i);
         String location = nationalityToCountryMap.get(nationality);
         if (location != null) {
@@ -152,6 +158,10 @@ public class DbUpdater {
     return locationEntities;
   }
 
+  private boolean isLocationEntity(String nerTag) {
+    return nerTag.equals("LOCATION") || nerTag.equals("COUNTRY") ||
+        nerTag.equals("CITY") || nerTag.equals("STATE_OR_PROVINCE");
+  }
   public Double getSentimentScore(String articleTitle) throws
       HuggingFaceApiException,
       NumberFormatException,
@@ -170,7 +180,6 @@ public class DbUpdater {
     Double weightedAvg = 0.0;
     for (SentimentAnalysisResponseScore sentiment : sentimentList) {
       if (sentiment.getLabel() == null) {
-        System.out.println("Could not get sentiment label");
         continue;
       }
       String label = sentiment.getLabel();
@@ -184,6 +193,7 @@ public class DbUpdater {
   }
 
   public FeatureEntity convertFeatureToDbEntity(GeoJson geoJson){
+    if (geoJson == null) return null;
     List<Feature> features = geoJson.getFeatures();
     if (features.size() < 1) return null;
     Feature feature = features.get(0);
