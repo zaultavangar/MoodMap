@@ -9,7 +9,6 @@ import com.example.backend.exceptions.ProcessingException;
 import com.example.backend.mapboxGeocodingService.Feature;
 import com.example.backend.mapboxGeocodingService.GeoJson;
 import com.example.backend.mapboxGeocodingService.MapboxGeocodingService;
-import com.example.backend.processor.Processor;
 import com.example.backend.sentimentAnalysisService.SentimentAnalysisResponseScore;
 import com.example.backend.sentimentAnalysisService.SentimentAnalysisService;
 import edu.stanford.nlp.simple.Sentence;
@@ -23,8 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,13 +71,11 @@ public class DbUpdater {
     ObjectId articleId = new ObjectId(articleIdStr);
     log.info("Message received ->  {}", articleId);
 
-    Optional<ArticleEntity> articleEntity = articleDbService.findById(articleId);
-    if (articleEntity.isPresent()){
-      ArticleEntity article = articleEntity.get();
-      processArticle(article);
-    } else {
-      log.error("(Preprocessing) Article ID {} not found.", articleId);
-    }
+    articleDbService.findById(articleId)
+        .ifPresentOrElse(
+            this::processArticle,
+            () -> log.error("(Preprocessing) Article ID {} not found.", articleId)
+        );
   }
 
   public void processArticle(ArticleEntity article){
@@ -134,25 +129,21 @@ public class DbUpdater {
     List<String> nerTags = headline.nerTags();
     List<String> words = headline.words();
     List<String> locationEntities = new ArrayList<>();
-    StringBuilder locationBuilder = new StringBuilder();
 
     for (int i=0; i< nerTags.size(); i++){
       if (isLocationEntity(nerTags.get(i))) {
-        locationBuilder.append(words.get(i));
+        StringBuilder locationBuilder = new StringBuilder(words.get(i));
         // handles locations w/ more than 1 word, e.g. West Bank
         while (i + 1 < nerTags.size() && isLocationEntity(nerTags.get(i + 1))) {
           locationBuilder.append(" ").append(words.get(i + 1));
           i++;
         }
         locationEntities.add(locationBuilder.toString());
-        locationBuilder.setLength(0);
       }
       else if (nerTags.get(i).equals("NATIONALITY")){
         String nationality = words.get(i);
-        String location = nationalityToCountryMap.get(nationality);
-        if (location != null) {
-          locationEntities.add(location);
-        }
+        Optional.ofNullable(nationalityToCountryMap.get(nationality))
+            .ifPresent(locationEntities::add);
       }
     }
     return locationEntities;
@@ -177,17 +168,13 @@ public class DbUpdater {
   }
 
   private Double getNormalizedWeightedAvg(List<SentimentAnalysisResponseScore> sentimentList) throws NumberFormatException{
-    Double weightedAvg = 0.0;
-    for (SentimentAnalysisResponseScore sentiment : sentimentList) {
-      if (sentiment.getLabel() == null) {
-        continue;
-      }
-      String label = sentiment.getLabel();
-      int star;
-      star = Integer.parseInt(label.substring(0, 1));
-      weightedAvg += star * sentiment.getScore();
-    }
-
+    Double weightedAvg = sentimentList.stream()
+        .filter(sentiment -> sentiment.getLabel() != null)
+        .map(sentiment -> {
+          int star = Integer.parseInt(sentiment.getLabel().substring(0, 1));
+          return star * sentiment.getScore();
+        })
+        .reduce(0.0, Double::sum);
     Double normalized = (weightedAvg - 1) / 4.0;
     return normalized;
   }
