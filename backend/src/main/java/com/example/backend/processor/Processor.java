@@ -1,209 +1,173 @@
 package com.example.backend.processor;
 
 import com.example.backend.dbServices.FeatureDbService;
+import com.example.backend.dbUpdater.DbUpdater;
 import com.example.backend.entity.FeatureEntity;
-import com.example.backend.exceptions.HuggingFaceApiException;
-import com.example.backend.exceptions.ProcessingException;
-import com.example.backend.mapboxGeocodingService.Feature;
 import com.example.backend.mapboxGeocodingService.GeoJson;
-import com.example.backend.mapboxGeocodingService.MapboxGeocodingService;
-import com.example.backend.sentimentAnalysisService.SentimentAnalysisService;
-import com.example.backend.sentimentAnalysisService.SentimentAnalysisResponseScore;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import org.bson.types.ObjectId;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import com.example.backend.dbServices.ArticleDbService;
 import com.example.backend.entity.ArticleEntity;
 import com.example.backend.guardianService.GuardianService;
 
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import the.guardian.api.http.content.ContentItem;
 import the.guardian.api.http.content.ContentResponse;
-import edu.stanford.nlp.simple.*;
+import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class Processor {
-  
+  private final RabbitTemplate rabbitTemplate;
+  private final String exchangeName;
+  private final String routingKey;
   private final GuardianService guardianService;
   private final ArticleDbService articleDbService;
-
   private final FeatureDbService featureDbService;
-  private final SentimentAnalysisService sentimentAnalysisService;
-
-  private final MapboxGeocodingService mapboxGeocodingService;
-  private final Map<String, String> nationalityToCountryMap;
+  private final DbUpdater dbUpdater;
+  private final int MAX_BATCH_ARTICLE_SIZE = 200;
 
   @Autowired
   public Processor(
       GuardianService guardianService,
       ArticleDbService articleDbService,
-      SentimentAnalysisService sentimentAnalysisService,
-      MapboxGeocodingService mapboxGeocodingService,
-      FeatureDbService featureDbService) throws IOException{
+      FeatureDbService featureDbService,
+      RabbitTemplate rabbitTemplate,
+      DbUpdater dbUpdater,
+      @Qualifier("rabbitExchangeName") String exchangeName,
+      @Qualifier("rabbitRoutingKey") String routingKey){
       this.guardianService = guardianService;
       this.articleDbService = articleDbService;
-      this.nationalityToCountryMap = new HashMap<>();
-      this.sentimentAnalysisService = sentimentAnalysisService;
-      this.mapboxGeocodingService = mapboxGeocodingService;
       this.featureDbService = featureDbService;
-      loadNationalityToCountryMap("/Users/sunzhenhao/Desktop/CSCI1340/MoodMap/backend/src/main/java/com/example/backend/processor/data/countries.csv");
-
+      this.rabbitTemplate = rabbitTemplate;
+      this.exchangeName = exchangeName;
+      this.routingKey = routingKey;
+      this.dbUpdater = dbUpdater;
   }
 
-  private void loadNationalityToCountryMap(String filePath) throws IOException{
-    BufferedReader br = new BufferedReader(new FileReader(filePath));
-    String line;
-    while ((line = br.readLine()) != null) {
-      String[] values = line.split(",");
-      if (values.length >= 4) {
-        String nationality = values[3];
-        String countryName = values[1];
-        nationalityToCountryMap.put(nationality, countryName);
+  // first check the total number and then use for loop to get each page of articles
+  public void processArticles(String fromDate, String toDate, boolean isPreprocessing){
+
+    ContentResponse currentResponse = fetchArticles(fromDate, toDate, 1);
+    if (currentResponse == null) return;
+
+    int total = currentResponse.getTotal();
+    for (int i=1; i<(total/MAX_BATCH_ARTICLE_SIZE) +2; i++) {
+      log.info("Start processing batch: {}", i);
+      currentResponse = fetchArticles(fromDate, toDate, i);
+      if (currentResponse == null) {
+        log.error("Failure processing batch: {}", i);
+      }
+      if (isPreprocessing){
+        processCurrentBatchForPreprocessing(currentResponse);
+      } else {
+        processCurrentBatch(currentResponse, i);
       }
     }
   }
 
-  public void processArticles(String fromDate, String toDate){
+  private ContentResponse fetchArticles(String fromDate, String toDate, int pageNum){
     try {
-      ContentResponse response = guardianService.fetchArticlesByDateRange(fromDate, toDate);
-      if (response == null || !response.getStatus().equals("ok")){
-        System.out.println("Error retrieving articles from the Guardian API.");
-        return;
+      ContentResponse response = guardianService.fetchArticlesByDateRange(fromDate, toDate, pageNum);
+      if (!responseIsValid(response)) {
+        log.error("Invalid response, error retrieving articles from the Guardian API.");
+        return null;
       }
-      ContentItem[] articles = response.getResults();
-      for (ContentItem article: articles){
-        try {
-          if (article.getType().equals("liveblog")) break;
-          processArticle(article);
-        } catch (Exception e){
-          System.out.println("Unable to process article: " + article.getId());
-          break;
-        }
-      }
-    } catch (Exception e){
-      // throw error, can't get articles
+      return response;
+    } catch (Exception e) {
+      log.error("Error fetching articles: {}", e.getMessage());
+      return null;
     }
   }
 
-  public void processArticle(ContentItem articleItem){
+  private void processCurrentBatchForPreprocessing(ContentResponse currentResponse) {
+    for (ContentItem article: currentResponse.getResults()){
+      if (article.getType().equals("liveblog")) continue;
+      try {
+        processArticleForPreprocessing(article);
+      } catch (Exception e){
+        log.error("Unable to process article {}: {}", article.getId(), e.getMessage());
+      }
+    }
+  }
+
+  private void processCurrentBatch(ContentResponse currentResponse, int batchNum){
+    getEntitiesAndInsert(currentResponse.getResults());
+    System.out.println("Finished processing batch: " + batchNum);
+    log.info("Finished processing batch: {}", batchNum);
+  }
+
+  private void processArticleForPreprocessing(ContentItem article){
+    ArticleEntity articleEntity = convertArticleToDbEntity(article, 0.5, new ArrayList<>());
+    // Save to DB
+    articleDbService.saveArticle(articleEntity); // add to DB
+
+    ObjectId articleId = articleEntity.get_id();
+
+    if (articleId != null) {
+      sentMessageToDbUpdater(articleId);
+    }
+  }
+
+
+  public void getEntitiesAndInsert(ContentItem[] articles){
+    List<ArticleEntity> articleEntityList = List.of(articles).stream().map(contentItem -> {
+      if (contentItem.getType().equals("liveblog")){
+        return null;
+      }
+      return getOneArticleEntity(contentItem);
+    }).filter(Objects::nonNull).collect(Collectors.toList());
+    articleDbService.saveManyArticles(articleEntityList);
+  }
+
+  public ArticleEntity getOneArticleEntity(ContentItem contentItem){
     try {
-      String headline = articleItem.getWebTitle();
-      System.out.println(headline);
-      List<String> locations = getEntities(headline);
-      if (locations.size() == 0) return; // don't include articles with no associated locations
-      System.out.println(locations);
-      Double sentimentScore = getSentimentScore(headline);
-//      System.out.println(sentimentScore);
+      String headline = contentItem.getWebTitle();
+      List<String> locations = dbUpdater.getEntities(headline);
+      if (locations.size() == 0) return null;
+
       int addedFeatures = 0;
       for (String location: locations){
-        GeoJson geoJson = mapboxGeocodingService.getFeatureForLocation(location);
-        System.out.println("GeoJson: " + geoJson);
-        FeatureEntity feature = convertFeatureToDbEntity(geoJson);
-        System.out.println("Feature: " + feature);
+
+        System.out.println("LOCATION: " + location);
+        GeoJson geoJson = dbUpdater.getFeatureForLocationFromMapbox(location);
+        FeatureEntity feature = dbUpdater.convertFeatureToDbEntity(geoJson);
+        System.out.println("FEATURE: " + feature);
         if (feature == null) continue;
-        // TODO: CHECK IF FEATURE ALREADY EXISTS
-        featureDbService.insertOne(feature);
+        Optional<FeatureEntity> existingFeature = featureDbService.findFeatureByLocation(feature.getLocation());
+        if (!existingFeature.isPresent()){ // check if feature already exists in DB
+          featureDbService.saveOne(feature);
+        }
         addedFeatures++;
       }
+
+      Double sentimentScore = 0.0;
+      sentimentScore = dbUpdater.getSentimentScore(headline);
+
       if (addedFeatures > 0){
-        ArticleEntity article = convertArticleToDbEntity(articleItem, sentimentScore, locations);
-        articleDbService.insertOne(article);
-        return;
+        ArticleEntity article = convertArticleToDbEntity(contentItem, sentimentScore, locations);
+        return article;
       }
       System.out.println("Article not inserted, no associated features found");
     } catch (Exception e){
-      System.out.println("Could not process article " + articleItem.getId() + ". " + e.getMessage());
+      log.error("Could not process article {}. {}.", contentItem.getId(), e.getMessage());
     }
-
-    // ArticleEntity article = convertToArticleEntity(articleItem, sentimentScore, locations);
-
-    // // add to DB
-    // articleDbService.insertOne(article);
-  }
-
-  public FeatureEntity convertFeatureToDbEntity(GeoJson geoJson){
-    List<Feature> features = geoJson.getFeatures();
-    if (features.size() < 1) return null;
-    Feature feature = features.get(0);
-    FeatureEntity dbFeature = new FeatureEntity();
-    dbFeature.setType(feature.getType());
-    dbFeature.setGeometry(feature.getGeometry());
-    String location = feature.getText();
-    dbFeature.setLocation(location);
-    dbFeature.setPropertiesLocation(location);;
-    return dbFeature;
-  }
-
-  public List<String> getEntities(String articleTitle){
-    Sentence headline = new Sentence(articleTitle);
-    List<String> nerTags = headline.nerTags();
-    List<String> words = headline.words();
-    List<String> locationEntities = new ArrayList<>();
-    for (int i=0; i< nerTags.size(); i++){
-      if (nerTags.get(i).equals("LOCATION")
-          || nerTags.get(i).equals("COUNTRY")
-          || nerTags.get(i).equals("CITY")
-          || nerTags.get(i).equals("STATE_OR_PROVINCE")){
-        locationEntities.add(words.get(i));
-      }
-      else if (nerTags.get(i).equals("NATIONALITY")){
-
-        String nationality = words.get(i);
-        String location = nationalityToCountryMap.get(nationality);
-        if (location != null) {
-          locationEntities.add(location);
-        }
-      }
-    }
-    return locationEntities;
-  }
-
-  public Double getSentimentScore(String articleTitle) throws
-      HuggingFaceApiException,
-      NumberFormatException,
-      ProcessingException,
-      IOException{
-    List<List<SentimentAnalysisResponseScore>> scoresOuterList = sentimentAnalysisService.getSentiment(articleTitle);
-    if (scoresOuterList.size()>0){
-      List<SentimentAnalysisResponseScore> scoresInnerList = scoresOuterList.get(0);
-      Double sentimentScore = getNormalizedWeightedAvg(scoresInnerList);
-      return sentimentScore;
-    }
-    throw new ProcessingException("Unexpected response from Hugging Face API");
-    // STANFORD NLP CODE
-    //    Sentence headline = new Sentence(articleTitle);
-    //    SentimentClass sentiment = headline.sentiment();
-    //    Double sentimentScore = 0d;
-    //    System.out.println(sentiment);
-    //    System.out.println("Sentiment: "+ sentiment.ordinal());
-  }
-
-  private Double getNormalizedWeightedAvg(List<SentimentAnalysisResponseScore> sentimentList) throws NumberFormatException{
-    Double weightedAvg = 0.0;
-    for (SentimentAnalysisResponseScore sentiment : sentimentList) {
-      if (sentiment.getLabel() == null) {
-        System.out.println("Could not get sentiment label");
-        continue;
-      }
-      String label = sentiment.getLabel();
-      int star;
-      star = Integer.parseInt(label.substring(0, 1));
-      weightedAvg += star * sentiment.getScore();
-    }
-
-    Double normalized = (weightedAvg - 1) / 4.0;
-    return normalized;
+    return null;
   }
 
   public ArticleEntity convertArticleToDbEntity(ContentItem articleItem, Double sentimentScore, List<String> locations){
@@ -215,6 +179,19 @@ public class Processor {
     article.setSentimentScore(sentimentScore);
     article.setAssociatedLocations(locations);
     return article;
+  }
+
+  public void sentMessageToDbUpdater(ObjectId articleId){
+    String articleIdStr = articleId.toString();
+    log.info("Sending message. Article ID: {}", articleIdStr);
+    rabbitTemplate.convertAndSend(exchangeName, routingKey, articleIdStr);
+  }
+
+  public boolean responseIsValid(ContentResponse contentResponse){
+    if (contentResponse == null || !contentResponse.getStatus().equals("ok")){
+      return false;
+    }
+    return true;
   }
 
   private LocalDateTime formatDate(String date) throws DateTimeParseException{

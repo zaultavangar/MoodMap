@@ -3,6 +3,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -10,6 +11,11 @@ import org.springframework.data.mongodb.repository.Query;
 import com.example.backend.entity.ArticleEntity;
 
 public interface ArticleRepo extends MongoRepository<ArticleEntity, ObjectId> {
+  @Override
+  Optional<ArticleEntity> findById(ObjectId objectId);
+
+  @Override
+  void deleteById(ObjectId objectId);
 
   @Query("{'webPublicationDate': {'$gte': ?0, '$lte': ?1} }")
   List<ArticleEntity> findByDateRange(LocalDateTime fromDate, LocalDateTime toDate);

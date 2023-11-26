@@ -2,6 +2,7 @@ package com.example.backend.dbServices;
 
 import java.util.List;
 
+import java.util.Optional;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -31,7 +32,7 @@ public class FeatureDbService {
     }
 
 
-    public void insertOne(FeatureEntity feature){
+    public void saveOne(FeatureEntity feature){
         try {
         if (feature == null){
             System.err.println("Feature is null");
@@ -43,6 +44,10 @@ public class FeatureDbService {
         System.err.println("Error inserting into Features collection: " + e.getMessage());
         } catch (OptimisticLockingFailureException e){
         System.err.println("Error inserting into Features collection: " + e.getMessage());
-        } 
+        }
+    }
+
+    public Optional<FeatureEntity> findFeatureByLocation(String location){
+        return featureRepo.findByLocation(location);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.backend.response;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,33 +10,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class RestApiResponse {
-    private int code;
-    private String responseMessage;
-    private Object data;
+public class RestApiResponse<T> {
+    private LocalDateTime timestamp;
+    private int status;
+    private String result;
+    private T data;
 
-    // public RestApiResponse(int code, String responseMessage, T data){
-    //     this.code = code;
-    //     this.responseMessage = responseMessage;
-    //     this.data = data;
-    // }
-
-    // success return response
-    // public static RestApiResponse successResponse(T data) {
-    //     RestApiResponse response = new RestApiResponse();
-    //     response.setData(data);
-    //     response.setCode(200);
-    //     response.setResponseMessage("success");
-    //     return response;
-    // }
-
-    // // fail return response
-    // public static RestApiResponse failResponse(int code, String responseMessage) {
-    //     RestApiResponse response = new RestApiResponse();
-    //     response.code = code;
-    //     response.responseMessage = responseMessage;
-    //     response.data = null;
-    //     return response;
-    // }
+    public RestApiResponse(int status, String result, T data) {
+        this.timestamp = LocalDateTime.now();
+        this.status = status;
+        this.result = result;
+        this.data = data;
+    }
 }
 
