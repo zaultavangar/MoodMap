@@ -1,13 +1,10 @@
 package validator;
 
 import java.util.Optional;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
-public class SearchRequest{
-  private final Optional<String> input;
-  private final Optional<String> fromDate;
-  private final Optional<String> toDate;
+public record SearchRequest(Optional<String> input, Optional<String> fromDate,
+                            Optional<String> toDate) {
+
 };
 

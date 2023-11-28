@@ -2,7 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dbServices.ArticleDbService;
 import com.example.backend.entity.ArticleEntity;
-import com.example.backend.processor.Processor;
+import com.example.backend.processors.DailyProcessor;
 import com.example.backend.response.RestApiResponse;
 import com.example.backend.response.RestApiSuccessResponse;
 import com.example.backend.response.RestApiFailureResponse;
@@ -31,14 +31,14 @@ import validator.ValidationResult;
 public class ApiController {
 
     private final ArticleDbService articleDbService;
-    private final Processor processor;
+    private final DailyProcessor dailyProcessor;
 
     @Autowired
     public ApiController(
-        Processor processor,
+        DailyProcessor dailyProcessor,
         ArticleDbService articleDbService) {
         this.articleDbService = articleDbService;
-        this.processor = processor;
+        this.dailyProcessor = dailyProcessor;
     }
 
     private SearchRequest createCompleteSearchRequest(String input, String fromDate, String toDate){
@@ -96,7 +96,7 @@ public class ApiController {
 
 
     @GetMapping("/searchByLocation")
-    public RestApiResponse handleSearchByLocation(
+    public RestApiResponse<List<ArticleEntity>> handleSearchByLocation(
         @RequestParam(required = true) String location,
         @RequestParam(required = false) String fromDate,
         @RequestParam(required = false) String toDate){
@@ -117,7 +117,7 @@ public class ApiController {
             List<ArticleEntity> articles =
                 datesPresentResult.equals((ValidationResult.DATES_PRESENT))
                     ? articleDbService.searchByLocation(location, fromDate, toDate)
-                    : articleDbService.searchByLocation(location);;
+                    : articleDbService.searchByLocation(location);
             return new RestApiSuccessResponse<>(articles);
 
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class ApiController {
    }
 
     @GetMapping("/searchByDateRange")
-    public RestApiResponse handleSearchByDateRange(
+    public RestApiResponse<List<ArticleEntity>> handleSearchByDateRange(
         @RequestParam(required = true) String fromDate,
         @RequestParam(required = true) String toDate){
 
@@ -148,7 +148,7 @@ public class ApiController {
 
     @GetMapping("/processArticles")
     public void handleProcess(){
-      processor.processArticles("2023-11-18", "2023-11-19", true);
+      dailyProcessor.processArticles("2023-11-27", "2023-11-27", false);
 
     }
 

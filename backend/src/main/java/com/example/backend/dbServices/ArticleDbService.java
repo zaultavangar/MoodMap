@@ -2,8 +2,6 @@ package com.example.backend.dbServices;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,9 +30,7 @@ public class ArticleDbService{
          return;
          } 
          System.err.println("Article list is null or empty");
-      } catch (IllegalArgumentException e){
-         System.err.println("Error inserting into Articles collection: " + e.getMessage());
-      } catch (OptimisticLockingFailureException e){
+      } catch (IllegalArgumentException | OptimisticLockingFailureException e){
          System.err.println("Error inserting into Articles collection: " + e.getMessage());
       }
    }
@@ -46,7 +42,7 @@ public class ArticleDbService{
       catch (Exception e){
          System.out.println(e.getMessage());
       }
-      return null;
+      return Optional.empty();
    }
 
    public void deleteById(ObjectId articleId){
@@ -58,17 +54,13 @@ public class ArticleDbService{
       }
    }
 
-   public ArticleEntity saveArticle(ArticleEntity article){
+   public void saveArticle(ArticleEntity article){
       try { // maybe check if article is null
          System.out.println(article);
-         ArticleEntity saved = articleRepo.save(article);
-         return saved;
-      } catch (IllegalArgumentException e){
-         System.err.println("Error inserting into Articles collection: " + e.getMessage());
-      } catch (OptimisticLockingFailureException e){
+         articleRepo.save(article);
+      } catch (IllegalArgumentException | OptimisticLockingFailureException e){
          System.err.println("Error inserting into Articles collection: " + e.getMessage());
       }
-      return null;
    }
 
    //@Cacheable(cacheNames = "articles", key = "{#fromDate, #toDate}")
@@ -76,16 +68,14 @@ public class ArticleDbService{
       if (StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
-         List<ArticleEntity> articles = articleRepo.findByDateRange(from, to);
-         return articles;
+         return articleRepo.findByDateRange(from, to);
       }
       throw new UsageException("fromDate and toDate must be specified to create a date range");
    }
 
    public List<ArticleEntity> searchByInput(String input) throws UsageException{
       if (StringUtils.hasLength(input)){
-         List<ArticleEntity> articles = articleRepo.searchByInput(input);
-         return articles;
+         return articleRepo.searchByInput(input);
       }
       throw new UsageException("Input must be specified");
    }
@@ -94,8 +84,7 @@ public class ArticleDbService{
       if (StringUtils.hasLength(input) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
-         List<ArticleEntity> articles = articleRepo.searchByInputAndDateRange(input, from, to);
-         return articles;
+         return articleRepo.searchByInputAndDateRange(input, from, to);
       }
       throw new UsageException("Input, fromDate, and toDate must be specified");
    }
@@ -110,8 +99,7 @@ public class ArticleDbService{
 
   public List<ArticleEntity> searchByLocation(String location) throws UsageException{
      if (StringUtils.hasLength(location)){
-        List<ArticleEntity> articles = articleRepo.searchByLocation(location);
-        return articles;
+        return articleRepo.searchByLocation(location);
      }
      throw new UsageException("Location must be specified");
   }
@@ -120,22 +108,14 @@ public class ArticleDbService{
      if (StringUtils.hasLength(location) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
         LocalDateTime from = convertLocalTime(fromDate);
         LocalDateTime to = convertLocalTime(toDate);
-        List<ArticleEntity> articles = articleRepo.searchByLocationAndDateRange(location, from, to);
-        return articles;
+        return articleRepo.searchByLocationAndDateRange(location, from, to);
      }
      throw new UsageException("Location must be specified");
   }
 
 
-   private void formatDates(String fromDate, String toDate) throws DateTimeParseException{
-      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-      LocalDateTime.parse(fromDate, formatter);
-      LocalDateTime.parse(toDate, formatter);
-   }
-
    private LocalDateTime convertLocalTime(String inputTime) {
       LocalDate localDate = LocalDate.parse(inputTime);
-      LocalDateTime localDateTime = localDate.atStartOfDay();
-      return localDateTime;
+      return localDate.atStartOfDay();
    }
 }

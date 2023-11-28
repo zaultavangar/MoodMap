@@ -1,7 +1,7 @@
 package com.example.backend.entity;
 
-import java.math.BigInteger;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Document(collection = "articles")
 public class ArticleEntity {
 
@@ -32,5 +33,6 @@ public class ArticleEntity {
     private Double sentimentScore;
 
     private List<String> associatedLocations;
+
 
 }
