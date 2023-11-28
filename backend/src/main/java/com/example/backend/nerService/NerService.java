@@ -10,11 +10,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.ServletContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -36,7 +39,10 @@ public class NerService {
     this.config = config;
     this.restTemplate = restTemplate;
     this.nationalityToCountryMap = new HashMap<>();
-    loadNationalityToCountryMap();
+
+    Path currentRelativePath = Paths.get("");
+    String absolutePath = currentRelativePath.toAbsolutePath().toString();
+     loadNationalityToCountryMap(absolutePath + "/data/countries.csv");
   }
 
   public List<List<NerResponseScore>> makeHuggingFaceSentimentRequest(String text) throws HuggingFaceApiException, IOException {
@@ -59,8 +65,7 @@ public class NerService {
 
   }
 
-  private void loadNationalityToCountryMap() throws IOException {
-    String filePath = "backend/src/main/java/com/example/backend/nerService/data/countries.csv";
+  private void loadNationalityToCountryMap(String filePath) throws IOException {
     BufferedReader br = new BufferedReader(new FileReader(filePath));
     String line;
     while ((line = br.readLine()) != null) {

@@ -14,19 +14,19 @@ import org.springframework.util.StringUtils;
 
 import com.example.backend.entity.ArticleEntity;
 import com.example.backend.exceptions.UsageException;
-import com.example.backend.repositories.ArticleRepo;
+import com.example.backend.repositories.ArticleRepository;
 
 
 @Service
 public class ArticleDbService{
 
    @Resource
-   private ArticleRepo articleRepo;
+   private ArticleRepository articleRepository;
 
    public void saveManyArticles(List<ArticleEntity> articlesList){
       try {
          if (articlesList != null && !CollectionUtils.isEmpty(articlesList)){
-         articleRepo.saveAll(articlesList);
+         articleRepository.saveAll(articlesList);
          return;
          } 
          System.err.println("Article list is null or empty");
@@ -37,7 +37,7 @@ public class ArticleDbService{
 
    public Optional<ArticleEntity> findById(ObjectId articleId){
       try {
-         return articleRepo.findById(articleId);
+         return articleRepository.findById(articleId);
       }
       catch (Exception e){
          System.out.println(e.getMessage());
@@ -48,7 +48,7 @@ public class ArticleDbService{
    public void deleteById(ObjectId articleId){
       System.out.println("Deleting " + articleId);
       try {
-         articleRepo.deleteById(articleId);
+         articleRepository.deleteById(articleId);
       } catch (Exception e){
          System.out.println(e.getMessage());
       }
@@ -57,7 +57,7 @@ public class ArticleDbService{
    public void saveArticle(ArticleEntity article){
       try { // maybe check if article is null
          System.out.println(article);
-         articleRepo.save(article);
+         articleRepository.save(article);
       } catch (IllegalArgumentException | OptimisticLockingFailureException e){
          System.err.println("Error inserting into Articles collection: " + e.getMessage());
       }
@@ -68,14 +68,14 @@ public class ArticleDbService{
       if (StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
-         return articleRepo.findByDateRange(from, to);
+         return articleRepository.findByDateRange(from, to);
       }
       throw new UsageException("fromDate and toDate must be specified to create a date range");
    }
 
    public List<ArticleEntity> searchByInput(String input) throws UsageException{
       if (StringUtils.hasLength(input)){
-         return articleRepo.searchByInput(input);
+         return articleRepository.searchByInput(input);
       }
       throw new UsageException("Input must be specified");
    }
@@ -84,7 +84,7 @@ public class ArticleDbService{
       if (StringUtils.hasLength(input) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
-         return articleRepo.searchByInputAndDateRange(input, from, to);
+         return articleRepository.searchByInputAndDateRange(input, from, to);
       }
       throw new UsageException("Input, fromDate, and toDate must be specified");
    }
@@ -99,7 +99,7 @@ public class ArticleDbService{
 
   public List<ArticleEntity> searchByLocation(String location) throws UsageException{
      if (StringUtils.hasLength(location)){
-        return articleRepo.searchByLocation(location);
+        return articleRepository.searchByLocation(location);
      }
      throw new UsageException("Location must be specified");
   }
@@ -108,7 +108,7 @@ public class ArticleDbService{
      if (StringUtils.hasLength(location) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
         LocalDateTime from = convertLocalTime(fromDate);
         LocalDateTime to = convertLocalTime(toDate);
-        return articleRepo.searchByLocationAndDateRange(location, from, to);
+        return articleRepository.searchByLocationAndDateRange(location, from, to);
      }
      throw new UsageException("Location must be specified");
   }

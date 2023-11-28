@@ -36,6 +36,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>4.11.1</version>
+            <scope>test</scope>
+        </dependency>
 
 <!--        <dependency>-->
 <!--            <groupId>com.google.guava</groupId>-->
@@ -49,12 +55,6 @@
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
             <version>4.4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>4.4.0</version>
-            <classifier>models</classifier>
         </dependency>
 
         <dependency>
@@ -77,6 +77,13 @@
         <dependency>
             <groupId>org.springframework.amqp</groupId>
             <artifactId>spring-rabbit-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
 
 

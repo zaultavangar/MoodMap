@@ -10,12 +10,12 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.entity.FeatureEntity;
-import com.example.backend.repositories.FeatureRepo;
+import com.example.backend.repositories.FeatureRepository;
 
 @Service
 public class FeatureDbService {
     @Resource
-    private FeatureRepo featureRepo;
+    private FeatureRepository featureRepository;
 
     public void saveOne(FeatureEntity feature){
         try {
@@ -26,7 +26,7 @@ public class FeatureDbService {
         String logString = feature.get_id() == null ?
             "Successfully added feature to DB: "
             : "Successfully updated DB feature: ";
-        FeatureEntity savedFeature = featureRepo.save(feature);
+        FeatureEntity savedFeature = featureRepository.save(feature);
         System.out.println(logString + savedFeature);
         } catch (IllegalArgumentException | OptimisticLockingFailureException e){
         System.err.println("Error inserting into Features collection: " + e.getMessage());
@@ -34,14 +34,14 @@ public class FeatureDbService {
     }
 
     public Optional<FeatureEntity> findFeatureByLocation(String location){
-        return featureRepo.findByLocation(location);
+        return featureRepository.findByLocation(location);
     }
 
     public FeatureEntity createFeatureEntity(Double lng, Double lat, String location){
-        GeoJsonGeometry featureGeoJsonGeometry = new GeoJsonGeometry();
-        featureGeoJsonGeometry.setType("Point");
-
-        featureGeoJsonGeometry.setCoordinates(List.of(lng, lat));
+        GeoJsonGeometry featureGeoJsonGeometry = GeoJsonGeometry.builder()
+            .type("Point")
+            .coordinates(List.of(lng, lat))
+            .build();
 
         FeatureEntity dbFeature = FeatureEntity.builder()
             .type("Feature")

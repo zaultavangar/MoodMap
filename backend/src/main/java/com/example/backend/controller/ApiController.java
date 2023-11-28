@@ -9,7 +9,6 @@ import com.example.backend.response.RestApiFailureResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-import validator.RequestValidator;
-import validator.SearchRequest;
-import validator.ValidationResult;
+import com.example.backend.validator.RequestValidator;
+import com.example.backend.validator.SearchRequest;
+import com.example.backend.validator.ValidationResult;
 
 
 @RestController
@@ -33,7 +32,6 @@ public class ApiController {
     private final ArticleDbService articleDbService;
     private final DailyProcessor dailyProcessor;
 
-    @Autowired
     public ApiController(
         DailyProcessor dailyProcessor,
         ArticleDbService articleDbService) {
@@ -148,7 +146,7 @@ public class ApiController {
 
     @GetMapping("/processArticles")
     public void handleProcess(){
-      dailyProcessor.processArticles("2023-11-27", "2023-11-27", false);
+      dailyProcessor.processArticles("2023-11-27", "2023-11-27", true);
 
     }
 

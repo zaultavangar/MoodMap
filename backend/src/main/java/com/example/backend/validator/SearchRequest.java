@@ -1,4 +1,4 @@
-package validator;
+package com.example.backend.validator;
 
 import java.util.Optional;
 import lombok.Data;
