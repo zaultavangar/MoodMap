@@ -31,6 +31,8 @@ public class FeatureEntity {
     private String location;
 
     private Map<String, Object> properties = new HashMap<>();
+    // 2023-11-sentiment
+    // 2023-11-count
 
     @GeoSpatialIndexed
     private GeoJsonGeometry geoJsonGeometry;
