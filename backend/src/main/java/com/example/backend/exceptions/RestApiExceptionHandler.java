@@ -12,8 +12,6 @@ public class RestApiExceptionHandler {
   /**
    * Helps override the controller's default response when a required parameter is missing
    * so that all responses have the same shape (i.e. timestamp, status, result, data)
-   * @param ex
-   * @return
    */
   @ExceptionHandler(MissingServletRequestParameterException.class)
   public ResponseEntity<RestApiFailureResponse> handleMissingParams(MissingServletRequestParameterException ex) {

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class RestApiResponse<T> {
     private LocalDateTime timestamp;
     private int status;

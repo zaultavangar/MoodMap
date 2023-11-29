@@ -24,13 +24,12 @@ public class GuardianService {
       content.setToDate(toDate);
       content.setSection("world");
       content.setPage(pageNum);
-      content.setPageSize(200); // TODO: FIX
+      content.setPageSize(10);
       content.setShowFields("trailText,bodyText,thumbnail");
 
       AbstractResponse response = content.fetch();
       if (response instanceof ContentResponse){
-        ContentResponse contentRes = (ContentResponse) response;
-        return contentRes;
+        return (ContentResponse) response;
       } 
       throw new GuardianApiException("Unable to retrieve articles from the Guardian API.");
         

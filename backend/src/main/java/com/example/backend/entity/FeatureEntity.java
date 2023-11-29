@@ -1,9 +1,10 @@
 package com.example.backend.entity;
 
-import com.example.backend.mapboxGeocodingService.Geometry;
+import com.example.backend.geocodingService.GeoJsonGeometry;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Builder;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
@@ -17,6 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Document(collection = "features")
 public class FeatureEntity {
     
@@ -28,16 +30,21 @@ public class FeatureEntity {
     @Indexed(unique = true)
     private String location;
 
-    private Map<String, String> properties = new HashMap<>();
+    private Map<String, Object> properties = new HashMap<>();
 
     @GeoSpatialIndexed
-    private Geometry geometry;
+    private GeoJsonGeometry geoJsonGeometry;
     public void setPropertiesLocation(String location) {
       properties.put("location", location);
     }
 
-    public String getPropertiesLocation() {
-        return properties.getOrDefault("location", "");
+    public void setDoubleProperty(String key, Double value) {
+        properties.put(key, value);
+    }
+
+    public Double getDoubleProperty(String key) {
+        Object value = properties.get(key);
+        return value instanceof Double ? (Double) value : null;
     }
 
 
