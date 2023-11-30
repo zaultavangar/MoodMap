@@ -7,7 +7,7 @@ const ProvidenceLatLong = {
   lat: 41.82454500035089,
 };
 
-const GazaLatLong = {
+export const GazaLatLong = {
   long: 34.47,
   lat: 31.5,
 };
