@@ -4,7 +4,7 @@ import com.example.backend.dbServices.ArticleDbService;
 import com.example.backend.dbServices.FeatureDbService;
 import com.example.backend.entity.ArticleEntity;
 import com.example.backend.entity.FeatureProjection;
-import com.example.backend.processors.DailyProcesvsor;
+import com.example.backend.processors.DailyProcessor;
 import com.example.backend.response.ArticleEntityListApiResponse;
 import com.example.backend.response.RestApiResponse;
 import com.example.backend.response.RestApiSuccessResponse;
@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,7 @@ import com.example.backend.validator.ValidationResult;
 @RestController
 @EnableCaching
 @Slf4j
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api")
 public class ApiController {
 

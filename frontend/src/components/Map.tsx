@@ -9,9 +9,10 @@ import {
 } from "react-map-gl";
 import { mockGeojson } from "~/data/mockGeojson";
 import { useHeatmapPopup } from "~/hooks/useHeatmapPopup";
-import { useMapView } from "~/hooks/useMapView";
+import { useMapManager } from "~/hooks/useMapManager";
 import HeatmapPopup from "./HeatmapPopup";
-import { heatmapLayer } from "./heatmapLayer";
+import { useEffect } from "react";
+import { ArticleEntity, handleApiResponse, isSuccessfulResponse } from "~/logic/api";
 
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
@@ -23,23 +24,56 @@ const COLOR_MODE = import.meta.env.VITE_COLOR_MODE;
  */
 const Map = () => {
   // const {theme} = useTheme();
-  const { mapViewState, handleMapMove } = useMapView();
+  const { 
+    mapViewState, 
+    handleMapMove, 
+    loadFeatures, 
+    featureCollection,
+    circleLayer,
+    setLayer
+   } = useMapManager();
   const { heatmapInfo, handlePopupOpen, handlePopupClose } = useHeatmapPopup();
-  const handleMapClick = (e: MapLayerMouseEvent) => {
+
+  const handleMapClick = async (e: MapLayerMouseEvent) => {
     e.preventDefault();
     const area = e.features && e.features[0];
+    console.error(area);
     if (!area) {
       return;
     }
+    // get articles for that feature from backend 
+    if (area.properties !== undefined && 
+      area.properties !== null &&
+      area.properties['location'] !== null && 
+      area.properties['location'] !== null){
+        const res = await handleApiResponse<'searchByLocation', ArticleEntity[]>('searchByLocation', {
+          location: area.properties['location'],
+          fromDate: "2023-11-01", // TODO: CHANGE
+          toDate: "2023-11-30" // TODO: CHANGE
+        });
+        if (isSuccessfulResponse(res)){
+          handlePopupOpen({
+            longitude: e.lngLat.lng,
+            latitude: e.lngLat.lat,
+            properties: area.properties,
+            articles: res.data,
+          });
+        }
+    }
     // TODO: Do Zod runtime validation here so there's no issues with the popup
-    handlePopupOpen({
-      longitude: e.lngLat.lng,
-      latitude: e.lngLat.lat,
-      region: area.properties?.region,
-      articles: area.properties?.articles,
-      sentiment: area.properties?.sentiment,
-    });
+    
   };
+
+  useEffect(() => {
+    console.log("hello");
+    loadFeatures();
+  }, [])
+
+  useEffect(() => {
+    setLayer("11-2023");
+  }, [featureCollection])
+
+
   return (
     <main>
       <ReactMap
@@ -64,8 +98,8 @@ const Map = () => {
         onMove={handleMapMove}
         onClick={handleMapClick}
       >
-        <Source type="geojson" data={mockGeojson}>
-          <Layer {...heatmapLayer} />
+        <Source type="geojson" data={featureCollection}>
+          <Layer {...circleLayer} />
         </Source>
         {heatmapInfo && (
           <HeatmapPopup info={heatmapInfo} onClose={handlePopupClose} />

@@ -1,17 +1,14 @@
+import { GeoJsonProperties } from "geojson";
 import { useState } from "react";
+import { ArticleEntity } from "~/logic/api";
 
-export type ArticleSummary = {
-  title: string;
-  description: string;
-  //url: string;
-};
+
 
 export type HeatmapInfo = {
-  region: string;
-  articles: ArticleSummary[];
+  articles: ArticleEntity[];
   longitude: number;
   latitude: number;
-  sentiment: number;
+  properties: GeoJsonProperties;
 };
 
 /**

@@ -9,6 +9,8 @@ const HeatmapPopup = ({
   info: HeatmapInfo;
   onClose: () => void;
 }) => {
+  // TODO: replace with current date
+  const sentimentKey = "11-2023-sentiment";
   return (
     <Box sx={{ minWidth: "300px", maxWidth: "500px" }}>
       <Paper>
@@ -21,7 +23,7 @@ const HeatmapPopup = ({
           closeOnMove={false}
         >
           <Typography variant="h6" component="h3" fontWeight="bold">
-            {info.region}
+            {info.properties && info.properties['location']}
           </Typography>
           {/* <Typography variant="subtitle1" component="h4" fontWeight="bold">
             Articles
@@ -41,12 +43,23 @@ const HeatmapPopup = ({
               fontWeight="bold"
               color="primary"
             >
-              {info.sentiment}
+              {info.properties && info.properties[sentimentKey].toFixed(2)}
             </Typography>
             <Typography component="p" color="primary">
               Avg. Sentiment
             </Typography>
           </Stack>
+          <div>
+            {info.articles && info.articles.map((article, idx) => (
+              <div style={{'marginBottom': '5px'}}>
+                <div>
+                  <span>{idx+1}. </span>
+                  <a href={article.webUrl} target="_blank">{article.webTitle}</a>
+                </div>
+                
+              </div>
+            ))}
+          </div>
         </Popup>
       </Paper>
     </Box>
