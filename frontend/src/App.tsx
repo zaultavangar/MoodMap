@@ -15,6 +15,7 @@ const App = () => {
         <Header />
         <Map />
       </ThemeProvider> */}
+
       <Header />
       <Map />
     </>

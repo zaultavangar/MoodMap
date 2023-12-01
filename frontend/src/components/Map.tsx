@@ -2,7 +2,9 @@
 import {
   Layer,
   MapLayerMouseEvent,
+  NavigationControl,
   Map as ReactMap,
+  ScaleControl,
   Source,
 } from "react-map-gl";
 import { mockGeojson } from "~/data/mockGeojson";
@@ -43,8 +45,8 @@ const Map = () => {
       <ReactMap
         mapboxAccessToken={MAPBOX_API_TOKEN}
         {...mapViewState}
-        minZoom={5}
-        maxZoom={7}
+        minZoom={1}
+        maxZoom={16}
         data-testid="map"
         interactiveLayerIds={["heatmap"]}
         mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v11`}
@@ -68,6 +70,8 @@ const Map = () => {
         {heatmapInfo && (
           <HeatmapPopup info={heatmapInfo} onClose={handlePopupClose} />
         )}
+         <NavigationControl />
+         <ScaleControl />
       </ReactMap>
     </main>
   );

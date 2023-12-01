@@ -24,7 +24,7 @@ public class GuardianService {
       content.setToDate(toDate);
       content.setSection("world");
       content.setPage(pageNum);
-      content.setPageSize(10);
+      content.setPageSize(200);
       content.setShowFields("trailText,bodyText,thumbnail");
 
       AbstractResponse response = content.fetch();
