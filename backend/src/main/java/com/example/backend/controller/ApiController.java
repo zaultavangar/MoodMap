@@ -3,24 +3,20 @@ package com.example.backend.controller;
 import com.example.backend.dbServices.ArticleDbService;
 import com.example.backend.dbServices.FeatureDbService;
 import com.example.backend.entity.ArticleEntity;
-import com.example.backend.entity.FeatureEntity;
 import com.example.backend.entity.FeatureProjection;
-import com.example.backend.processors.DailyProcessor;
+import com.example.backend.processors.DailyProcesvsor;
 import com.example.backend.response.ArticleEntityListApiResponse;
 import com.example.backend.response.RestApiResponse;
 import com.example.backend.response.RestApiSuccessResponse;
 import com.example.backend.response.RestApiFailureResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
