@@ -1,7 +1,10 @@
 package com.example.backend.controller;
 
 import com.example.backend.dbServices.ArticleDbService;
+import com.example.backend.dbServices.FeatureDbService;
 import com.example.backend.entity.ArticleEntity;
+import com.example.backend.entity.FeatureEntity;
+import com.example.backend.entity.FeatureProjection;
 import com.example.backend.processors.DailyProcessor;
 import com.example.backend.response.ArticleEntityListApiResponse;
 import com.example.backend.response.RestApiResponse;
@@ -14,8 +17,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,13 +42,17 @@ import com.example.backend.validator.ValidationResult;
 public class ApiController {
 
     private final ArticleDbService articleDbService;
+
+    private final FeatureDbService featureDbService;
     private final DailyProcessor dailyProcessor;
 
     public ApiController(
         DailyProcessor dailyProcessor,
-        ArticleDbService articleDbService) {
+        ArticleDbService articleDbService,
+        FeatureDbService featureDbService) {
         this.articleDbService = articleDbService;
         this.dailyProcessor = dailyProcessor;
+        this.featureDbService = featureDbService;
     }
 
     private SearchRequest createCompleteSearchRequest(String input, String fromDate, String toDate){
@@ -68,6 +77,25 @@ public class ApiController {
             .apply(searchRequest);
     }
 
+
+
+
+    @Operation(summary = "To retrieve the features, aka locations, in the database.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful retrieval of features",
+            content = @Content(mediaType = "application/json", schema = @Schema(name = "SuccessResponse", implementation = ArticleEntityListApiResponse.class))),
+    })
+    @GetMapping("/getFeatures")
+    public RestApiResponse<Object> getFeatures(){
+      try {
+        List<FeatureProjection> features = featureDbService.getFeatures();
+        return new RestApiSuccessResponse<>(features);
+      } catch (Exception e){
+        return new RestApiFailureResponse(500, e.getMessage());
+      }
+
+
+    }
 
     @Operation(summary = "To search for articles based on some input phrase. Can narrow down using a date range as well.")
     @ApiResponses(value = {
@@ -174,7 +202,7 @@ public class ApiController {
 
     @GetMapping("/processArticles")
     public void handleProcess(){
-      dailyProcessor.processArticles("2023-11-27", "2023-11-27", true);
+      dailyProcessor.processArticles("2022-01-01", "2022-05-31", true);
 
     }
 

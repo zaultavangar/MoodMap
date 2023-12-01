@@ -21,11 +21,11 @@ public class CacheConfig {
 
   @Bean
   public Caffeine<Object, Object> caffeineCacheBuilder() {
-    int MAX_CACHE_SIZE = 100000;
-    int EXPIRED_CACHE_TIME = 360;
+    int MAX_CACHE_SIZE = 1000;
+    int EXPIRED_CACHE_TIME = 25;
     return Caffeine.newBuilder()
         .maximumSize(MAX_CACHE_SIZE)
-        .expireAfterWrite(EXPIRED_CACHE_TIME, TimeUnit.MINUTES)
+        .expireAfterWrite(EXPIRED_CACHE_TIME, TimeUnit.HOURS)
         .recordStats();
 
   }

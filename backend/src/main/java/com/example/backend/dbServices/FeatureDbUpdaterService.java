@@ -43,6 +43,7 @@ public class FeatureDbUpdaterService {
           .sentimentScore(null)
           .build();
     }
+    Thread.sleep(500); // for rate-limiting issues
     Double articleSentimentScore = nerService.getSentimentScore(headline);
     LocalDateTime articleWebPublicationDate = article.getWebPublicationDate();
     String formattedDate = getFormattedDateString(articleWebPublicationDate);
@@ -62,11 +63,10 @@ public class FeatureDbUpdaterService {
       Double lng = geocodeResult.getGeometry().getLocation().get("lng");
 
       formattedLocations.add(formattedLocation);
-      FeatureEntity feature = featureDbService.createFeatureEntity(lng, lat, formattedLocation);
 
-      if (feature == null) continue;
-      Optional<FeatureEntity> existingFeature = featureDbService.findFeatureByLocation(feature.getLocation());
+      Optional<FeatureEntity> existingFeature = featureDbService.findFeatureByLocation(formattedLocation);
       if (existingFeature.isEmpty()){ // check if feature already exists in DB
+        FeatureEntity feature = featureDbService.createFeatureEntity(lng, lat, formattedLocation);
         feature.setDoubleProperty(formattedDate + "-count", 1.0); // set count of articles to 1
         feature.setDoubleProperty(formattedDate + "-sentiment", articleSentimentScore); // new avg sentiment
         featureDbService.saveOne(feature);
@@ -80,10 +80,10 @@ public class FeatureDbUpdaterService {
             ((currentSentimentScoreAvg*currentTotal)+articleSentimentScore)/(currentTotal+1)
             : articleSentimentScore;
 
-        feature.setDoubleProperty(formattedDate+"-sentiment", newSentimentAvg);
-        feature.setDoubleProperty(formattedDate+"-count", currentTotal !=null ? currentTotal+1 : 1);
-        feature.set_id(existingFeature.get().get_id());
-        featureDbService.saveOne(feature);
+        existingFeature.get().setDoubleProperty(formattedDate+"-sentiment", newSentimentAvg);
+        existingFeature.get().setDoubleProperty(formattedDate+"-count", currentTotal !=null ? currentTotal+1 : 1);
+        //
+        featureDbService.saveOne(existingFeature.get());
       }
       addedFeatures++;
     }

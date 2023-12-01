@@ -1,10 +1,13 @@
 package com.example.backend.dbServices;
 
+import com.example.backend.entity.FeatureProjection;
 import com.example.backend.geocodingService.GeoJsonGeometry;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,17 @@ public class FeatureDbService {
         } catch (IllegalArgumentException | OptimisticLockingFailureException e){
         System.err.println("Error inserting into Features collection: " + e.getMessage());
         }
+    }
+
+    public List<FeatureProjection> getFeatures(){
+        List<FeatureEntity> features = featureRepository.getAllFeatures();
+        return features.stream()
+            .map((f) -> FeatureProjection.builder()
+                .type(f.getType())
+                .geometry(f.getGeoJsonGeometry())
+                .properties(f.getProperties())
+                .build())
+            .collect(Collectors.toList());
     }
 
     public Optional<FeatureEntity> findFeatureByLocation(String location){
