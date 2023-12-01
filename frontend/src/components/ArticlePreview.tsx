@@ -2,19 +2,15 @@ import { Box, Paper, Stack, Typography } from "@mui/material";
 import { Popup } from "react-map-gl";
 import type { HeatmapInfo } from "~/hooks/useHeatmapPopup";
 
-export type PopupType = 'click' | 'hover';
-
-const HeatmapPopup = ({
-  selectedDateRange,
+const ArticlePreviewPopup = ({
   info,
   onClose,
 }: {
-  selectedDateRange: string;
   info: HeatmapInfo;
   onClose: () => void;
 }) => {
   // TODO: replace with current date
-  const sentimentKey = `${selectedDateRange}-sentiment`;
+  const sentimentKey = "11-2023-sentiment";
   return (
     <Box sx={{ minWidth: "300px", maxWidth: "500px" }}>
       <Paper>
@@ -54,8 +50,8 @@ const HeatmapPopup = ({
             </Typography>
           </Stack>
           <div>
-            {info.articles.length > 0 && info.articles.map((article, idx) => (
-              <div key={idx}style={{'marginBottom': '5px'}}>
+            {info.articles && info.articles.map((article, idx) => (
+              <div style={{'marginBottom': '5px'}}>
                 <div>
                   <span>{idx+1}. </span>
                   <a href={article.webUrl} target="_blank">{article.webTitle}</a>

@@ -37,6 +37,12 @@
       ],
       "~data/*": [
         "src/data/*"
+      ],
+      "~logic/*": [
+        "src/logic/*"
+      ],
+      "~cache/*": [
+        "src/cache/*"
       ]
     }
   },

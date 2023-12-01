@@ -1,14 +1,32 @@
-import axios from "axios";
+import axios, { AxiosResponse } from 'axios';
+import { GeoJsonProperties, Geometry } from 'geojson';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export type ArticleEntity = {
-  // Define the structure of ArticleEntity based on your Java backend
+  webTitle: string
+  webUrl: string,
+  sentimentScore: number
+  associatedLocation: string[]
+  //url: string;
 };
 
-type RestApiResponse<T> =
+export type FeatureEntity = {
+  type: 'Feature';
+  geometry: Geometry
+  properties: GeoJsonProperties
+}
+
+export type ApiResponse<T> = {
+  timestamp: string;
+  status: number;
+  result: string;
+  data: T;
+};
+
+export type FrontendApiResponse<T> =
   | {
-      articles: T;
+      data: T;
     }
   | { message: string };
 
@@ -50,29 +68,38 @@ type EndPoints = {
   search: SearchArticlesParams;
   searchByLocation: SearchLocationParams;
   searchByDateRange: DateRangeParams;
+  getFeatures: {};
 };
 
 export type Endpoint = keyof EndPoints;
 
-export const handleApiResponse = async <T extends Endpoint>(
+export const handleApiResponse = async <T extends Endpoint, K>(
   endpoint: T,
   queryParams: EndPoints[T]
-): Promise<RestApiResponse<ArticleEntity[]>> => {
+): Promise<FrontendApiResponse<K>> => {
   return axios
-    .get<ArticleEntity[]>(`${API_BASE_URL}/${endpoint}`, {
+    .get<AxiosResponse<ApiResponse<K>>, AxiosResponse<ApiResponse<K>>>(`${API_BASE_URL}/${endpoint}`, {
       params: { ...queryParams },
       validateStatus: (status) => status !== 500 && status !== 400,
     })
-    .then((response) => ({
-      articles: response.data,
-    }))
+    .then((response) => {
+      console.error("Response", response)
+      return {
+      
+      data: response.data.data
+    
+    }})
     .catch((error) =>
       error.response
         ? {
-            message: error.response.data.message,
+            message: error.response.data.result,
           }
         : {
             message: "Unknown error",
           }
     );
+};
+
+export const isSuccessfulResponse = <T>(response: FrontendApiResponse<T>): response is { data: T } => {
+  return 'data' in response;
 };

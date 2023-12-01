@@ -4,6 +4,9 @@ import SearchResults from "./SearchResults";
 import { useEffect, useState } from "react";
 import { keywords } from "~/data/keywords";
 const Header = () => {
+
+  // const {selectedDateRange, setSelectedDateRange} = appControl;
+
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<string[]>([]);
 
@@ -21,27 +24,27 @@ const Header = () => {
   }, [searchQuery]);
 
   return (
-    <Grid
-      container
-      component="header"
-      rowSpacing={2}
-      sx={{
-        zIndex: 4,
-        flexDirection: "column",
-        position: "relative",
-        padding: "1rem",
-        flexGrow: 1,
-      }}
-    >
-      <Grid xs={12} md={6}>
-        <Searchbar searchQuery={searchQuery} onChange={handleSearchChange} />
-      </Grid>
-      {canDisplaySearchResults && (
+      <Grid
+        container
+        component="header"
+        rowSpacing={2}
+        sx={{
+          zIndex: 4,
+          flexDirection: "column",
+          position: "relative",
+          padding: "1rem",
+          flexGrow: 1,
+        }}
+      >
         <Grid xs={12} md={6}>
-          <SearchResults results={results} />
+          <Searchbar searchQuery={searchQuery} onChange={handleSearchChange} />
         </Grid>
-      )}
-    </Grid>
+        {canDisplaySearchResults && (
+          <Grid xs={12} md={6}>
+            <SearchResults results={results} />
+          </Grid>
+        )}
+      </Grid>
   );
 };
 

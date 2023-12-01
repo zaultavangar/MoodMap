@@ -7,11 +7,9 @@ import {
   ScaleControl,
   Source,
 } from "react-map-gl";
-import { mockGeojson } from "~/data/mockGeojson";
-import { useHeatmapPopup } from "~/hooks/useHeatmapPopup";
-import { useMapView } from "~/hooks/useMapView";
+import { useMapManager } from "~/hooks/useMapManager";
 import HeatmapPopup from "./HeatmapPopup";
-import { heatmapLayer } from "./heatmapLayer";
+import { useEffect } from "react";
 
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
@@ -22,34 +20,68 @@ const COLOR_MODE = import.meta.env.VITE_COLOR_MODE;
  * Map component displays a heatmap of the sentiment of a topic in a given geographical area
  */
 const Map = () => {
-  // const {theme} = useTheme();
-  const { mapViewState, handleMapMove } = useMapView();
-  const { heatmapInfo, handlePopupOpen, handlePopupClose } = useHeatmapPopup();
-  const handleMapClick = (e: MapLayerMouseEvent) => {
+  const { 
+    mapViewState, 
+    handleMapMove, 
+    loadFeatures, 
+    featureCollection,
+    circleLayer,
+    setLayer,
+    selectedDateRange,
+    getArticlesAndOpenPopup,
+    heatmapInfo,
+    handlePopupClose,
+   } = useMapManager();
+
+
+  // for map click and hover operaations
+  const handleMouseEventOperation = async (
+    e: MapLayerMouseEvent) => {
+      
     e.preventDefault();
+    
     const area = e.features && e.features[0];
+    console.error(area);
     if (!area) {
       return;
     }
+    // get articles for that feature from backend 
+    if (area.properties !== undefined && 
+      area.properties !== null &&
+      area.properties['location'] !== null && 
+      area.properties['location'] !== null){
+          await getArticlesAndOpenPopup (
+            area.properties['location'],
+            e.lngLat.lng,
+            e.lngLat.lat,
+            area.properties)
+          }
+        
+    }
     // TODO: Do Zod runtime validation here so there's no issues with the popup
-    handlePopupOpen({
-      longitude: e.lngLat.lng,
-      latitude: e.lngLat.lat,
-      region: area.properties?.region,
-      articles: area.properties?.articles,
-      sentiment: area.properties?.sentiment,
-    });
-  };
+    
+  
+
+  useEffect(() => {
+    console.log("hello");
+    loadFeatures();
+  }, [])
+
+  useEffect(() => {
+    setLayer(selectedDateRange);
+  }, [featureCollection])
+
+
   return (
     <main>
       <ReactMap
         mapboxAccessToken={MAPBOX_API_TOKEN}
         {...mapViewState}
         minZoom={1}
-        maxZoom={16}
+        maxZoom={8}
         data-testid="map"
         interactiveLayerIds={["heatmap"]}
-        mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v11`}
+        mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v10`}
         // mapStyle={`mapbox://styles/mapbox/${theme.palette.mode}-v11`}
         style={{
           position: "absolute",
@@ -62,15 +94,15 @@ const Map = () => {
           overflow: "hidden",
         }}
         onMove={handleMapMove}
-        onClick={handleMapClick}
+        onClick={handleMouseEventOperation}
       >
-        <Source type="geojson" data={mockGeojson}>
-          <Layer {...heatmapLayer} />
+        <Source type="geojson" data={featureCollection}>
+          <Layer {...circleLayer} />
         </Source>
         {heatmapInfo && (
-          <HeatmapPopup info={heatmapInfo} onClose={handlePopupClose} />
+          <HeatmapPopup selectedDateRange={selectedDateRange} info={heatmapInfo} onClose={handlePopupClose} />
         )}
-         <NavigationControl />
+         <NavigationControl position="bottom-left"/>
          <ScaleControl />
       </ReactMap>
     </main>
