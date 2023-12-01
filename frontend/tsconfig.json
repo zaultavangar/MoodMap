@@ -40,6 +40,9 @@
       ],
       "~logic/*": [
         "src/logic/*"
+      ],
+      "~cache/*": [
+        "src/cache/*"
       ]
     }
   },

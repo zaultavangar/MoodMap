@@ -15,10 +15,11 @@ const getMaxArticleCount = (countKey: string, features: Feature[]): number => {
   return Math.max(...counts)
 }
 
-export const updateHeatMapLayer = (date: string, features: Feature[]): CircleLayer => {
+export const updateHeatMapLayer = (date: string, features: Feature[]): CircleLayer | null => {
   const sentimentKey: string = date + '-sentiment';
   const countKey = date + '-count';
   const maxCount = getMaxArticleCount(countKey, features);
+  if (maxCount > 10 && maxCount <= 15) return null;
   const circleLayer: CircleLayer = {
     id: 'heatmap',
     type: 'circle',
@@ -29,8 +30,20 @@ export const updateHeatMapLayer = (date: string, features: Feature[]): CircleLay
           'interpolate',
           ['linear'],
           ['zoom'],
-          0, ['interpolate', ['exponential', 2], ['get', countKey], 1, 2, maxCount, 10],
-          16, ['interpolate', ['exponential', 2], ['get', countKey], 1, 10, maxCount, 50]
+          0, ['step', ['get', countKey],
+          3, 5,
+          10, 10,
+          20, 15,
+          30, 80,
+          20 // default value
+        ],
+        8, ['step', ['get', countKey],
+          5, 10,
+          10, 12,
+          20, 13,
+          30, 15,
+          20 // default value
+        ]
         ],
         // color of the circle based on sentiment
         'circle-color': 
