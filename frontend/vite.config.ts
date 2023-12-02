@@ -11,4 +11,7 @@ export default defineConfig({
     include: ["tests/unit/*.test.ts"],
     environment: "jsdom",
   },
+  optimizeDeps: {
+    include: ['@mui/material/Tooltip', '@emotion/styled', '@mui/material/Unstable_Grid2'],
+  },
 });

@@ -1,0 +1,49 @@
+.date-picker-container {
+  background-color: rgb(164, 53, 164);
+  position: absolute;
+  width: 22vw;
+  right: 2vw;
+  top: 3vh;
+
+  z-index: 5;
+  border-radius: 10px;
+  color: white;
+  
+  .toggle-icon-button{
+    background-color: unset;
+    border: none;
+
+    .toggle-icon{
+      transform: scale(1.3);
+      cursor: pointer;
+    }
+
+    .toggle-icon:hover{
+      transform: scale(1.5);
+    }
+  }
+
+}
+
+.date-picker-container-full {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+
+.date-picker-container-slider {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+  width: 80px;
+  min-height: 50vh;
+
+  .toggle-conatiner {
+    align-self: flex-end;
+    justify-self: flex-start;
+  }
+  
+}

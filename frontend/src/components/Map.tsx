@@ -10,6 +10,7 @@ import {
 import { useMapManager } from "~/hooks/useMapManager";
 import HeatmapPopup from "./HeatmapPopup";
 import { useEffect } from "react";
+import { DatePicker } from "./datepicker/DatePicker";
 
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
@@ -71,6 +72,9 @@ const Map = () => {
     setLayer(selectedDateRange);
   }, [featureCollection])
 
+  useEffect(() => {
+
+  }, [selectedDateRange])
 
   return (
     <main>
@@ -102,6 +106,7 @@ const Map = () => {
         {heatmapInfo && (
           <HeatmapPopup selectedDateRange={selectedDateRange} info={heatmapInfo} onClose={handlePopupClose} />
         )}
+          <DatePicker/>
          <NavigationControl position="bottom-left"/>
          <ScaleControl />
       </ReactMap>
