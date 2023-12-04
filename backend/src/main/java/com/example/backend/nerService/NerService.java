@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.ServletContext;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,6 +33,7 @@ public class NerService {
   private final RestTemplate restTemplate;
   private final Map<String, String> nationalityToCountryMap;
 
+  // STATUS: Tested
   public NerService (
       HuggingFaceConfig config,
       RestTemplate restTemplate
@@ -42,7 +44,7 @@ public class NerService {
 
     Path currentRelativePath = Paths.get("");
     String absolutePath = currentRelativePath.toAbsolutePath().toString();
-     loadNationalityToCountryMap(absolutePath + "/backend/data/countries.csv");
+     loadNationalityToCountryMap(absolutePath + "/data/countries.csv");
   }
 
   public List<List<NerResponseScore>> makeHuggingFaceSentimentRequest(String text) throws HuggingFaceApiException, IOException {
@@ -79,10 +81,11 @@ public class NerService {
   }
 
   public List<String> getEntities(String articleTitle){
+    List<String> locationEntities = new ArrayList<>();
+    if (articleTitle == null || StringUtils.isEmpty(articleTitle.trim())) return locationEntities;
     Sentence headline = new Sentence(articleTitle);
     List<String> nerTags = headline.nerTags();
     List<String> words = headline.words();
-    List<String> locationEntities = new ArrayList<>();
 
     for (int i=0; i< nerTags.size(); i++){
       if (isLocationEntity(nerTags.get(i))) {

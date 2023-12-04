@@ -3,6 +3,7 @@ package com.example.backend.nerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+// STATUS: Not tested
 @Configuration
 public class HuggingFaceConfig {
   @Value("${huggingface.api.key}")

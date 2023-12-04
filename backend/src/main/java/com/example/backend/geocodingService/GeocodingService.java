@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+// STATUS: Tested
 @Service
 @EnableCaching
 public class GeocodingService {
@@ -35,8 +36,6 @@ public class GeocodingService {
         .queryParam("rapidapi-host", "google-maps-geocoding.p.rapidapi.com")
         .queryParam("address", encodedLocation)
         .toUriString();
-
-    System.out.println("GEOCODE URL: " + url);
 
     ResponseEntity<GeocodeResponse> response = restTemplate.getForEntity(url, GeocodeResponse.class);
 

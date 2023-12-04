@@ -1,8 +1,7 @@
 package com.example.backend.dbServices;
 
-import com.example.backend.entity.FeatureProjection;
+import com.example.backend.entity.FeatureDTO;
 import com.example.backend.geocodingService.GeoJsonGeometry;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.entity.FeatureEntity;
 import com.example.backend.repositories.FeatureRepository;
 
+// STATUS: TESTED (TODO: may need to add better exception handling though)
 @Service
 public class FeatureDbService {
     @Resource
@@ -36,14 +36,10 @@ public class FeatureDbService {
         }
     }
 
-    public List<FeatureProjection> getFeatures(){
+    public List<FeatureDTO> getFeatures(){
         List<FeatureEntity> features = featureRepository.getAllFeatures();
         return features.stream()
-            .map((f) -> FeatureProjection.builder()
-                .type(f.getType())
-                .geometry(f.getGeoJsonGeometry())
-                .properties(f.getProperties())
-                .build())
+            .map(f -> f.convertToFeatureDTO(f))
             .collect(Collectors.toList());
     }
 

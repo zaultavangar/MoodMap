@@ -1,0 +1,30 @@
+2023-12-03 18:01:23,451 INFO [SLF4JHandler.java:88] - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words-distsim.tagger ... done [0.6 sec].
+2023-12-03 18:01:24,495 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz ... done [1.0 sec].
+2023-12-03 18:01:24,912 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz ... done [0.4 sec].
+2023-12-03 18:01:25,351 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz ... done [0.4 sec].
+2023-12-03 18:01:25,367 INFO [SLF4JHandler.java:88] - Initializing JollyDayHoliday for SUTime from classpath edu/stanford/nlp/models/sutime/jollyday/Holidays_sutime.xml as sutime.binder.1.
+2023-12-03 18:01:25,633 INFO [SLF4JHandler.java:88] - Using following SUTime rules: edu/stanford/nlp/models/sutime/defs.sutime.txt,edu/stanford/nlp/models/sutime/english.sutime.txt,edu/stanford/nlp/models/sutime/english.holidays.sutime.txt
+2023-12-03 18:01:28,235 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 580705 unique entries out of 581864 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_caseless.tab, 0 TokensRegex patterns.
+2023-12-03 18:01:28,271 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 4867 unique entries out of 4867 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_cased.tab, 0 TokensRegex patterns.
+2023-12-03 18:01:28,272 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 585572 unique entries from 2 files
+2023-12-03 18:01:30,295 INFO [SLF4JHandler.java:88] - numeric classifiers: true; SUTime: true [no docDate]; fine grained: true
+2023-12-03 18:02:35,726 INFO [SLF4JHandler.java:88] - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words-distsim.tagger ... done [0.7 sec].
+2023-12-03 18:02:36,822 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz ... done [1.0 sec].
+2023-12-03 18:02:37,218 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz ... done [0.4 sec].
+2023-12-03 18:02:37,627 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz ... done [0.4 sec].
+2023-12-03 18:02:37,661 INFO [SLF4JHandler.java:88] - Initializing JollyDayHoliday for SUTime from classpath edu/stanford/nlp/models/sutime/jollyday/Holidays_sutime.xml as sutime.binder.1.
+2023-12-03 18:02:38,105 INFO [SLF4JHandler.java:88] - Using following SUTime rules: edu/stanford/nlp/models/sutime/defs.sutime.txt,edu/stanford/nlp/models/sutime/english.sutime.txt,edu/stanford/nlp/models/sutime/english.holidays.sutime.txt
+2023-12-03 18:02:41,190 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 580705 unique entries out of 581864 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_caseless.tab, 0 TokensRegex patterns.
+2023-12-03 18:02:41,223 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 4867 unique entries out of 4867 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_cased.tab, 0 TokensRegex patterns.
+2023-12-03 18:02:41,225 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 585572 unique entries from 2 files
+2023-12-03 18:02:43,723 INFO [SLF4JHandler.java:88] - numeric classifiers: true; SUTime: true [no docDate]; fine grained: true
+2023-12-03 18:07:03,394 INFO [SLF4JHandler.java:88] - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words-distsim.tagger ... done [0.6 sec].
+2023-12-03 18:07:04,415 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz ... done [1.0 sec].
+2023-12-03 18:07:04,850 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz ... done [0.4 sec].
+2023-12-03 18:07:05,228 INFO [SLF4JHandler.java:88] - Loading classifier from edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz ... done [0.4 sec].
+2023-12-03 18:07:05,238 INFO [SLF4JHandler.java:88] - Initializing JollyDayHoliday for SUTime from classpath edu/stanford/nlp/models/sutime/jollyday/Holidays_sutime.xml as sutime.binder.1.
+2023-12-03 18:07:05,577 INFO [SLF4JHandler.java:88] - Using following SUTime rules: edu/stanford/nlp/models/sutime/defs.sutime.txt,edu/stanford/nlp/models/sutime/english.sutime.txt,edu/stanford/nlp/models/sutime/english.holidays.sutime.txt
+2023-12-03 18:07:08,234 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 580705 unique entries out of 581864 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_caseless.tab, 0 TokensRegex patterns.
+2023-12-03 18:07:08,265 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 4867 unique entries out of 4867 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_cased.tab, 0 TokensRegex patterns.
+2023-12-03 18:07:08,266 INFO [SLF4JHandler.java:88] - ner.fine.regexner: Read 585572 unique entries from 2 files
+2023-12-03 18:07:10,345 INFO [SLF4JHandler.java:88] - numeric classifiers: true; SUTime: true [no docDate]; fine grained: true

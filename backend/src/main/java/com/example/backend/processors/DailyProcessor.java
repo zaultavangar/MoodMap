@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 
+// STATUS: NOT TESTED
 @Service
 @Slf4j
 public class DailyProcessor {

@@ -2,11 +2,13 @@ package com.example.backend.dbServices;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
 import org.bson.types.ObjectId;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +19,7 @@ import com.example.backend.exceptions.UsageException;
 import com.example.backend.repositories.ArticleRepository;
 
 
+// STATUS: TESTED (TODO: may need to add better exception handling though)
 @Service
 public class ArticleDbService{
 
@@ -36,13 +39,8 @@ public class ArticleDbService{
    }
 
    public Optional<ArticleEntity> findById(ObjectId articleId){
-      try {
-         return articleRepository.findById(articleId);
-      }
-      catch (Exception e){
-         System.out.println(e.getMessage());
-      }
-      return Optional.empty();
+     if (articleId == null) return Optional.empty();
+     return articleRepository.findById(articleId);
    }
 
    public void deleteById(ObjectId articleId){
@@ -50,7 +48,7 @@ public class ArticleDbService{
       try {
          articleRepository.deleteById(articleId);
       } catch (Exception e){
-         System.out.println(e.getMessage());
+         System.out.println("Could not delete article " + articleId + ". " + e.getMessage());
       }
    }
 
@@ -58,35 +56,27 @@ public class ArticleDbService{
       try { // maybe check if article is null
          System.out.println(article);
          articleRepository.save(article);
-      } catch (IllegalArgumentException | OptimisticLockingFailureException e){
+      } catch (Exception e){
          System.err.println("Error inserting into Articles collection: " + e.getMessage());
       }
    }
 
    //@Cacheable(cacheNames = "articles", key = "{#fromDate, #toDate}")
-   public List<ArticleEntity> searchByDateRange(String fromDate, String toDate) throws Exception{
-      if (StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
+   public List<ArticleEntity> searchByDateRange(String fromDate, String toDate){
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
          return articleRepository.findByDateRange(from, to);
-      }
-      throw new UsageException("fromDate and toDate must be specified to create a date range");
    }
 
-   public List<ArticleEntity> searchByInput(String input) throws UsageException{
-      if (StringUtils.hasLength(input)){
-         return articleRepository.searchByInput(input);
-      }
-      throw new UsageException("Input must be specified");
+   public List<ArticleEntity> searchByInput(String input) {
+      return articleRepository.searchByInput(input);
    }
 
-   public List<ArticleEntity> searchByInput(String input, String fromDate, String toDate) throws UsageException{
-      if (StringUtils.hasLength(input) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
+   public List<ArticleEntity> searchByInput(String input, String fromDate, String toDate)  {
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
          return articleRepository.searchByInputAndDateRange(input, from, to);
-      }
-      throw new UsageException("Input, fromDate, and toDate must be specified");
+
    }
 
 
@@ -97,23 +87,18 @@ public class ArticleDbService{
    * @return a list of articles associated with the location and matching the date range (if present)
    */
 
-  public List<ArticleEntity> searchByLocation(String location) throws UsageException{
-     if (StringUtils.hasLength(location)){
-        return articleRepository.searchByLocation(location);
-     }
-     throw new UsageException("Location must be specified");
+  public List<ArticleEntity> searchByLocation(String location){
+     return articleRepository.searchByLocation(location);
   }
 
-  public List<ArticleEntity> searchByLocation(String location, String fromDate, String toDate) throws UsageException{
-     if (StringUtils.hasLength(location) && StringUtils.hasLength(fromDate) && StringUtils.hasLength(toDate)){
-        LocalDateTime from = convertLocalTime(fromDate);
-        LocalDateTime to = convertLocalTime(toDate);
-        return articleRepository.searchByLocationAndDateRange(location, from, to);
-     }
-     throw new UsageException("Location must be specified");
+  public List<ArticleEntity> searchByLocation(String location, String fromDate, String toDate){
+     LocalDateTime from = convertLocalTime(fromDate);
+     LocalDateTime to = convertLocalTime(toDate);
+     return articleRepository.searchByLocationAndDateRange(location, from, to);
   }
 
 
+  // TODO: Handle exceptions here??
    private LocalDateTime convertLocalTime(String inputTime) {
       LocalDate localDate = LocalDate.parse(inputTime);
       return localDate.atStartOfDay();
