@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+// STATUS: Tested
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,6 +48,14 @@ public class FeatureEntity {
     public Double getDoubleProperty(String key) {
         Object value = properties.get(key);
         return value instanceof Double ? (Double) value : null;
+    }
+
+    public FeatureDTO convertToFeatureDTO(FeatureEntity featureEntity) {
+        return FeatureDTO.builder()
+            .type(featureEntity.getType())
+            .geometry(featureEntity.getGeoJsonGeometry())
+            .properties(featureEntity.getProperties())
+            .build();
     }
 
 

@@ -1,0 +1,45 @@
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  align-items: center;
+  min-width: 200px;
+  font-size: 1.4em;
+  margin: 10px 20px 0px 20px;
+
+  .year-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    .navigation-button{
+      cursor: pointer;
+      border-radius: 20px;
+      outline: none;
+      border: none;
+      transform: scale(0.9);
+    }
+
+  }
+  .calendar-table {
+
+    background-color: #28282B;
+
+  }
+}
+
+table tbody td{
+  padding: 10px;
+  cursor: pointer;
+}
+
+table tbody td:hover{
+  transform: scale(1.1);
+}
+
+table tbody .month-selected{
+  color: #28282B;
+  background-color: white;
+}

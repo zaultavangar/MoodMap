@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+// STATUS: Not officially tested
 @Component
 public class ScheduledArticleTask {
 

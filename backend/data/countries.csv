@@ -6,7 +6,6 @@ AG,Antigua and Barbuda,ATG,"Antiguan, Barbudan"
 AI,Anguilla,AIA,Anguillian
 AL,Albania,ALB,Albanian
 AM,Armenia,ARM,Armenian
-AN,Netherlands Antilles,ANT,Dutch
 AO,Angola,AGO,Angolan
 AQ,Antarctica,ATA,???
 AR,Argentina,ARG,Argentinean
@@ -29,7 +28,6 @@ BL,Saint Barthélemy,BLM,Saint Barthélemy Islander
 BM,Bermuda,BMU,Bermudian
 BN,Brunei,BRN,Bruneian
 BO,Bolivia,BOL,Bolivian
-BQ,British Antarctic Territory,BES,Dutch
 BR,Brazil,BRA,Brazilian
 BS,Bahamas,BHS,Bahamian
 BT,Bhutan,BTN,Bhutanese
@@ -98,7 +96,6 @@ GT,Guatemala,GTM,Guatemalan
 GU,Guam,GUM,Guamanian
 GW,Guinea-Bissau,GNB,Guinea-Bissauan
 GY,Guyana,GUY,Guyanese
-HK,Hong Kong SAR China,HKG,Chinese
 HM,Heard Island and McDonald Islands,HMD,Heard and McDonald Islander
 HN,Honduras,HND,Honduran
 HR,Croatia,HRV,Croatian
@@ -109,7 +106,6 @@ IE,Ireland,IRL,Irish
 IL,Israel,ISR,Israeli
 IM,Isle of Man,IMN,Manx
 IN,India,IND,Indian
-IO,British Indian Ocean Territory,IOT,Indian
 IQ,Iraq,IRQ,Iraqi
 IR,Iran,IRN,Iranian
 IS,Iceland,ISL,Icelander
@@ -153,9 +149,6 @@ MK,Macedonia,MKD,Macedonian
 ML,Mali,MLI,Malian
 MM,Myanmar [Burma],MMR,Myanmar
 MN,Mongolia,MNG,Mongolian
-MO,Macau SAR China,MAC,Chinese
-MP,Northern Mariana Islands,MNP,American
-MQ,Martinique,MTQ,French
 MR,Mauritania,MRT,Mauritanian
 MS,Montserrat,MSR,Montserratian
 MT,Malta,MLT,Maltese
@@ -188,7 +181,6 @@ PG,Papua New Guinea,PNG,Papua New Guinean
 PH,Philippines,PHL,Filipino
 PK,Pakistan,PAK,Pakistani
 PL,Poland,POL,Polish
-PM,Saint Pierre and Miquelon,SPM,French
 PN,Pitcairn Islands,PCN,Pitcairn Islander
 PR,Puerto Rico,PRI,Puerto Rican
 PS,Palestinian Territories,PSE,Palestinian
@@ -198,7 +190,6 @@ PW,Palau,PLW,Palauan
 PY,Paraguay,PRY,Paraguayan
 PZ,Panama Canal Zone,PCZ,???
 QA,Qatar,QAT,Qatari
-RE,Réunion,REU,French
 RO,Romania,ROU,Romanian
 RS,Serbia,SRB,Serbian
 RU,Russia,RUS,Russian
@@ -225,7 +216,6 @@ SY,Syria,SYR,Syrian
 SZ,Swaziland,SWZ,Swazi
 TC,Turks and Caicos Islands,TCA,Turks and Caicos Islander
 TD,Chad,TCD,Chadian
-TF,French Southern Territories,ATF,French
 TG,Togo,TGO,Togolese
 TH,Thailand,THA,Thai
 TJ,Tajikistan,TJK,Tadzhik
@@ -241,11 +231,9 @@ TW,Taiwan,TWN,Taiwanese
 TZ,Tanzania,TZA,Tanzanian
 UA,Ukraine,UKR,Ukrainian
 UG,Uganda,UGA,Ugandan
-UM,U.S. Minor Outlying Islands,UMI,American
 US,United States,USA,American
 UY,Uruguay,URY,Uruguayan
 UZ,Uzbekistan,UZB,Uzbekistani
-VA,Vatican City,VAT,Italian
 VC,Saint Vincent and the Grenadines,VCT,Saint Vincentian
 VD,North Vietnam,VDR,???
 VE,Venezuela,VEN,Venezuelan
@@ -257,7 +245,6 @@ WF,Wallis and Futuna,WLF,Wallis and Futuna Islander
 WK,Wake Island,WAK,???
 WS,Samoa,WSM,Samoan
 YE,Yemen,YEM,Yemeni
-YT,Mayotte,MYT,French
 ZA,South Africa,ZAF,South African
 ZM,Zambia,ZMB,Zambian
 ZW,Zimbabwe,ZWE,Zimbabwean

@@ -43,6 +43,12 @@
       ],
       "~cache/*": [
         "src/cache/*"
+      ],
+      "~calendar/*": [
+        "src/components/calendar/*"
+      ],
+      "~datepicker/*": [
+        "src/components/datepicker/*"
       ]
     }
   },

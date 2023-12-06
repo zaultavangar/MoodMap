@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import the.guardian.api.client.GuardianApi;
 
+// STATUS: Not tested
 @Configuration
 public class GuardianServiceConfig {
 

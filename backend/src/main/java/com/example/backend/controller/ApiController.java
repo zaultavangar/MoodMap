@@ -3,7 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dbServices.ArticleDbService;
 import com.example.backend.dbServices.FeatureDbService;
 import com.example.backend.entity.ArticleEntity;
-import com.example.backend.entity.FeatureProjection;
+import com.example.backend.entity.FeatureDTO;
 import com.example.backend.processors.DailyProcessor;
 import com.example.backend.response.ArticleEntityListApiResponse;
 import com.example.backend.response.RestApiResponse;
@@ -31,6 +31,8 @@ import com.example.backend.validator.RequestValidator;
 import com.example.backend.validator.SearchRequest;
 import com.example.backend.validator.ValidationResult;
 
+// STATUS: UNIT TESTED
+// TODO: Integration Testing
 
 @RestController
 @EnableCaching
@@ -72,6 +74,7 @@ public class ApiController {
         return RequestValidator.isInputValid(inputRequired)
             .and(RequestValidator.isFromDateValid(datesRequired))
             .and(RequestValidator.isToDateValid(datesRequired))
+            .and(RequestValidator.isDateRangeValid(datesRequired))
             .apply(searchRequest);
     }
 
@@ -86,13 +89,11 @@ public class ApiController {
     @GetMapping("/getFeatures")
     public RestApiResponse<Object> getFeatures(){
       try {
-        List<FeatureProjection> features = featureDbService.getFeatures();
+        List<FeatureDTO> features = featureDbService.getFeatures();
         return new RestApiSuccessResponse<>(features);
       } catch (Exception e){
         return new RestApiFailureResponse(500, e.getMessage());
       }
-
-
     }
 
     @Operation(summary = "To search for articles based on some input phrase. Can narrow down using a date range as well.")
@@ -150,7 +151,7 @@ public class ApiController {
         ValidationResult requestResult = validateSearchRequest(searchRequest, true, false);
 
         if (!requestResult.equals(ValidationResult.SUCCESS)) {
-            return new RestApiResponse<>(400, requestResult.getMessage(),null);
+            return new RestApiFailureResponse(400, requestResult.getMessage());
         }
 
         if (datesPresentResult.equals(ValidationResult.DATES_INCONSISTENT)) {

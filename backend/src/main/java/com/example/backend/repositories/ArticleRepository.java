@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import com.example.backend.entity.ArticleEntity;
 
+// STATUS: TESTED
 public interface ArticleRepository extends MongoRepository<ArticleEntity, ObjectId> {
 
   @Override

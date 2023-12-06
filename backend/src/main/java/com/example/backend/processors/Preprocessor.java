@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
+// STATUS: Not tested
 @Service
 @Slf4j
 public class Preprocessor {

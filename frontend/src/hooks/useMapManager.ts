@@ -1,10 +1,11 @@
 import { Feature, FeatureCollection, GeoJsonProperties } from "geojson";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { CircleLayer, HeatmapLayer, type ViewStateChangeEvent } from "react-map-gl";
 import { circleLayerr,  updateHeatMapLayer } from "~/components/heatmapLayer";
 import { ArticleEntity, FeatureEntity, FrontendApiResponse, handleApiResponse, isSuccessfulResponse } from "~/logic/api";
 import { useHeatmapPopup } from "./useHeatmapPopup";
 import { PopupType } from "~/components/HeatmapPopup";
+import { useDatePicker } from "./useDatePicker";
 
 // Default location of the map
 const ProvidenceLatLong = {
@@ -20,9 +21,14 @@ export const GazaLatLong = {
 export function useMapManager({
   long,
   lat,
-}: { long: number; lat: number } = GazaLatLong) {
+}: { 
+    long: number;
+    lat: number,
+  } = GazaLatLong) {
 
   const { heatmapInfo, handlePopupOpen, handlePopupClose} = useHeatmapPopup();
+
+  const {selectedDateRange, setSelectedDateRange} = useDatePicker();
 
   const [mapViewState, setMapViewState] = useState({
     longitude: long,
@@ -31,8 +37,6 @@ export function useMapManager({
     // Changes the tilt of the map
     // pitch: 60,
   });
-
-  const [selectedDateRange, setSelectedDateRange] = useState<string>('11-2023');
 
   const [circleLayer, setCircleLayer] = useState<CircleLayer>(circleLayerr);
 

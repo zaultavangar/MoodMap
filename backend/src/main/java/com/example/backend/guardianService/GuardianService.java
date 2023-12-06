@@ -11,6 +11,7 @@ import the.guardian.api.http.content.ContentResponse;
 import javax.annotation.Resource;
 
 
+// STATUS: Tested
 @Service
 public class GuardianService {
 
@@ -27,12 +28,15 @@ public class GuardianService {
       content.setPageSize(200);
       content.setShowFields("trailText,bodyText,thumbnail");
 
-      AbstractResponse response = content.fetch();
-      if (response instanceof ContentResponse){
-        return (ContentResponse) response;
-      } 
+      try {
+        AbstractResponse response = content.fetch();
+        if (response instanceof ContentResponse){
+          return (ContentResponse) response;
+        }
+      } catch (Exception e) {
+        throw new GuardianApiException("Unable to retrieve articles from the Guardian API.");
+      }
       throw new GuardianApiException("Unable to retrieve articles from the Guardian API.");
-        
     }
 
 }
