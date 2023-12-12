@@ -10,7 +10,9 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
-import { MouseEvent, useState } from "react";
+import React, { MouseEvent } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { searchDateFilterPopoverAnchorElState, searchQueryState } from "~/atoms";
 
 const MenuButton = () => {
   return (
@@ -89,24 +91,28 @@ const DateFilterDialog = ({
 /**
  * Searchbar component allows users to search news articles based on a given keyword
  */
-const Searchbar = ({
-  searchQuery,
-  onChange,
-}: {
-  searchQuery: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+const Searchbar = () => {
+  const [searchQuery, setSearchQuery] = useRecoilState(searchQueryState);
+
+  const [searchDateFilterPopoverAnchorEl, setSearchDateFilterPopoverAnchorEl] = useRecoilState(searchDateFilterPopoverAnchorElState);
+
+  // const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    setSearchDateFilterPopoverAnchorEl(event.currentTarget);
   };
 
-  const open = Boolean(anchorEl);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }
+
+  const open = Boolean(searchDateFilterPopoverAnchorEl);
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setSearchDateFilterPopoverAnchorEl(null);
   };
+
+
   return (
     <>
       <Paper
@@ -115,7 +121,7 @@ const Searchbar = ({
         sx={{ p: "2px 4px", display: "flex", alignItems: "center" }}
         data-testid="searchbar"
       >
-        <MenuButton />
+        <MenuButton /> 
         {/* Input field to search for keyword */}
         <InputBase
           sx={{ ml: 1, flex: 1 }}
@@ -123,12 +129,12 @@ const Searchbar = ({
           placeholder="Search the news by keyword"
           inputProps={{ "aria-label": "search the news by keyword" }}
           value={searchQuery}
-          onChange={onChange}
+          onChange={handleSearchChange}
         />
         <SearchButton />
-        <DateFilterButton onClick={handleClick} />
+        {<DateFilterButton onClick={handleClick} />}
       </Paper>
-      <DateFilterDialog anchorEl={anchorEl} open={open} onClose={handleClose} />
+     <DateFilterDialog anchorEl={searchDateFilterPopoverAnchorEl} open={open} onClose={handleClose} />
     </>
   );
 };

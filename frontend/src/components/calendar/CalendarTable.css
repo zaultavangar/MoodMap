@@ -1,0 +1,22 @@
+.calendar-table {
+  padding: 5px;
+  table-layout: auto;
+  font-size: 1.05em;
+  background-color: rgb(36, 36, 37);
+  border-radius: 5px;
+}
+
+table tbody td{
+  padding: 10px;
+  cursor: pointer;
+}
+
+table tbody td:hover{
+  transform: scale(1.1);
+}
+
+table tbody .month-selected{
+  color: #28282B;
+  background-color: white;
+  border-radius: 5px;
+}

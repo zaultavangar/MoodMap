@@ -2,15 +2,19 @@
 import {
   Layer,
   MapLayerMouseEvent,
+  MapRef,
   NavigationControl,
   Map as ReactMap,
   ScaleControl,
   Source,
 } from "react-map-gl";
 import { useMapManager } from "~/hooks/useMapManager";
-import HeatmapPopup from "./HeatmapPopup";
-import { useEffect } from "react";
+import LocationPopup from "./locationPopup/LocationPopup";
+import React, { useEffect, useRef } from "react";
 import { DatePicker } from "./datepicker/DatePicker";
+import { useRecoilValue } from "recoil";
+import { locationPopupInfoState } from "~/atoms";
+import { StatsOverview } from "./statsOverview/StatsOverview";
 
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
@@ -30,10 +34,12 @@ const Map = () => {
     setLayer,
     selectedDateRange,
     getArticlesAndOpenPopup,
-    heatmapInfo,
     handlePopupClose,
    } = useMapManager();
 
+  const locationPopupInfo = useRecoilValue(locationPopupInfoState);
+
+  const _mapRef = useRef<MapRef>(null);
 
   // for map click and hover operaations
   const handleMouseEventOperation = async (
@@ -42,7 +48,7 @@ const Map = () => {
     e.preventDefault();
     
     const area = e.features && e.features[0];
-    console.error(area);
+
     if (!area) {
       return;
     }
@@ -51,6 +57,11 @@ const Map = () => {
       area.properties !== null &&
       area.properties['location'] !== null && 
       area.properties['location'] !== null){
+          if (_mapRef.current) {
+            _mapRef.current.flyTo({
+              center: [e.lngLat.lng, e.lngLat.lat-1]
+            })
+          }
           await getArticlesAndOpenPopup (
             area.properties['location'],
             e.lngLat.lng,
@@ -59,10 +70,7 @@ const Map = () => {
           }
         
     }
-    // TODO: Do Zod runtime validation here so there's no issues with the popup
     
-  
-
   useEffect(() => {
     console.log("hello");
     loadFeatures();
@@ -73,12 +81,13 @@ const Map = () => {
   }, [featureCollection])
 
   useEffect(() => {
-
+    setLayer(selectedDateRange);
   }, [selectedDateRange])
 
   return (
     <main>
       <ReactMap
+        ref={_mapRef}
         mapboxAccessToken={MAPBOX_API_TOKEN}
         {...mapViewState}
         minZoom={1}
@@ -103,12 +112,13 @@ const Map = () => {
         <Source type="geojson" data={featureCollection}>
           <Layer {...circleLayer} />
         </Source>
-        {heatmapInfo && (
-          <HeatmapPopup selectedDateRange={selectedDateRange} info={heatmapInfo} onClose={handlePopupClose} />
+        {locationPopupInfo && (
+          <LocationPopup info={locationPopupInfo} onClose={handlePopupClose} />
         )}
           <DatePicker/>
-         <NavigationControl position="bottom-left"/>
-         <ScaleControl />
+          <StatsOverview mapRef={_mapRef}/>
+          <NavigationControl position="bottom-left"/>
+          <ScaleControl />
       </ReactMap>
     </main>
   );

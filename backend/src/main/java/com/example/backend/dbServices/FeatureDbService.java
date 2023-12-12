@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import com.example.backend.repositories.FeatureRepository;
 
 // STATUS: TESTED (TODO: may need to add better exception handling though)
 @Service
+@Slf4j
 public class FeatureDbService {
     @Resource
     private FeatureRepository featureRepository;
@@ -30,7 +32,7 @@ public class FeatureDbService {
             "Successfully added feature to DB: "
             : "Successfully updated DB feature: ";
         FeatureEntity savedFeature = featureRepository.save(feature);
-        System.out.println(logString + savedFeature);
+        log.info(logString + savedFeature);
         } catch (IllegalArgumentException | OptimisticLockingFailureException e){
         System.err.println("Error inserting into Features collection: " + e.getMessage());
         }

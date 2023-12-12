@@ -49,6 +49,12 @@
       ],
       "~datepicker/*": [
         "src/components/datepicker/*"
+      ],
+      "~statsOverview/*": [
+        "src/components/statsOverview/*"
+      ],
+      "~locationPopup/*": [
+        "src/components/locationPopup/*"
       ]
     }
   },

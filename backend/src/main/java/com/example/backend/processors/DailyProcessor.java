@@ -1,6 +1,8 @@
 package com.example.backend.processors;
 
 import com.example.backend.dbServices.FeatureDbUpdaterService;
+import com.example.backend.guardianService.responseRelated.AugmentedContentItem;
+import com.example.backend.guardianService.responseRelated.AugmentedContentResponse;
 import com.example.backend.nerService.ArticleNerProperties;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,7 +59,7 @@ public class DailyProcessor {
   // first check the total number and then use for loop to get each page of articles
   public void processArticles(String fromDate, String toDate, boolean isPreprocessing){
 
-    Optional<ContentResponse> currentResponse = fetchArticlesFromGuardianAPI(fromDate, toDate, 1);
+    Optional<AugmentedContentResponse> currentResponse = fetchArticlesFromGuardianAPI(fromDate, toDate, 1);
     if (currentResponse.isEmpty()) return;
     int total = currentResponse.get().getTotal();
     int MAX_BATCH_ARTICLE_SIZE = 200;
@@ -76,9 +78,9 @@ public class DailyProcessor {
     }
   }
 
-  private Optional<ContentResponse> fetchArticlesFromGuardianAPI(String fromDate, String toDate, int pageNum){
+  private Optional<AugmentedContentResponse> fetchArticlesFromGuardianAPI(String fromDate, String toDate, int pageNum){
     try {
-      ContentResponse response = guardianService.fetchArticlesByDateRange(fromDate, toDate, pageNum);
+      AugmentedContentResponse response = guardianService.fetchArticlesByDateRange(fromDate, toDate, pageNum);
       if (!responseIsValid(response)) {
         log.error("Invalid response, error retrieving articles from the Guardian API.");
         return Optional.empty();
@@ -90,17 +92,17 @@ public class DailyProcessor {
     }
   }
 
-  public boolean responseIsValid(ContentResponse contentResponse){
+  public boolean responseIsValid(AugmentedContentResponse contentResponse){
     return contentResponse != null && contentResponse.getStatus().equals("ok");
   }
 
-  private void processCurrentBatch(ContentResponse currentResponse, int batchNum){
+  private void processCurrentBatch(AugmentedContentResponse currentResponse, int batchNum){
     insertArticlesAndFeaturesIntoDB(currentResponse.getResults());
     System.out.println("Finished processing batch: " + batchNum);
     log.info("Finished processing batch: {}", batchNum);
   }
 
-  public void insertArticlesAndFeaturesIntoDB(ContentItem[] articles){
+  public void insertArticlesAndFeaturesIntoDB(AugmentedContentItem[] articles){
     List<ArticleEntity> articleEntityList = Stream.of(articles).map(contentItem -> {
       if (contentItem.getType().equals("liveblog")){
         return null;
@@ -110,12 +112,14 @@ public class DailyProcessor {
     articleDbService.saveManyArticles(articleEntityList);
   }
 
-  public ArticleEntity processArticle(ContentItem contentItem) {
+  public ArticleEntity processArticle(AugmentedContentItem contentItem) {
     ArticleEntity article = ArticleEntity.builder()
         ._id(null)
         .webTitle(contentItem.getWebTitle())
         .webPublicationDate(formatDate(contentItem.getWebPublicationDate()))
         .webUrl(contentItem.getWebUrl())
+        .thumbnail(contentItem.getFields().get("thumbnail"))
+        .bodyText(contentItem.getFields().get("bodyText"))
         .associatedLocations(new ArrayList<>())
         .sentimentScore(0.5)
         .build();
@@ -124,6 +128,7 @@ public class DailyProcessor {
       if (articleNerProperties.numAssociatedFeatures() > 0){
         article.setSentimentScore(articleNerProperties.sentimentScore());
         article.setAssociatedLocations(articleNerProperties.locations());
+        article.clearBodyText(); // don't want to store full bodyText into the DB
         return article;
       }
     } catch (Exception e){
@@ -132,8 +137,8 @@ public class DailyProcessor {
     return null;
   }
 
-  private void processCurrentBatchForPreprocessing(ContentResponse currentResponse) {
-    for (ContentItem article: currentResponse.getResults()){
+  private void processCurrentBatchForPreprocessing(AugmentedContentResponse currentResponse) {
+    for (AugmentedContentItem article: currentResponse.getResults()){
       if (article.getType().equals("liveblog")) continue;
       try {
         ObjectId articleId = insertArticleIntoDB(article);
@@ -146,7 +151,7 @@ public class DailyProcessor {
     }
   }
 
-  private ObjectId insertArticleIntoDB(ContentItem contentItem){
+  private ObjectId insertArticleIntoDB(AugmentedContentItem contentItem){
     ArticleEntity articleEntity = ArticleEntity.builder()
         ._id(null)
         .webTitle(contentItem.getWebTitle())
@@ -154,6 +159,8 @@ public class DailyProcessor {
         .webUrl(contentItem.getWebUrl())
         .associatedLocations(new ArrayList<>())
         .sentimentScore(0.5)
+        .thumbnail(contentItem.getFields().get("thumbnail"))
+        .bodyText(contentItem.getFields().get("bodyText"))
         .build();
 
     articleDbService.saveArticle(articleEntity); // add to DB

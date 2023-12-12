@@ -54,7 +54,6 @@ public class ArticleDbService{
 
    public void saveArticle(ArticleEntity article){
       try { // maybe check if article is null
-         System.out.println(article);
          articleRepository.save(article);
       } catch (Exception e){
          System.err.println("Error inserting into Articles collection: " + e.getMessage());

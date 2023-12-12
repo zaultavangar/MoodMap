@@ -4,6 +4,8 @@ import com.example.backend.dbServices.ArticleDbService;
 import com.example.backend.dbServices.FeatureDbService;
 import com.example.backend.entity.ArticleEntity;
 import com.example.backend.entity.FeatureDTO;
+import com.example.backend.guardianService.GuardianService;
+import com.example.backend.guardianService.responseRelated.AugmentedContentResponse;
 import com.example.backend.processors.DailyProcessor;
 import com.example.backend.response.ArticleEntityListApiResponse;
 import com.example.backend.response.RestApiResponse;
@@ -30,6 +32,7 @@ import java.util.Optional;
 import com.example.backend.validator.RequestValidator;
 import com.example.backend.validator.SearchRequest;
 import com.example.backend.validator.ValidationResult;
+import the.guardian.api.http.content.ContentResponse;
 
 // STATUS: UNIT TESTED
 // TODO: Integration Testing
@@ -43,13 +46,16 @@ public class ApiController {
 
     private final ArticleDbService articleDbService;
 
+//    private final GuardianService guardianService;
+
     private final FeatureDbService featureDbService;
     private final DailyProcessor dailyProcessor;
 
     public ApiController(
         DailyProcessor dailyProcessor,
         ArticleDbService articleDbService,
-        FeatureDbService featureDbService) {
+        FeatureDbService featureDbService
+    ) {
         this.articleDbService = articleDbService;
         this.dailyProcessor = dailyProcessor;
         this.featureDbService = featureDbService;
@@ -200,8 +206,10 @@ public class ApiController {
 
 
     @GetMapping("/processArticles")
-    public void handleProcess(){
-      dailyProcessor.processArticles("2022-01-01", "2022-05-31", true);
+    public void handleProcess() throws Exception{
+//      AugmentedContentResponse contentResponse = guardianService.fetchArticlesByDateRange("2023-11-30", "2023-12-01", 1);
+//      return contentResponse;
+      dailyProcessor.processArticles("2019-01-01", "2019-05-31", true);
 
     }
 

@@ -1,50 +1,43 @@
 import Grid from "@mui/material/Unstable_Grid2";
 import Searchbar from "./Searchbar";
 import SearchResults from "./SearchResults";
-import { useEffect, useState } from "react";
-import { keywords } from "~/data/keywords";
+import { useRecoilValue } from "recoil";
+import { searchQueryState, searchResultsState } from "~/atoms";
 const Header = () => {
 
   // const {selectedDateRange, setSelectedDateRange} = appControl;
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState<string[]>([]);
+  const searchQuery = useRecoilValue(searchQueryState);
+  const searchResults = useRecoilValue(searchResultsState);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const canDisplaySearchResults = searchQuery !== "" && results.length > 0;
-
-  useEffect(() => {
-    const foundKeywords = keywords.filter((keyword) =>
-      keyword.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setResults(foundKeywords);
-  }, [searchQuery]);
+  const canDisplaySearchResults = searchQuery !== "" && searchResults.length > 0;
 
   return (
-      <Grid
-        container
-        component="header"
-        rowSpacing={2}
-        sx={{
-          zIndex: 4,
-          flexDirection: "column",
-          position: "relative",
-          padding: "1rem",
-          flexGrow: 1,
-        }}
-      >
-        <Grid xs={12} md={6}>
-          <Searchbar searchQuery={searchQuery} onChange={handleSearchChange} />
-        </Grid>
-        {canDisplaySearchResults && (
-          <Grid xs={12} md={6}>
-            <SearchResults results={results} />
-          </Grid>
-        )}
-      </Grid>
+    <div className="header-container">
+      <Searchbar/>
+    </div>
+      // <Grid
+      //   container
+      //   xs='auto'
+      //   component="header"
+      //   rowSpacing={2}
+      //   sx={{
+      //     zIndex: 4,
+      //     flexDirection: "column",
+      //     position: "relative",
+      //     padding: "1rem",
+      //     flexGrow: 1,
+      //   }}
+      // >
+      //   <Grid xs={12} md={6}>
+      //     <Searchbar />
+      //   </Grid>
+      //   {canDisplaySearchResults && (
+      //     <Grid xs={12} md={6}>
+      //       <SearchResults />
+      //     </Grid>
+      //   )}
+      // </Grid>
   );
 };
 

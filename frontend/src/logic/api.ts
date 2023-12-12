@@ -8,6 +8,7 @@ export type ArticleEntity = {
   webUrl: string,
   sentimentScore: number
   associatedLocation: string[]
+  thumbnail: string
   //url: string;
 };
 

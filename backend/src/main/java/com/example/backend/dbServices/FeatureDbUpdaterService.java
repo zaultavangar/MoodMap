@@ -36,6 +36,7 @@ public class FeatureDbUpdaterService {
   public ArticleNerProperties updateFeaturesForArticle(
       ArticleEntity article) throws Exception{
     String headline = article.getWebTitle();
+    String bodyText = article.getBodyText();
     List<String> locations = nerService.getEntities(headline);
     if (locations.isEmpty()){
       return ArticleNerProperties.builder()
@@ -44,8 +45,8 @@ public class FeatureDbUpdaterService {
           .sentimentScore(null)
           .build();
     }
-    Thread.sleep(500); // for rate-limiting issues
-    Double articleSentimentScore = nerService.getSentimentScore(headline);
+    Thread.sleep(300); // for rate-limiting issues
+    Double articleSentimentScore = nerService.getSentimentScore(headline.concat(bodyText).substring(0, 512));
     LocalDateTime articleWebPublicationDate = article.getWebPublicationDate();
     String formattedDate = getFormattedDateString(articleWebPublicationDate);
 

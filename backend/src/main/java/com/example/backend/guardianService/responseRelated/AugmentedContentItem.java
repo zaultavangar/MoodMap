@@ -2,28 +2,26 @@ package com.example.backend.guardianService.responseRelated;
 
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import the.guardian.api.http.content.ContentItem;
 
-public class AugmentedContentItem extends ContentItem{
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class AugmentedContentItem {
+  private String id;
+  private String type;
+  private String sectionId;
+  private String sectionName;
+  private String webPublicationDate;
+  private String webTitle;
+  private String webUrl;
+  private String apiUrl;
+  private String pillarId;
+  private String pillarName;
+  private Boolean isHosted;
   private Map<String, String> fields;
 
-    public Map<String, String> getFields() {
-        return fields;
-    }
-
-    public void setFields(Map<String, String> fields) {
-        this.fields = fields;
-    }
-
-    public String getThumbnail() {
-        return fields != null ? fields.get("thumbnail") : null;
-    }
-
-    public String getTrailText() {
-        return fields != null ? fields.get("trailText") : null;
-    }
-
-    public String getBodyText() {
-        return fields != null ? fields.get("bodyText") : null;
-    }
 }

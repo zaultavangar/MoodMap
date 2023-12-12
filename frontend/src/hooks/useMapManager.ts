@@ -1,44 +1,31 @@
 import { Feature, FeatureCollection, GeoJsonProperties } from "geojson";
-import { SetStateAction, useState } from "react";
-import { CircleLayer, HeatmapLayer, type ViewStateChangeEvent } from "react-map-gl";
-import { circleLayerr,  updateHeatMapLayer } from "~/components/heatmapLayer";
-import { ArticleEntity, FeatureEntity, FrontendApiResponse, handleApiResponse, isSuccessfulResponse } from "~/logic/api";
-import { useHeatmapPopup } from "./useHeatmapPopup";
-import { PopupType } from "~/components/HeatmapPopup";
-import { useDatePicker } from "./useDatePicker";
+import { type ViewStateChangeEvent } from "react-map-gl";
+import { updateHeatMapLayer } from "~/components/heatmapLayer";
+import { ArticleEntity, FeatureEntity, handleApiResponse, isSuccessfulResponse } from "~/logic/api";
+import { useLocationPopup } from "./useLocationPopup";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { circleLayerState, locationPopupInfoState, mapFeatureCollectionState, mapViewStateState, selectedDateRangeState } from "~/atoms";
 
 // Default location of the map
-const ProvidenceLatLong = {
-  long: -71.4141362441059,
-  lat: 41.82454500035089,
-};
+// const ProvidenceLatLong = {
+//   long: -71.4141362441059,
+//   lat: 41.82454500035089,
+// };
 
 export const GazaLatLong = {
   long: 34.47,
   lat: 31.5,
 };
 
-export function useMapManager({
-  long,
-  lat,
-}: { 
-    long: number;
-    lat: number,
-  } = GazaLatLong) {
+export function useMapManager() {
 
-  const { heatmapInfo, handlePopupOpen, handlePopupClose} = useHeatmapPopup();
+  const { handlePopupOpen, handlePopupClose} = useLocationPopup();
 
-  const {selectedDateRange, setSelectedDateRange} = useDatePicker();
+  const selectedDateRange = useRecoilValue(selectedDateRangeState);
 
-  const [mapViewState, setMapViewState] = useState({
-    longitude: long,
-    latitude: lat,
-    zoom: 5,
-    // Changes the tilt of the map
-    // pitch: 60,
-  });
+  const [mapViewState, setMapViewState] = useRecoilState(mapViewStateState);
 
-  const [circleLayer, setCircleLayer] = useState<CircleLayer>(circleLayerr);
+  const [circleLayer, setCircleLayer] = useRecoilState(circleLayerState);
 
   const createFeatureCollection = (features: Feature[]): FeatureCollection => {
     return {
@@ -53,9 +40,7 @@ export function useMapManager({
       setCircleLayer(h);
   }
 
-  const [featureCollection, setFeatureCollection] = useState<FeatureCollection>(
-    createFeatureCollection([])
-  );
+  const [featureCollection, setFeatureCollection] = useRecoilState(mapFeatureCollectionState);
 
 
   const loadFeatures = async () => {
@@ -135,8 +120,6 @@ export function useMapManager({
     setLayer,
     selectedDateRange,
     getArticlesAndOpenPopup,
-    heatmapInfo,
-    useHeatmapPopup,
     updateHeatMapLayer,
     handlePopupClose
   };

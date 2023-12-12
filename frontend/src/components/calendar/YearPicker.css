@@ -1,0 +1,26 @@
+.year-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.2em;
+
+  .navigation-button{
+    background-color: rgb(36, 36, 37);
+    color: white;
+
+    cursor: pointer;
+    border-radius: 50%;
+    outline: none;
+    border: none;
+    transform: scale(0.9);
+  }
+
+  .navigation-button:hover {
+    transform: scale(1);
+    background-color: rgb(36, 36, 37);
+    color: white;
+  }
+}
+
+
