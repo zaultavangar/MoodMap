@@ -1,24 +1,37 @@
+import { useEffect, useRef } from 'react';
+import './LocationPopup.css';
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { Popup } from "react-map-gl";
-import type { HeatmapInfo } from "~/hooks/useHeatmapPopup";
+import { useRecoilValue } from "recoil";
+import { selectedDateRangeState } from "~/atoms";
+import type { LocationPopupInfo } from "~/hooks/useLocationPopup";
+import mapboxgl from 'mapbox-gl';
+
 
 export type PopupType = 'click' | 'hover';
 
-const HeatmapPopup = ({
-  selectedDateRange,
+const LocationPopup = ({
   info,
   onClose,
 }: {
-  selectedDateRange: string;
-  info: HeatmapInfo;
+  info: LocationPopupInfo
   onClose: () => void;
 }) => {
-  // TODO: replace with current date
+  const selectedDateRange = useRecoilValue(selectedDateRangeState);
   const sentimentKey = `${selectedDateRange}-sentiment`;
+  const scrollRef = useRef<mapboxgl.Popup>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.getElement().scrollTop = 0; // scroll to top every time popup changes
+    }
+  }, [info])
+
+
   return (
-    <Box sx={{ minWidth: "300px", maxWidth: "500px" }}>
-      <Paper>
         <Popup
+          ref={scrollRef}
+          className='map-location-popup'
           longitude={info.longitude}
           latitude={info.latitude}
           anchor="top"
@@ -53,21 +66,21 @@ const HeatmapPopup = ({
               Avg. Sentiment
             </Typography>
           </Stack>
-          <div>
+          <div style={{width: '100%', height: '1px', backgroundColor: 'black', margin: '7px 0px'}}></div>
+          <div className='article-list-container'>
             {info.articles.length > 0 && info.articles.map((article, idx) => (
-              <div key={idx}style={{'marginBottom': '5px'}}>
-                <div>
-                  <span>{idx+1}. </span>
-                  <a href={article.webUrl} target="_blank">{article.webTitle}</a>
+              <a style={{textDecoration: 'none'}}  href={article.webUrl} target="_blank">
+                <div className='article-container' key={idx} style={{'marginBottom': '5px'}}>
+                  <div>
+                    <span>{idx+1}. {article.webTitle}</span>
+                  </div>
+                  <img id='article-image' width='150px'src={article.thumbnail}></img>
                 </div>
-                
-              </div>
+              </a>
             ))}
           </div>
         </Popup>
-      </Paper>
-    </Box>
   );
 };
 
-export default HeatmapPopup;
+export default LocationPopup;

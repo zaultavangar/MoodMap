@@ -36,9 +36,18 @@ public class ArticleEntity {
     @Schema(example = "https://www.theguardian.com/world/live/2023/nov/29/israel-hamas-war-live-updates-news-ceasefire-extension-reports-israel-raid-gaza-west-bank-palestine-jenin")
     private String webUrl;
 
+    private String thumbnail;
+
+    private String bodyText;
+
     @Schema(example = "0.5")
     private Double sentimentScore;
 
     @Schema(example = "['France', 'Germany']")
     private List<String> associatedLocations;
+
+    public void clearBodyText(){
+        this.bodyText = "";
+    }
+
 }

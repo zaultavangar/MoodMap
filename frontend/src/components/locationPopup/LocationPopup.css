@@ -1,0 +1,33 @@
+.map-location-popup{
+  max-width: 375px !important;
+  overflow: scroll !important;
+  max-height: 400px;
+}
+
+.article-list-container{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+
+  .article-container{ 
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    color: black;
+
+    #article-image{
+      width: 150px;
+      border-radius: 5px;
+    }
+  }
+
+  .article-container:hover{
+    background-color: rgb(40, 40, 40);
+    color: white;
+  }
+}

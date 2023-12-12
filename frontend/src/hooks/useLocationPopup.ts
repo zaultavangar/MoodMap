@@ -1,10 +1,9 @@
 import { GeoJsonProperties } from "geojson";
-import { useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { locationPopupInfoState } from "~/atoms";
 import { ArticleEntity } from "~/logic/api";
 
-
-
-export type HeatmapInfo = {
+export type LocationPopupInfo = {
   articles: ArticleEntity[];
   longitude: number;
   latitude: number;
@@ -14,21 +13,20 @@ export type HeatmapInfo = {
 /**
  * A custom React hook that helps display a popup on the map given a certain redlined area
  */
-export function useHeatmapPopup() {
-  const [heatmapInfo, setHeatmapInfo] = useState<HeatmapInfo | null>(null);
+export function useLocationPopup() {
+  const setLocationPopupInfo = useSetRecoilState(locationPopupInfoState);
 
   // Handling the Opening the popup
-  const handlePopupOpen = (area: HeatmapInfo) => {
-    setHeatmapInfo(area);
+  const handlePopupOpen = (area: LocationPopupInfo) => {
+    setLocationPopupInfo(area);
   };
 
   // Handling the popup close
   const handlePopupClose = () => {
-    setHeatmapInfo(null);
+    setLocationPopupInfo(null);
   };
 
   return {
-    heatmapInfo,
     handlePopupOpen,
     handlePopupClose,
   };

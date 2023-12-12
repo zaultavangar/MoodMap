@@ -43,8 +43,6 @@ public class GeocodingService {
       throw new GeocodeApiException("Error calling the Geocoding API: " + response.getStatusCode());
     }
 
-    System.out.println("GEOCODE RESPONSE: " + response);
-    System.out.println("GEOCODE RESPONSE BODY: " + response.getBody());
     return response.getBody(); // the geoJson
 
   }

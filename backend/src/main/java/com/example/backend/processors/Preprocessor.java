@@ -53,6 +53,7 @@ public class Preprocessor {
       // Update article fields and update document in DB
       article.setSentimentScore(articleNerProperties.sentimentScore());
       article.setAssociatedLocations(articleNerProperties.locations());
+      article.clearBodyText();
       articleDbService.saveArticle(article);
 
     } catch (Exception e){

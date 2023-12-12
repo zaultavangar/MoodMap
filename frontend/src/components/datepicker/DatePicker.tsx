@@ -1,42 +1,72 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import './DatePicker.css'
-import { Calendar } from '../calendar/Calendar';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { YearPicker } from '../calendar/YearPicker';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { isFullCalendarState, selectedDateRangeState } from '~/atoms';
+import { getSliderMarksMap, getSliderValueFromDateString } from './DatePickerUtils';
+import { CalendarTable } from '../calendar/CalendarTable';
 import { Slider } from '@mui/material';
 
 export const DatePicker = () => {
   // control date from here or from a useDatePicker
   // should be on the right hand side of the page 
 
-  const [selectedDateRange, setSelectedDateRange] = useState<string>('11-2023')
-
   // to toggle between full calendar and collapsed view
-  const [isFullCalendar, setIsFullCalendar] = useState(true);
+  const [isFullCalendar, setIsFullCalendar] = useRecoilState(isFullCalendarState);
+
+  const [selectedDateRange, setSelectedDateRange] = useRecoilState(selectedDateRangeState);
 
   const toggleCalendarView = () => {
     setIsFullCalendar(!isFullCalendar);
   };
 
-  function valuetext(value: number) {
-    return `${value}°C`;
+
+  const handleResize = () => {
+    if (window.innerWidth <= 760) {
+      setIsFullCalendar(false);
+    } else {
+      setIsFullCalendar(true);
+    }
+  };
+
+
+  const sliderMarks = getSliderMarksMap(parseInt(selectedDateRange.substring(3, 7)));
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize); // add event listener
+
+    return () => window.removeEventListener('resize', handleResize); // cleanup on component unmount
+  }, []);
+
+  const onSliderChange = (value: number | number[]) => {
+    if (typeof value === "number"){
+      const monthIndex: number = Math.abs(value/9 -11); // 0 dec, 12 jan
+      const monthStr = monthIndex >= 9 ? (monthIndex+1).toString() : `0${(monthIndex+1).toString()}`;
+      setSelectedDateRange(`${monthStr}-${selectedDateRange.substring(3,7)}`);
+    }
+   
+
   }
 
   return (
     <div className={`date-picker-container ${isFullCalendar ? 'date-picker-container-full': 'date-picker-container-slider'}`}>
+        <YearPicker/>
       {isFullCalendar ? 
-      <Calendar 
-      selectedDateRange={selectedDateRange}
-      setSelectedDateRange={setSelectedDateRange}
-    /> :
+        <CalendarTable/> 
+      :
       <div className='slider-container'>
-        <Slider 
-          orientation='vertical' 
-          defaultValue={30}
-          aria-label="Always visible"
-          getAriaValueText={valuetext}
-          step={10}
-          min={2022}
+        <Slider
+          color='info'
+          size='small'
+          orientation='vertical'
+          value={getSliderValueFromDateString(selectedDateRange)}
+          defaultValue={0}
+          marks={sliderMarks}
+          step={null}
+          onChange={(e, value, activeThumb) => onSliderChange(value)}
           />
       </div>
     }
@@ -50,22 +80,13 @@ export const DatePicker = () => {
         
         >
         {isFullCalendar ? 
-          <ExpandLessIcon className='toggle-icon'/> : 
-          <ExpandMoreIcon className='toggle-icon'/>
+          <UnfoldLessIcon className='toggle-icon'/> : 
+          <UnfoldMoreIcon className='toggle-icon'/>
           }
       </button>
     </div>
      
       
     </div>
-    // <div className='date-picker-container'>
-    //   {/* <IconButton type="button" aria-label="filter by month/year" style={{color: 'white'}}>
-    //   <ScheduleIcon />
-    // </IconButton> */}
-    // 
-
-    //     {/* Should also include a button that can collapse this and just turn it into a slider 
-    //     so that the user can see changes better  */}
-    // </div>
   )
 }
