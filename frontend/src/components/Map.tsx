@@ -25,64 +25,64 @@ const COLOR_MODE = import.meta.env.VITE_COLOR_MODE;
  * Map component displays a heatmap of the sentiment of a topic in a given geographical area
  */
 const Map = () => {
-  const { 
-    mapViewState, 
-    handleMapMove, 
-    loadFeatures, 
+  const {
+    mapViewState,
+    handleMapMove,
+    loadFeatures,
     featureCollection,
     circleLayer,
     setLayer,
     selectedDateRange,
     getArticlesAndOpenPopup,
     handlePopupClose,
-   } = useMapManager();
+  } = useMapManager();
 
   const locationPopupInfo = useRecoilValue(locationPopupInfoState);
 
   const _mapRef = useRef<MapRef>(null);
 
   // for map click and hover operaations
-  const handleMouseEventOperation = async (
-    e: MapLayerMouseEvent) => {
-      
+  const handleMouseEventOperation = async (e: MapLayerMouseEvent) => {
     e.preventDefault();
-    
+
     const area = e.features && e.features[0];
 
     if (!area) {
       return;
     }
-    // get articles for that feature from backend 
-    if (area.properties !== undefined && 
+    // get articles for that feature from backend
+    if (
+      area.properties !== undefined &&
       area.properties !== null &&
-      area.properties['location'] !== null && 
-      area.properties['location'] !== null){
-          if (_mapRef.current) {
-            _mapRef.current.flyTo({
-              center: [e.lngLat.lng, e.lngLat.lat-1]
-            })
-          }
-          await getArticlesAndOpenPopup (
-            area.properties['location'],
-            e.lngLat.lng,
-            e.lngLat.lat,
-            area.properties)
-          }
-        
+      area.properties["location"] !== null &&
+      area.properties["location"] !== null
+    ) {
+      if (_mapRef.current) {
+        _mapRef.current.flyTo({
+          center: [e.lngLat.lng, e.lngLat.lat - 1],
+        });
+      }
+      await getArticlesAndOpenPopup(
+        area.properties["location"],
+        e.lngLat.lng,
+        e.lngLat.lat,
+        area.properties
+      );
     }
-    
+  };
+
   useEffect(() => {
     console.log("hello");
     loadFeatures();
-  }, [])
+  }, []);
 
   useEffect(() => {
     setLayer(selectedDateRange);
-  }, [featureCollection])
+  }, [featureCollection]);
 
   useEffect(() => {
     setLayer(selectedDateRange);
-  }, [selectedDateRange])
+  }, [selectedDateRange]);
 
   return (
     <main>
@@ -115,10 +115,9 @@ const Map = () => {
         {locationPopupInfo && (
           <LocationPopup info={locationPopupInfo} onClose={handlePopupClose} />
         )}
-          <DatePicker/>
-          <StatsOverview mapRef={_mapRef}/>
-          <NavigationControl position="bottom-left"/>
-          <ScaleControl />
+        <StatsOverview mapRef={_mapRef} />
+        <NavigationControl position="bottom-left" />
+        <ScaleControl />
       </ReactMap>
     </main>
   );
