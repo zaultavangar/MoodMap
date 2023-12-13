@@ -36,7 +36,7 @@ public class Preprocessor {
             this::processArticle,
             () -> log.error("(Preprocessing) Article ID {} not found.", articleId)
         );
-  }
+}
 
 
 
