@@ -1,21 +1,15 @@
-import MenuIcon from "@mui/icons-material/Menu";
-import ScheduleIcon from "@mui/icons-material/Schedule";
+import React from 'react';
 import SearchIcon from "@mui/icons-material/Search";
 import {
-  Divider,
   IconButton,
   InputBase,
   Paper,
-  Popover,
-  Slider,
-  Typography,
 } from "@mui/material";
-import React, { MouseEvent } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import {
-  searchDateFilterPopoverAnchorElState,
   searchQueryState,
 } from "~/atoms";
+import { useSearch } from "~/hooks/useSearch";
 
 const SearchButton = () => {
   return (
@@ -29,26 +23,25 @@ const SearchButton = () => {
  * Searchbar component allows users to search news articles based on a given keyword
  */
 const Searchbar = () => {
-  const [searchQuery, setSearchQuery] = useRecoilState(searchQueryState);
+  const searchQuery = useRecoilValue(searchQueryState);
 
-  const [searchDateFilterPopoverAnchorEl, setSearchDateFilterPopoverAnchorEl] =
-    useRecoilState(searchDateFilterPopoverAnchorElState);
+  const { handleSearchChange } = useSearch();
+
+  // const [searchDateFilterPopoverAnchorEl, setSearchDateFilterPopoverAnchorEl] =
+  //   useRecoilState(searchDateFilterPopoverAnchorElState);
 
   // const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setSearchDateFilterPopoverAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setSearchDateFilterPopoverAnchorEl(event.currentTarget);
+  // };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
 
-  const open = Boolean(searchDateFilterPopoverAnchorEl);
+  // const open = Boolean(searchDateFilterPopoverAnchorEl);
 
-  const handleClose = () => {
-    setSearchDateFilterPopoverAnchorEl(null);
-  };
+  // const handleClose = () => {
+  //   setSearchDateFilterPopoverAnchorEl(null);
+  // };
 
   return (
     <Paper
@@ -59,6 +52,7 @@ const Searchbar = () => {
     >
       {/* Input field to search for keyword */}
       <InputBase
+        autoComplete="off"
         sx={{ ml: 1, flex: 1 }}
         id="outlined-basic"
         placeholder="Search the news by keyword"

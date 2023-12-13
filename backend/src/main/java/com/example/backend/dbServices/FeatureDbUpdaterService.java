@@ -48,7 +48,8 @@ public class FeatureDbUpdaterService {
     Thread.sleep(300); // for rate-limiting issues
     Double articleSentimentScore = nerService.getSentimentScore(headline.concat(bodyText).substring(0, 512));
     LocalDateTime articleWebPublicationDate = article.getWebPublicationDate();
-    String formattedDate = getFormattedDateString(articleWebPublicationDate);
+    String formattedFullDate = getFormattedDateString(articleWebPublicationDate);
+    String formattedYearDate = formattedFullDate.substring(3, 7);
 
     int addedFeatures = 0;
     List<String> formattedLocations = new ArrayList<>();
@@ -66,27 +67,18 @@ public class FeatureDbUpdaterService {
 
       formattedLocations.add(formattedLocation);
 
-      Optional<FeatureEntity> existingFeature = featureDbService.findFeatureByLocation(formattedLocation);
-      if (existingFeature.isEmpty()){ // check if feature already exists in DB
-        FeatureEntity feature = featureDbService.createFeatureEntity(lng, lat, formattedLocation);
-        feature.setDoubleProperty(formattedDate + "-count", 1.0); // set count of articles to 1
-        feature.setDoubleProperty(formattedDate + "-sentiment", articleSentimentScore); // new avg sentiment
-        featureDbService.saveOne(feature);
-      } else { // update article sentiment properties
-        // check if sentiment score for that month-year exists
-        Double currentSentimentScoreAvg = existingFeature.get().getDoubleProperty(formattedDate+"-sentiment");
-        Double currentTotal = existingFeature.get().getDoubleProperty(formattedDate+"-count");
-        boolean sentimentPropertiesExist = currentSentimentScoreAvg != null && currentTotal != null;
+      FeatureEntity feature = findOrCreateFeatureEntity(
+          formattedLocation,
+          formattedYearDate,
+          formattedFullDate,
+          lng,
+          lat,
+          articleSentimentScore
+      );
 
-        Double newSentimentAvg = sentimentPropertiesExist ?
-            ((currentSentimentScoreAvg*currentTotal)+articleSentimentScore)/(currentTotal+1)
-            : articleSentimentScore;
+      updateFeatureProperties(feature, formattedFullDate, formattedYearDate, articleSentimentScore);
+      featureDbService.saveOne(feature);
 
-        existingFeature.get().setDoubleProperty(formattedDate+"-sentiment", newSentimentAvg);
-        existingFeature.get().setDoubleProperty(formattedDate+"-count", currentTotal !=null ? currentTotal+1 : 1);
-        //
-        featureDbService.saveOne(existingFeature.get());
-      }
       addedFeatures++;
     }
     return ArticleNerProperties.builder()
@@ -94,6 +86,63 @@ public class FeatureDbUpdaterService {
         .sentimentScore(articleSentimentScore)
         .locations(formattedLocations)
         .build();
+  }
+
+  private FeatureEntity findOrCreateFeatureEntity(
+      String formattedLocation,
+      String formattedYearDate,
+      String formattedFullDate,
+      Double lng,
+      Double lat,
+      Double articleSentimentScore
+      ) {
+    Optional<FeatureEntity> existingFeature = featureDbService.findFeatureByLocation(formattedLocation);
+
+    if (existingFeature.isEmpty()) {
+      FeatureEntity feature = featureDbService.createFeatureEntity(lng, lat, formattedLocation);
+
+      setCountSentimentProperties(feature, formattedYearDate, 1.0, articleSentimentScore);
+      setCountSentimentProperties(feature, formattedFullDate, 1.0, articleSentimentScore);
+
+      return feature;
+    } else {
+      return existingFeature.get();
+    }
+  }
+
+  private void updateFeatureProperties(
+      FeatureEntity feature,
+      String formattedFullDate,
+      String formattedYearDate,
+      Double articleSentimentScore) {
+    Double currentYearSentimentScoreAvg = feature.getDoubleProperty(formattedYearDate + "-sentiment");
+    Double currentYearTotal = feature.getDoubleProperty(formattedYearDate + "-count");
+    boolean yearSentimentPropertiesExist = currentYearSentimentScoreAvg != null && currentYearTotal != null;
+
+    Double currentMonthSentimentScoreAvg = feature.getDoubleProperty(formattedFullDate + "-sentiment");
+    Double currentMonthTotal = feature.getDoubleProperty(formattedFullDate + "-count");
+    boolean monthSentimentPropertiesExist = currentMonthSentimentScoreAvg != null && currentMonthTotal != null;
+
+    Double newMonthSentimentAvg = monthSentimentPropertiesExist
+        ? ((currentMonthSentimentScoreAvg * currentMonthTotal) + articleSentimentScore) / (currentMonthTotal + 1)
+        : articleSentimentScore;
+
+    Double newYearSentimentAvg = yearSentimentPropertiesExist
+        ? ((currentYearSentimentScoreAvg * currentYearTotal) + articleSentimentScore) / (currentYearTotal + 1)
+        : articleSentimentScore;
+
+    setCountSentimentProperties(feature, formattedFullDate, currentMonthTotal != null ? currentMonthTotal + 1 : 1, newMonthSentimentAvg);
+    setCountSentimentProperties(feature, formattedYearDate, currentYearTotal != null ? currentYearTotal + 1 : 1, newYearSentimentAvg);
+
+  }
+
+  private void setCountSentimentProperties(
+      FeatureEntity feature,
+      String date,
+      Double count,
+      Double sentimentScore){
+    feature.setDoubleProperty(date+"-count", count);
+    feature.setDoubleProperty(date+"-sentiment", sentimentScore);
   }
 
   private String getFormattedDateString(LocalDateTime articleWebPublicationDate){

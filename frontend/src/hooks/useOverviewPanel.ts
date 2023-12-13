@@ -1,36 +1,39 @@
-import { StatSyncFn } from "fs";
-import { Geometry, Point } from "geojson";
-import { useRecoilValue } from "recoil"
-import { mapFeatureCollectionState, selectedDateRangeState } from "~/atoms"
+import { Point } from "geojson";
+import { useRecoilState, useRecoilValue } from "recoil"
+import { isExpandedOverviewPanelState, mapFeatureCollectionState, selectedMonthState, selectedYearState } from "~/atoms"
+import { LocationStats, LocationToDetailsMap, StatsOverviewMap } from "~/types";
 
-export type StatsOverviewMap = {
-  mostMentioned: LocationToDetailsMap[]
-  mostPositive: LocationToDetailsMap[]
-  mostNegative: LocationToDetailsMap[]
-};
-
-export type LocationToDetailsMap = {
-  [key: string]: LocationStats;
-}
-
-export type LocationStats = {
-  count: number
-  sentiment: number
-  coordinates: number[]
-};
-
-export function useStatsOverview() {
+export function useOverviewPanel() {
 
   const featureCollection = useRecoilValue(mapFeatureCollectionState);
-  const selectedDateRange = useRecoilValue(selectedDateRangeState);
-  const sentimentKey = selectedDateRange+'-sentiment';
-  const countKey = selectedDateRange+'-count'
+
+  const selectedYear = useRecoilValue(selectedYearState);
+  const selectedMonth = useRecoilValue(selectedMonthState);
+  const [isExpandedOverviewPanel, setIsExpandedOverviewPanel] = useRecoilState(
+    isExpandedOverviewPanelState
+  );
+
+  const sentimentKey: string = (selectedMonth ? `${selectedMonth.toString()}-${selectedYear.toString()}` : `${selectedYear.toString()}`) + '-sentiment';
+  const countKey: string = (selectedMonth ? `${selectedMonth.toString()}-${selectedYear.toString()}` : `${selectedYear.toString()}`) + '-count';
 
   const isValidGeometryPoint = (geometry: any): geometry is Point => {
     return geometry ?? geometry.coordinates;
   }
 
-  const getStatsOverviewMap = (): StatsOverviewMap => {
+  const getDateStr = () => {
+    if (selectedMonth !== undefined) {
+      const date = new Date(selectedYear, selectedMonth - 1);
+      return date.toLocaleString("default", { month: "short", year: "numeric" });
+    } else {
+      return selectedYear.toString();
+    }
+  };
+
+  const toggleOverviewPanelDisplay = () => {
+    setIsExpandedOverviewPanel(!isExpandedOverviewPanel);
+  }
+
+  const getOverviewPanelMap = (): StatsOverviewMap => {
     const features = featureCollection.features;
 
 
@@ -75,6 +78,8 @@ export function useStatsOverview() {
   }
 
   return {
-    getStatsOverviewMap
+    getOverviewPanelMap,
+    getDateStr,
+    toggleOverviewPanelDisplay
   }
 }

@@ -1,21 +1,14 @@
+import React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import Searchbar from "./Searchbar";
 import SearchResults from "./SearchResults";
 import { useRecoilValue } from "recoil";
-import { searchQueryState, searchResultsState } from "~/atoms";
+import { searchQueryState } from "~/atoms";
 const Header = () => {
-  // const {selectedDateRange, setSelectedDateRange} = appControl;
 
   const searchQuery = useRecoilValue(searchQueryState);
-  const searchResults = useRecoilValue(searchResultsState);
-
-  const canDisplaySearchResults =
-    searchQuery !== "" && searchResults.length > 0;
 
   return (
-    // <div className="header-container">
-    //   <Searchbar/>
-    // </div>
     <Grid
       container
       xs="auto"
@@ -32,7 +25,7 @@ const Header = () => {
       <Grid xs={8} md={6}>
         <Searchbar />
       </Grid>
-      {canDisplaySearchResults && (
+      {searchQuery !== "" && (
         <Grid xs={8} md={6}>
           <SearchResults />
         </Grid>

@@ -1,69 +1,44 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./",
-    "paths": {
-      "~assets/*": [
-        "src/assets/*"
-      ],
-      "~/*": [
-        "src/*"
-      ],
-      "~components/*": [
-        "src/components/*"
-      ],
-      "~hooks/*": [
-        "src/hooks/*"
-      ],
-      "~data/*": [
-        "src/data/*"
-      ],
-      "~logic/*": [
-        "src/logic/*"
-      ],
-      "~cache/*": [
-        "src/cache/*"
-      ],
-      "~calendar/*": [
-        "src/components/calendar/*"
-      ],
-      "~datepicker/*": [
-        "src/components/datepicker/*"
-      ],
-      "~statsOverview/*": [
-        "src/components/statsOverview/*"
-      ],
-      "~locationPopup/*": [
-        "src/components/locationPopup/*"
-      ]
+    "compilerOptions": {
+        "jsx": "react",
+        "esModuleInterop": true,
+        "module": "ES2022",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "~assets/*": [
+                "src/assets/*"
+            ],
+            "~components/*": [
+                "src/components/*"
+            ],
+            "~data/*": [
+                "src/data/*"
+            ],
+            "~hooks/*": [
+                "src/hooks/*"
+            ],
+            "~logic/*": [
+                "src/logic/*"
+            ],
+            "~/*": [
+                "src/*"
+            ],
+            "~statsOverview/*": [
+                "src/components/statsOverview/*"
+            ],
+            "~overviewPanel/*": [
+                "src/components/overviewPanel/*"
+            ],
+            "~datepicker/*": [
+                "src/components/datepicker/*"
+            ],
+            "~monthCalendarTable/*": [
+                "src/components/datepicker/monthCalendarTable/*"
+            ],
+            "~yearPicker/*": [
+                "src/components/datepicker/yearPicker/*"
+            ]
+        }
     }
-  },
-  "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
 }

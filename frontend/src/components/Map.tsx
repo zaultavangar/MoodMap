@@ -1,4 +1,4 @@
-// import { useTheme } from "@mui/material";
+import React, { useEffect, useRef } from "react";
 import {
   Layer,
   MapLayerMouseEvent,
@@ -10,11 +10,9 @@ import {
 } from "react-map-gl";
 import { useMapManager } from "~/hooks/useMapManager";
 import LocationPopup from "./locationPopup/LocationPopup";
-import React, { useEffect, useRef } from "react";
-import { DatePicker } from "./datepicker/DatePicker";
 import { useRecoilValue } from "recoil";
-import { locationPopupInfoState } from "~/atoms";
-import { StatsOverview } from "./statsOverview/StatsOverview";
+import { locationPopupInfoState, selectedMonthState, selectedYearState } from "~/atoms";
+import { OverviewPanel } from "./overviewPanel/OverviewPanel";
 
 // Accesing the mapbox API token
 const MAPBOX_API_TOKEN = import.meta.env.VITE_MAPBOX_API_TOKEN;
@@ -32,12 +30,13 @@ const Map = () => {
     featureCollection,
     circleLayer,
     setLayer,
-    selectedDateRange,
     getArticlesAndOpenPopup,
     handlePopupClose,
   } = useMapManager();
 
   const locationPopupInfo = useRecoilValue(locationPopupInfoState);
+  const selectedYear = useRecoilValue(selectedYearState);
+  const selectedMonth = useRecoilValue(selectedMonthState);
 
   const _mapRef = useRef<MapRef>(null);
 
@@ -59,7 +58,7 @@ const Map = () => {
     ) {
       if (_mapRef.current) {
         _mapRef.current.flyTo({
-          center: [e.lngLat.lng, e.lngLat.lat - 1],
+          center: [e.lngLat.lng, e.lngLat.lat],
         });
       }
       await getArticlesAndOpenPopup(
@@ -77,12 +76,12 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    setLayer(selectedDateRange);
+    setLayer();
   }, [featureCollection]);
 
   useEffect(() => {
-    setLayer(selectedDateRange);
-  }, [selectedDateRange]);
+    setLayer();
+  }, [selectedYear, selectedMonth]);
 
   return (
     <main>
@@ -115,7 +114,7 @@ const Map = () => {
         {locationPopupInfo && (
           <LocationPopup info={locationPopupInfo} onClose={handlePopupClose} />
         )}
-        <StatsOverview mapRef={_mapRef} />
+        <OverviewPanel mapRef={_mapRef} />
         <NavigationControl position="bottom-left" />
         <ScaleControl />
       </ReactMap>
