@@ -23,8 +23,6 @@ import com.example.backend.guardianService.GuardianService;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import the.guardian.api.http.content.ContentItem;
-import the.guardian.api.http.content.ContentResponse;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 // STATUS: NOT TESTED
 @Service
 @Slf4j
-public class DailyProcessor {
+public class Processor {
   private final RabbitTemplate rabbitTemplate;
   private final String exchangeName;
   private final String routingKey;
@@ -40,7 +38,7 @@ public class DailyProcessor {
   private final ArticleDbService articleDbService;
   private final FeatureDbUpdaterService featureDbUpdaterService;
 
-  public DailyProcessor(
+  public Processor(
       GuardianService guardianService,
       ArticleDbService articleDbService,
       FeatureDbUpdaterService featureDbUpdaterService,
