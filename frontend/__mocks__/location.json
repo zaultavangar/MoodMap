@@ -1,0 +1,23 @@
+{
+    "timestamp": "2023-12-12T21:49:46.1815629",
+    "status": 200,
+    "result": "success",
+    "data": [
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T12:21:26",
+            "webTitle": "Berlin to Paris night train runs for first time in almost a decade ",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/berlin-paris-night-train-runs-first-time-almost-decade",
+            "thumbnail": "https://media.guim.co.uk/8fb06c9efd9e6e5559c5050034a76a8aeba414b4/0_174_7070_4242/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.8270795764401555,
+            "associatedLocations": [
+                "Berlin, Germany",
+                "Paris, France"
+            ]
+        }
+    ]
+}
