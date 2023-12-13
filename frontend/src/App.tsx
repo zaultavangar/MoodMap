@@ -1,6 +1,7 @@
 // import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Map from "~/components/Map";
 import Header from "~/components/Header";
+import { DatePicker } from "./components/datepicker/DatePicker";
 // const theme = createTheme({
 //   palette: {
 //     mode: "dark"
@@ -8,9 +9,6 @@ import Header from "~/components/Header";
 // })
 
 const App = () => {
-
-
-
   return (
     <>
       {/* <ThemeProvider theme={theme}>
@@ -18,9 +16,10 @@ const App = () => {
         <Map />
       </ThemeProvider> */}
 
-      <Header/>
+      <Header />
 
       <Map />
+      <DatePicker />
     </>
   );
 };

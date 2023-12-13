@@ -1,0 +1,202 @@
+{
+    "timestamp": "2023-12-12T21:35:47.4764382",
+    "status": 200,
+    "result": "success",
+    "data": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -95.712891,
+                    37.09024
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.2381456734923025,
+                "location": "United States",
+                "12-2023-count": 3.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    34.851612,
+                    31.046051
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.20627537788823247,
+                "location": "Israel",
+                "12-2023-count": 2.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    31.16558,
+                    48.379433
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.3232158569153398,
+                "location": "Ukraine",
+                "12-2023-count": 2.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    34.4668445,
+                    31.5016951
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.1923260617380341,
+                "location": "Gaza",
+                "12-2023-count": 3.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    19.145136,
+                    51.919438
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.5101543627679348,
+                "location": "Poland",
+                "12-2023-count": 2.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.213749,
+                    46.227638
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.19580990448594093,
+                "location": "France",
+                "12-2023-count": 1.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.781167,
+                    21.521757
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.46020249649882317,
+                "location": "Cuba",
+                "12-2023-count": 1.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    48.516388,
+                    15.552727
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.20155138103291392,
+                "location": "Yemen",
+                "12-2023-count": 1.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    13.404954,
+                    52.52000659999999
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.8270795764401555,
+                "location": "Berlin, Germany",
+                "12-2023-count": 1.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.3522219,
+                    48.856614
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.8270795764401555,
+                "location": "Paris, France",
+                "12-2023-count": 1.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -111.0937311,
+                    34.0489281
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.16002795426174998,
+                "location": "Arizona, USA",
+                "12-2023-count": 1.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    29.873888,
+                    -1.940278
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.1595864207483828,
+                "location": "Rwanda",
+                "12-2023-count": 1.0
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    10.451526,
+                    51.165691
+                ]
+            },
+            "properties": {
+                "12-2023-sentiment": 0.20382294245064259,
+                "location": "Germany",
+                "12-2023-count": 1.0
+            }
+        }
+    ]
+}

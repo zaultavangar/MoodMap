@@ -1,0 +1,237 @@
+{
+    "timestamp": "2023-12-12T21:55:17.9368282",
+    "status": 200,
+    "result": "success",
+    "data": [
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T23:24:54",
+            "webTitle": "US increasingly alone in Israel support as 153 countries vote for ceasefire at UN",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/united-nations-general-assembly-vote-ceasefire-israel-gaza-war",
+            "thumbnail": "https://media.guim.co.uk/60bc79dff999cd035c7300fa2728e030752991d3/0_448_8111_4870/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.20872781332582235,
+            "associatedLocations": [
+                "United States",
+                "Israel"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T19:05:23",
+            "webTitle": "Zelenskiy struggles to get US Republicans to back $61bn Ukraine military aid package",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/zelenskiy-struggles-to-get-us-republicans-to-back-61bn-ukraine-military-aid-package",
+            "thumbnail": "https://media.guim.co.uk/91f8228c9a0e01008a98b73cb295764398891a45/0_0_2048_1229/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.3041578261181712,
+            "associatedLocations": [
+                "United States",
+                "Ukraine"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T18:29:10",
+            "webTitle": "War has left Gaza economy at almost total standstill, says World Bank",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/war-has-left-gaza-economy-at-almost-total-standstill-says-world-bank",
+            "thumbnail": "https://media.guim.co.uk/2e0c6d7335d86a5a22af10ea0413ec5eb4d45d7c/0_200_6000_3600/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.1203038115054369,
+            "associatedLocations": [
+                "Gaza"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T16:47:39",
+            "webTitle": "Donald Tusk sets out vision of a progressive Poland at heart of EU ",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/donald-tusk-vision-progressive-poland-heart-of-eu",
+            "thumbnail": "https://media.guim.co.uk/73cbe663b6d5d067badc249eb6102fced288ef83/0_90_2384_1430/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.5318672880530357,
+            "associatedLocations": [
+                "Poland"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T16:18:50",
+            "webTitle": "French government vows to push on with immigration bill despite defeat",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/french-government-vows-push-on-immigration-bill-despite-defeat",
+            "thumbnail": "https://media.guim.co.uk/ccf155572d69e844277274d09bf5c3f33da10a47/0_317_6884_4131/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.19580990448594093,
+            "associatedLocations": [
+                "France"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T14:12:56",
+            "webTitle": "‘He was mocking his captors’: a poet’s confession and the Cuban revolution",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/cuba-revolution-poet-documentary-heberto-padilla-castro",
+            "thumbnail": "https://media.guim.co.uk/3a4de9e36227bf2420e360a3c316b9848ff0ac55/120_0_3600_2160/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.46020249649882317,
+            "associatedLocations": [
+                "Cuba"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T13:02:19",
+            "webTitle": "Yemen peace plan at risk over Houthi attacks in shipping channels, says US",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/yemen-peace-plan-at-risk-over-houthi-attacks-in-shipping-channels-says-us",
+            "thumbnail": "https://media.guim.co.uk/5868b064181f367fb1ecf62901a8ee2de90e589d/0_0_5472_3283/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.20155138103291392,
+            "associatedLocations": [
+                "Yemen",
+                "United States"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T12:21:26",
+            "webTitle": "Berlin to Paris night train runs for first time in almost a decade ",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/berlin-paris-night-train-runs-first-time-almost-decade",
+            "thumbnail": "https://media.guim.co.uk/8fb06c9efd9e6e5559c5050034a76a8aeba414b4/0_174_7070_4242/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.8270795764401555,
+            "associatedLocations": [
+                "Berlin, Germany",
+                "Paris, France"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T10:00:02",
+            "webTitle": "Arizona court weighs 1864 abortion ban that risks ‘conditions of misery’",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/arizona-abortion-ban-supreme-court",
+            "thumbnail": "https://media.guim.co.uk/06b267ea84f7dd9f0b89bd4fd688b7cc70144bee/0_118_3500_2100/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.16002795426174998,
+            "associatedLocations": [
+                "Arizona, USA"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T06:53:26",
+            "webTitle": "Tuesday briefing: Will rebels torpedo the Rwanda bill – and what does the fight tell us about the Tories?",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/first-edition-rishi-sunak-rwanda-vote",
+            "thumbnail": "https://media.guim.co.uk/3ae79195c0382b1bdc4881a223e32a5b6a16c1e1/124_178_3225_1935/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.1595864207483828,
+            "associatedLocations": [
+                "Rwanda"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T05:00:57",
+            "webTitle": "‘I no longer feel at home here’: German Muslims frustrated by Israel backing",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/i-no-longer-feel-at-home-here-german-muslims-frustrated-by-israel-backing",
+            "thumbnail": "https://media.guim.co.uk/aaacc50b523dd25f94f06745bc0fb6d7c4db047e/0_347_5854_3512/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.20382294245064259,
+            "associatedLocations": [
+                "Germany",
+                "Israel"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T05:00:57",
+            "webTitle": "Donald Tusk’s second coming: can returning PM remake Poland?",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/donald-tusk-second-coming-can-returning-pm-remake-poland",
+            "thumbnail": "https://media.guim.co.uk/650247d112d00de20f62aeb35626185af213c020/1_0_4999_3000/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.48844143748283386,
+            "associatedLocations": [
+                "Poland"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T05:00:56",
+            "webTitle": "Europeans open to Ukraine joining EU, survey shows before key summit",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/europeans-open-to-ukraine-joining-eu-survey-shows-before-key-summit",
+            "thumbnail": "https://media.guim.co.uk/4160f55a039b6c7fb2e4043e8161effd22dbae86/0_17_3280_1968/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.34227388771250844,
+            "associatedLocations": [
+                "Ukraine"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T05:00:56",
+            "webTitle": "‘I’m not just covering the news – I’m living it’: Gaza’s citizen journalists chronicling life in war",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/gaza-citizen-journalists-war-footage-israel",
+            "thumbnail": "https://media.guim.co.uk/7f9d059f41b37c36c056f6b364a09493c778c373/0_139_1600_960/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.2729034638032317,
+            "associatedLocations": [
+                "Gaza"
+            ]
+        },
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T05:00:55",
+            "webTitle": "‘Hugely frustrating’: international media seek to overcome Gaza ban",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/hugely-frustrating-international-media-seek-to-overcome-gaza-ban",
+            "thumbnail": "https://media.guim.co.uk/88fb3b8de22fa31b738a39cd1f9359aa90bb50ed/0_0_6000_3600/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.18377090990543365,
+            "associatedLocations": [
+                "Gaza"
+            ]
+        }
+    ]
+}
