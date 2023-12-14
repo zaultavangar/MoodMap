@@ -1,7 +1,7 @@
 import { GeoJsonProperties } from "geojson";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { locationPopupInfoState } from "~/atoms";
-import { ArticleEntity } from "~/logic/api";
+import { ArticleEntity } from "~/types";
 
 export type LocationPopupInfo = {
   articles: ArticleEntity[];

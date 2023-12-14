@@ -1,7 +1,5 @@
-import { Feature, FeatureCollection } from "geojson";
-import type { CircleLayer, HeatmapLayer } from "mapbox-gl";
-
-const MAX_ZOOM_LEVEL = 9;
+import { Feature } from "geojson";
+import type { CircleLayer } from "mapbox-gl";
 
 const getMaxArticleCount = (countKey: string, features: Feature[]): number => {
   const counts: number[] = features.map((feature, index) => {
@@ -15,9 +13,12 @@ const getMaxArticleCount = (countKey: string, features: Feature[]): number => {
   return Math.max(...counts)
 }
 
-export const updateHeatMapLayer = (date: string, features: Feature[]): CircleLayer | null => {
-  const sentimentKey: string = date + '-sentiment';
-  const countKey = date + '-count';
+export const updateHeatMapLayer = (features: Feature[], year: number, month?: number): CircleLayer | null => {
+  const formattedMonth = month ? month.toString().padStart(2, '0') : '';
+  const formattedYear = year.toString();
+  const sentimentKey: string = (formattedMonth ? `${formattedMonth}-${formattedYear}` : formattedYear) + '-sentiment';
+  const countKey: string = (formattedMonth ? `${formattedMonth}-${formattedYear}` : formattedYear) + '-count';
+
   const maxCount = getMaxArticleCount(countKey, features);
   if (maxCount > 10 && maxCount <= 15) return null;
   const circleLayer: CircleLayer = {

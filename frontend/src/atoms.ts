@@ -1,24 +1,26 @@
 import { RecoilState, atom } from "recoil";
 import { LocationPopupInfo } from "./hooks/useLocationPopup";
 import { CircleLayer } from "mapbox-gl";
-import { circleLayerr } from "./components/heatmapLayer";
+import { circleLayerr } from "./heatmapLayer";
 import {
   Feature,
   FeatureCollection,
   GeoJsonProperties,
   Geometry,
 } from "geojson";
-import { keywords } from "./data/keywords";
+import { ArticleEntity,  MonthDateInfo } from "./types";
+
 
 export const searchQueryState: RecoilState<string> = atom({
   key: "searchQuery",
   default: "",
 });
 
-export const searchResultsState: RecoilState<string[]> = atom({
+export const searchResultsState: RecoilState<ArticleEntity[]> = atom({
   key: "searchResults",
-  default: keywords as string[],
-});
+  default: [] as ArticleEntity[]
+})
+
 
 export const searchDateFilterPopoverAnchorElState: RecoilState<HTMLButtonElement | null> =
   atom({
@@ -26,18 +28,23 @@ export const searchDateFilterPopoverAnchorElState: RecoilState<HTMLButtonElement
     default: null as HTMLButtonElement | null,
   });
 
-export const selectedDateRangeState: RecoilState<string> = atom({
-  key: "selectedDateRangeState",
-  default: "12-2023",
+export const selectedYearState: RecoilState<number> = atom({
+  key: "selectedYear",
+  default: 2023,
 });
+
+export const selectedMonthState: RecoilState<number | undefined> = atom({
+  key: 'selectedMonth',
+  default: new Date().getMonth()+1 as number | undefined
+})
 
 export const isFullCalendarState: RecoilState<boolean> = atom({
   key: "isFullCalendar",
   default: true,
 });
 
-export const isExpandedStatsOverviewState: RecoilState<boolean> = atom({
-  key: "isExpandedStatsOverview",
+export const isExpandedOverviewPanelState: RecoilState<boolean> = atom({
+  key: "isExpandedOverviewPanel",
   default: true,
 });
 
@@ -58,6 +65,7 @@ export const mapViewStateState: RecoilState<any> = atom({
     longitude: 34.37,
     latitude: 31.5,
     zoom: 1,
+    maxZoom: 12,
   },
 });
 

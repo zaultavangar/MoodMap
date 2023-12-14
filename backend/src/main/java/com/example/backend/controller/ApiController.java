@@ -206,7 +206,7 @@ public class ApiController {
     public void handleProcess() throws Exception{
 //      AugmentedContentResponse contentResponse = guardianService.fetchArticlesByDateRange("2023-11-30", "2023-12-01", 1);
 //      return contentResponse;
-      processor.processArticles("2019-01-01", "2019-05-31", true);
+      processor.processArticles("2022-11-12", "2022-11-12", true);
 
     }
 

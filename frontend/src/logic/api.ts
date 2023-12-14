@@ -1,22 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import { GeoJsonProperties, Geometry } from "geojson";
+import { ArticleEntity, FeatureEntity } from "~/types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export type ArticleEntity = {
-  webTitle: string;
-  webUrl: string;
-  sentimentScore: number;
-  associatedLocation: string[];
-  thumbnail: string;
-  //url: string;
-};
-
-export type FeatureEntity = {
-  type: "Feature";
-  geometry: Geometry;
-  properties: GeoJsonProperties;
-};
 
 export type ApiResponse<T> = {
   timestamp: string;

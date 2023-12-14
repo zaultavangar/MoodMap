@@ -1,11 +1,12 @@
+import React from 'react';
 import { useEffect, useRef } from 'react';
 import './LocationPopup.css';
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { Popup } from "react-map-gl";
 import { useRecoilValue } from "recoil";
-import { selectedDateRangeState } from "~/atoms";
 import type { LocationPopupInfo } from "~/hooks/useLocationPopup";
 import mapboxgl from 'mapbox-gl';
+import { selectedMonthState, selectedYearState } from '~/atoms';
 
 
 export type PopupType = 'click' | 'hover';
@@ -17,8 +18,10 @@ const LocationPopup = ({
   info: LocationPopupInfo
   onClose: () => void;
 }) => {
-  const selectedDateRange = useRecoilValue(selectedDateRangeState);
-  const sentimentKey = `${selectedDateRange}-sentiment`;
+  const selectedYear = useRecoilValue(selectedYearState);
+  const selectedMonth = useRecoilValue(selectedMonthState);
+
+  const sentimentKey = (selectedMonth ? `${selectedMonth.toString()}-${selectedYear.toString()}` : `${selectedYear.toString()}`) + '-sentiment';
   const scrollRef = useRef<mapboxgl.Popup>(null);
 
   useEffect(() => {
@@ -69,7 +72,7 @@ const LocationPopup = ({
           <div style={{width: '100%', height: '1px', backgroundColor: 'black', margin: '7px 0px'}}></div>
           <div className='article-list-container'>
             {info.articles.length > 0 && info.articles.map((article, idx) => (
-              <a style={{textDecoration: 'none'}}  href={article.webUrl} target="_blank">
+              <a key={idx} style={{textDecoration: 'none'}}  href={article.webUrl} target="_blank">
                 <div className='article-container' key={idx} style={{'marginBottom': '5px'}}>
                   <div>
                     <span>{idx+1}. {article.webTitle}</span>

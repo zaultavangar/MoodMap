@@ -1,9 +1,7 @@
 import { Feature, FeatureCollection, GeoJsonProperties } from "geojson";
 import { type ViewStateChangeEvent } from "react-map-gl";
-import { updateHeatMapLayer } from "~/components/heatmapLayer";
+import { updateHeatMapLayer } from "~/heatmapLayer";
 import {
-  ArticleEntity,
-  FeatureEntity,
   handleApiResponse,
   isSuccessfulResponse,
 } from "~/logic/api";
@@ -11,11 +9,12 @@ import { useLocationPopup } from "./useLocationPopup";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   circleLayerState,
-  locationPopupInfoState,
   mapFeatureCollectionState,
   mapViewStateState,
-  selectedDateRangeState,
+  selectedMonthState,
+  selectedYearState,
 } from "~/atoms";
+import { ArticleEntity, FeatureEntity } from "~/types";
 
 // Default location of the map
 // const ProvidenceLatLong = {
@@ -31,7 +30,8 @@ export const GazaLatLong = {
 export function useMapManager() {
   const { handlePopupOpen, handlePopupClose } = useLocationPopup();
 
-  const selectedDateRange = useRecoilValue(selectedDateRangeState);
+  const selectedYear = useRecoilValue(selectedYearState);
+  const selectedMonth = useRecoilValue(selectedMonthState);
 
   const [mapViewState, setMapViewState] = useRecoilState(mapViewStateState);
 
@@ -44,8 +44,8 @@ export function useMapManager() {
     };
   };
 
-  const setLayer = (date: string) => {
-    const h = updateHeatMapLayer(date, featureCollection.features);
+  const setLayer = () => {
+    const h = updateHeatMapLayer(featureCollection.features, selectedYear, selectedMonth);
     if (h !== null) setCircleLayer(h);
   };
 
@@ -63,19 +63,6 @@ export function useMapManager() {
     }
   };
 
-  // const openPopup = (
-  //   lng: number,
-  //   lat: number,
-  //   properties: GeoJsonProperties,
-  //   articles: ArticleEntity[]) => {
-  //   handlePopupOpen({
-  //     popupType: popupType,
-  //     longitude: lng,
-  //     latitude: lat,
-  //     properties: properties,
-  //     articles: articles
-  //   });
-  // }
 
   const searchByLocation = async (
     location: string,
@@ -99,9 +86,12 @@ export function useMapManager() {
     lat: number,
     properties: GeoJsonProperties
   ) => {
-    const [month, year] = selectedDateRange.split("-").map(Number);
-    const firstDay = new Date(year, month - 1, 1);
-    const lastDay = new Date(year, month, 0); // set day to 0 to get last day of the previous month
+    const month = selectedMonth ? selectedMonth : 1;
+    const firstDay = new Date(selectedYear, month - 1, 1);
+    const lastDay = new Date(
+        selectedYear, 
+        selectedMonth ? month+1 : month+12, 
+        0); // set day to 0 to get last day of the previous month
 
     // format dates to YYYY-MM-DD
     const fromDate = firstDay.toISOString().split("T")[0];
@@ -133,7 +123,6 @@ export function useMapManager() {
     setFeatureCollection,
     circleLayer,
     setLayer,
-    selectedDateRange,
     getArticlesAndOpenPopup,
     updateHeatMapLayer,
     handlePopupClose,
