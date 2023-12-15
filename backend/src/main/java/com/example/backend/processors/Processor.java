@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
@@ -56,9 +58,11 @@ public class Processor {
 
   // first check the total number and then use for loop to get each page of articles
   public void processArticles(String fromDate, String toDate, boolean isPreprocessing){
-
+    if (StringUtils.isBlank(fromDate) || StringUtils.isBlank(toDate)) {
+      return;
+    }
     Optional<AugmentedContentResponse> currentResponse = fetchArticlesFromGuardianAPI(fromDate, toDate, 1);
-    if (currentResponse.isEmpty()) return;
+    if (currentResponse == null || currentResponse.isEmpty()) return;
     int total = currentResponse.get().getTotal();
     int MAX_BATCH_ARTICLE_SIZE = 200;
     for (int i=1; i<(total/ MAX_BATCH_ARTICLE_SIZE) +2; i++) {
