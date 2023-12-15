@@ -60,7 +60,9 @@ public class ProcessorTest {
         // Arrange
         String fromDate = "2023-01-01";
         String toDate = "2023-01-01";
-        when(guardianService.fetchArticlesByDateRange(anyString(), anyString(), anyInt())).thenReturn(null);
+        AugmentedContentResponse response = new AugmentedContentResponse();
+        response.setStatus("fail");
+        when(guardianService.fetchArticlesByDateRange(anyString(), anyString(), anyInt())).thenReturn(response);
 
         processor.processArticles(fromDate, toDate, false);
         verify(guardianService).fetchArticlesByDateRange(eq(fromDate), eq(toDate), eq(1));
