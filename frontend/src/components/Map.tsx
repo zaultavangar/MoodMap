@@ -10,8 +10,8 @@ import {
 } from "react-map-gl";
 import { useMapManager } from "~/hooks/useMapManager";
 import LocationPopup from "./locationPopup/LocationPopup";
-import { useRecoilValue } from "recoil";
-import { locationPopupInfoState, selectedMonthState, selectedYearState } from "~/atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { locationPopupInfoState, searchDateRangeOptionOpenState, searchQueryState, searchResultsState, selectedMonthState, selectedYearState } from "~/atoms";
 import { OverviewPanel } from "./overviewPanel/OverviewPanel";
 
 // Accesing the mapbox API token
@@ -38,11 +38,19 @@ const Map = () => {
   const selectedYear = useRecoilValue(selectedYearState);
   const selectedMonth = useRecoilValue(selectedMonthState);
 
+  const setSearchQuery = useSetRecoilState(searchQueryState);
+  const setSearchDateRangeOptionOpen = useSetRecoilState(searchDateRangeOptionOpenState);
+
   const _mapRef = useRef<MapRef>(null);
 
   // for map click and hover operaations
   const handleMouseEventOperation = async (e: MapLayerMouseEvent) => {
     e.preventDefault();
+
+    console.error("hi")
+    setSearchQuery("");
+    setSearchDateRangeOptionOpen(false);
+    
 
     const area = e.features && e.features[0];
 
@@ -61,6 +69,7 @@ const Map = () => {
           center: [e.lngLat.lng, e.lngLat.lat],
         });
       }
+      
       await getArticlesAndOpenPopup(
         area.properties["location"],
         e.lngLat.lng,

@@ -1,0 +1,6 @@
+.search-date-range-option-container{
+  .MuiFormControlLabel-label{
+    font-weight: lighter !important;
+    font-size: 0.9em !important;
+  }
+}

@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./OverviewPanel.css";
 import { useOverviewPanel} from "~/hooks/useOverviewPanel";
 import { MapRef } from "react-map-gl";
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
-import { Box, Paper, Stack, Typography } from "@mui/material";
+import CircleIcon from '@mui/icons-material/Circle';
+import { Grid, Stack, Typography } from "@mui/material";
 import { LocationToDetailsMap } from "~/types";
+import { useRecoilValue } from 'recoil';
+import { searchResultsState } from '~/atoms';
+import * as d3 from "d3";
 
 export const OverviewPanel = ({
   mapRef,
@@ -13,11 +17,24 @@ export const OverviewPanel = ({
   mapRef: React.RefObject<MapRef>;
 }) => {
 
-  const { getOverviewPanelMap, getDateStr, toggleOverviewPanelDisplay } = useOverviewPanel();
+  const { 
+    getOverviewPanelMap, 
+    getDateStr, 
+    isExpandedOverviewPanel,
+    setIsExpandedOverviewPanel,
+    toggleOverviewPanelDisplay } = useOverviewPanel();
 
   const mostMentioned = getOverviewPanelMap().mostMentioned;
   const mostPostive = getOverviewPanelMap().mostPositive;
   const mostNegative = getOverviewPanelMap().mostNegative;
+
+  const searchResults = useRecoilValue(searchResultsState);
+
+  useEffect(() => {
+    if (searchResults.length > 0){
+      setIsExpandedOverviewPanel(false);
+    } 
+  }, searchResults)
 
   const handleLocationClick = (coordinates: number[]) => {
     if (mapRef.current) {
@@ -28,150 +45,130 @@ export const OverviewPanel = ({
     }
   };
 
+  const interpolater = d3.interpolateRgbBasis(["red", "yellow", "green"]);
+
   const renderTopFiveList = (
     list: LocationToDetailsMap[],
     label: string,
     isCountList = false
   ) => (
-    // <Stack direction="row">
-    //   <Typography variant="body2">{label}</Typography>
-    //   <Stack direction="column">
-    //     {list.map((m, idx) => {
-    //       const key = Object.keys(m)[0];
-    //       const locationName =
-    //         key.length >= 16 ? `${key.substring(0, 16)}...` : key;
-    //       const value = isCountList
-    //         ? m[key].count
-    //         : m[key].sentiment.toFixed(2);
-
-    //       return (
-    //         <Box
-    //           key={idx}
-    //           sx={{
-    //             cursor: "pointer",
-    //             width: "150px",
-    //             display: "flex",
-    //             flexDirection: "row",
-    //             justifyContent: "space-between",
-    //             padding: "6px",
-    //             gap: "10px",
-    //             borderRadius: "5px",
-    //           }}
-    //           // className="location-container"
-    //           onClick={() => handleLocationClick(m[key].coordinates)}
-    //         >
-    //           <Typography variant="body2" component="p">
-    //             {locationName}
-    //           </Typography>
-    //           <Typography variant="body2" component="p">
-    //             {value}
-    //           </Typography>
-    //         </Box>
-    //       );
-    //     })}
-    //   </Stack>
-    // </Stack>
-    <div className="top-five-extreme-container">
-      <div id="list-header">{label}</div>
-      <div className="top-five-list">
+    <Grid 
+      container
+      direction="column"
+      spacing={1}
+    >
+      <Grid item>
+        <Typography 
+          variant="subtitle1" 
+          component='h6'
+          fontSize={'1.3em'}
+          >
+            {label}
+          </Typography>
+      </Grid>
+      <Grid item spacing={1}>
         {list.map((m, idx) => {
           const location = Object.keys(m)[0];
           const locationName =
             location.length >= 16 ? `${location.substring(0, 16)}...` : location;
+          const sentimentScore = m[location].sentiment;
           const value = isCountList
             ? m[location].count
-            : m[location].sentiment.toFixed(2);
+            : sentimentScore.toFixed(2);
 
           return (
-            <div
+            <Stack
               key={idx}
-              className="location-container"
+              className='location-container'
+              direction="row"
+              // justifyContent="space-between"
+              alignItems="center"
+              spacing={2}
+              sx={{ padding: '10px'}}
               onClick={() => handleLocationClick(m[location].coordinates)}
             >
-              <div id="location-name">{locationName}</div>
-              <div>{value}</div>
-            </div>
-          );
+              <Typography variant="body2" component="p" sx={{ flex: 1 }}>
+                {locationName}
+              </Typography>
+              {isCountList && 
+                <CircleIcon style={{color: interpolater(sentimentScore), fontSize: '10px'}}/>
+              }
+              <Typography variant="body2" component="p">
+                {value}
+              </Typography>
+          </Stack>
+          )
         })}
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 
   return (
-    // <Paper
-    //   elevation={2}
-    //   sx={{
-    //     zIndex: 5,
-    //     position: "absolute",
-    //     right: "2vw",
-    //     bottom: "3vh",
-    //     padding: "10px",
-    //     gap: "15px",
-    //   }}
-    // >
-    //   {isExpandedStatsOverview ? (
-    //     <>
-    //       <Stack direction="row" justifyContent="space-between">
-    //         <Typography
-    //           variant="subtitle1"
-    //           component="h6"
-    //           fontWeight="bold"
-    //           // sx={{ textDecoration: "underline" }}
-    //         >
-    //           Overview for {getFullDateFromDateStr()}
-    //         </Typography>
-    //         <UnfoldLessIcon
-    //           className="toggle-icon"
-    //           onClick={toggleStatsOverviewDisplay}
-    //         />
-    //       </Stack>
-    //       <Stack direction="row" gap="15px">
-    //         {renderList(mostMentioned, "Most Mentioned", true)}
-    //         {renderList(mostPostive, "Most Positive")}
-    //         {renderList(mostNegative.reverse(), "Most Negative")}
-    //       </Stack>
-    //     </>
-    //   ) : (
-    //     <Stack
-    //       direction="row"
-    //       alignItems="center"
-    //       gap="5px"
-    //       onClick={toggleStatsOverviewDisplay}
-    //     >
-    //       <Typography variant="body2" component="h6">
-    //         See overview for {getFullDateFromDateStr()}
-    //       </Typography>
-    //       <UnfoldLessIcon className="toggle-icon" />
-    //     </Stack>
-    //   )}
-    // </Paper>
-    <div className="stats-overview-container">
-      {toggleOverviewPanelDisplay ? (
+    // <>
+      <Grid
+        container
+        className='outer-container'
+        direction="column"
+        justifyContent="center"
+        alignItems= {isExpandedOverviewPanel ? "flex-start" : 'center'}
+        spacing={2}
+        sx={{
+          zIndex: 5,
+          position: "absolute",
+          right: "2vw",
+          bottom: "3vh",
+          backgroundColor: 'grey',
+          width: 'max-content',
+          maxWidth: '70vw',
+          padding: isExpandedOverviewPanel ? '0px' : '5px',
+          paddingBottom: isExpandedOverviewPanel ? '5px' : '0px'
+        }}
+      >
+      {isExpandedOverviewPanel ?
         <>
-          <div className="header-container">
-            <div id="stats-overview-title">
-              <u>Overview for {getDateStr()}</u>
-            </div>
+        <Grid item>
+          <Stack 
+            className='header-container'
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography
+              variant="subtitle1"
+              component="h6"
+              fontWeight="bold"
+              fontSize={'1.4em'}
+            >
+              Overview for {getDateStr()}
+            </Typography>
             <UnfoldLessIcon
               className="toggle-icon"
               onClick={toggleOverviewPanelDisplay}
             />
-          </div>
-          <div className="most-extremes-container">
-            {renderTopFiveList(mostMentioned, "Most Mentioned", true)}
-            {renderTopFiveList(mostPostive, "Most Positive")}
-            {renderTopFiveList(mostNegative.reverse(), "Most Negative")}
-          </div>
-        </>
-      ) : (
-        <div
-          className="condensed-stats-overview"
-          onClick={toggleOverviewPanelDisplay}
-        >
-          <div>See overview for {getDateStr()}</div>
-          <UnfoldMoreIcon className="toggle-icon" />
-        </div>
-      )}
-    </div>
+          </Stack>
+        </Grid>
+        <Grid item>
+          <Grid 
+            container
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            spacing={2} 
+          >
+            <Grid item>{renderTopFiveList(mostMentioned, "Most Mentioned", true)}</Grid>
+            <Grid item>{renderTopFiveList(mostPostive, "Most Positive")}</Grid>
+            <Grid item>{renderTopFiveList(mostNegative.reverse(), "Most Negative")}</Grid>
+          </Grid>
+        </Grid>
+        </> 
+        : 
+        <Grid item>
+          <UnfoldMoreIcon
+            className="toggle-icon"
+            onClick={toggleOverviewPanelDisplay}
+          />
+        </Grid>
+      }
+    </Grid>
   );
 };
