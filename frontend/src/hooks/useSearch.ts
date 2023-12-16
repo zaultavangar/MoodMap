@@ -15,7 +15,15 @@ export function useSearch() {
   const search = async (input: string) => {
     let res: FrontendApiResponse<ArticleEntity[]>; 
     if (searchByDateRange) {
-      const formattedMonth = selectedMonth ? selectedMonth.toString().padStart(2, '0') : '';
+      let startMonth: string;
+      let endMonth: string;
+      if (selectedMonth){
+        startMonth = endMonth = selectedMonth.toString().padStart(2, '0');
+      }
+      else {
+        startMonth = '01';
+        endMonth = '12'
+      }
       const formattedYear = selectedYear.toString();
       const lastDayOfMonth = new Date(selectedYear, selectedMonth, 0).getDate();
 
@@ -23,8 +31,8 @@ export function useSearch() {
         "search",
         {
           input: input,
-          fromDate: `${formattedYear}-${formattedMonth}-01`,
-          toDate: `${formattedYear}-${formattedMonth}-${lastDayOfMonth.toString()}`
+          fromDate: `${formattedYear}-${startMonth}-01`,
+          toDate: `${formattedYear}-${endMonth}-${lastDayOfMonth.toString()}`
         }
       )
     } else {
