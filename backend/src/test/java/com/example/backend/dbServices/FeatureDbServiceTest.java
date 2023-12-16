@@ -28,12 +28,21 @@ class FeatureDbServiceTest {
   @InjectMocks
   private FeatureDbService featureDbService;
 
+  /**
+   * Tests the saving of a single feature entity to the database.
+   * Verifies that the save method of featureRepository is called with any FeatureEntity class.
+   */
   @Test
   void testSaveOne() {
     featureDbService.saveOne(new FeatureEntity());
     verify(featureRepository).save(any(FeatureEntity.class));
   }
 
+  /**
+   * Tests the retrieval of feature entities from the database.
+   * Verifies that the getAllFeatures method of featureRepository is called.
+   * Asserts that the size and content of the returned list match the expected values.
+   */
   @Test
   void testGetFeatures() {
     GeoJsonGeometry franceGeometry = GeoJsonGeometry.builder()
@@ -75,12 +84,20 @@ class FeatureDbServiceTest {
     assertEquals(gazaGeometry, features.get(1).getGeometry());
   }
 
+  /**
+   * Tests finding a feature entity by its location.
+   * Verifies that the findByLocation method of featureRepository is called with the specified location.
+   */
   @Test
   void testFindFeatureByLocation() {
     featureDbService.findFeatureByLocation("Gaza");
     verify(featureRepository).findByLocation("Gaza");
   }
 
+  /**
+   * Tests the creation of a FeatureEntity object.
+   * Verifies that the created FeatureEntity matches the expected structure and content.
+   */
   @Test
   void testCreateFeatureEntity() {
     GeoJsonGeometry geometry = GeoJsonGeometry.builder()
