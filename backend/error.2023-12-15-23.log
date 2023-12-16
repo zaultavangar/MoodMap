@@ -1,0 +1,3 @@
+2023-12-15 23:09:57,395 ERROR [Processor.java:87] - Invalid response, error retrieving articles from the Guardian API.
+2023-12-15 23:12:00,634 ERROR [Processor.java:87] - Invalid response, error retrieving articles from the Guardian API.
+2023-12-15 23:13:06,561 ERROR [Processor.java:87] - Invalid response, error retrieving articles from the Guardian API.

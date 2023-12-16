@@ -1,4 +1,4 @@
-package com.example.backend;
+package com.example.backend.scheduledTask;
 
 import com.example.backend.processors.Processor;
 import com.example.backend.scheduledTask.ScheduledArticleTask;

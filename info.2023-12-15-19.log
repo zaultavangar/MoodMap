@@ -1,0 +1,2 @@
+2023-12-15 19:24:23,916 INFO [SimpleMessageListenerContainer.java:645] - Waiting for workers to finish.
+2023-12-15 19:24:24,216 INFO [SimpleMessageListenerContainer.java:649] - Successfully waited for workers to finish.

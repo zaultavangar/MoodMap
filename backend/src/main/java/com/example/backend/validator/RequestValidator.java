@@ -6,7 +6,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-// STATUS: Not tested
 public interface RequestValidator extends Function<SearchRequest, ValidationResult> {
   static RequestValidator isInputValid(boolean required){
     return searchRequest -> {
@@ -17,23 +16,43 @@ public interface RequestValidator extends Function<SearchRequest, ValidationResu
   }
 
 
-  static  RequestValidator isDateRangeValid(boolean required){
+  static RequestValidator isDateRangeValid(boolean required) {
     return searchRequest -> {
       Optional<String> fromDateStr = searchRequest.fromDate();
       Optional<String> toDateStr = searchRequest.toDate();
+
+      // Check if fromDate is empty
       if (fromDateStr.isEmpty()) {
         return required ? ValidationResult.FROM_DATE_INVALID : ValidationResult.SUCCESS;
       }
+
+      // Check if toDate is empty
       if (toDateStr.isEmpty()) {
-        return required ? ValidationResult.FROM_DATE_INVALID : ValidationResult.SUCCESS;
+        return required ? ValidationResult.TO_DATE_INVALID : ValidationResult.SUCCESS;
       }
+
+      // Validate fromDate format
+      if (!fromDateStr.get().matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+        return ValidationResult.FROM_DATE_INVALID;
+      }
+
+      // Validate toDate format
+      if (!toDateStr.get().matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+        return ValidationResult.TO_DATE_INVALID;
+      }
+
       try {
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         LocalDate fromDate = LocalDate.parse(fromDateStr.get(), format);
         LocalDate toDate = LocalDate.parse(toDateStr.get(), format);
-        return fromDate.isAfter(toDate) ? ValidationResult.DATE_RANGE_INVALID : ValidationResult.SUCCESS;
 
-      } catch (Exception e){
+        // Check if fromDate is after toDate
+        if (fromDate.isAfter(toDate)) {
+          return ValidationResult.DATE_RANGE_INVALID;
+        }
+
+        return ValidationResult.SUCCESS;
+      } catch (Exception e) {
         return ValidationResult.DATE_RANGE_INVALID;
       }
     };
@@ -52,43 +71,6 @@ public interface RequestValidator extends Function<SearchRequest, ValidationResu
       } else {
         return ValidationResult.DATES_INCONSISTENT;
       }
-    };
-  }
-
-  static RequestValidator isFromDateValid(boolean required) {
-    return searchRequest -> {
-      Optional<String> fromDate = searchRequest.fromDate();
-      if (fromDate.isEmpty()) {
-        return required ? ValidationResult.FROM_DATE_INVALID : ValidationResult.SUCCESS;
-      }
-
-      String dateStr = fromDate.get();
-      if (!dateStr.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-        return ValidationResult.FROM_DATE_INVALID;
-      }
-
-      try {
-        String[] parts = dateStr.split("-");
-        int month = Integer.parseInt(parts[1]);
-        int day = Integer.parseInt(parts[2]);
-
-        if (month < 1 || month > 12 || day < 1 || day > 31) {
-          return ValidationResult.FROM_DATE_INVALID;
-        }
-
-        return ValidationResult.SUCCESS;
-      } catch (NumberFormatException e) {
-        return ValidationResult.FROM_DATE_INVALID;
-      }
-    };
-  }
-
-  static RequestValidator isToDateValid(boolean required){
-    return searchRequest -> {
-      Optional<String> toDate = searchRequest.toDate();
-      // should be in yyyy-mm-dd format
-      return toDate.map(s -> s.matches("^\\d{4}-\\d{2}-\\d{2}$") ?
-          ValidationResult.SUCCESS : ValidationResult.TO_DATE_INVALID).orElseGet(() -> !required ? ValidationResult.SUCCESS : ValidationResult.TO_DATE_INVALID);
     };
   }
 
