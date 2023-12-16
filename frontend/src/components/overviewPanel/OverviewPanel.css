@@ -1,90 +1,18 @@
-.stats-overview-container{
-  background-color: grey;
-  font-weight: 400;
-  padding: 10px;
-  border-radius: 10px;
-  position: absolute;
-  right: 2vw;
-  bottom: 3vh;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 15px;
+.location-container{
+  cursor: pointer;
+  border-radius: 5px;
+}
 
-  .condensed-stats-overview{
-    cursor: pointer;
-    font-size: 1.2em;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
+.location-container:hover{
+  background-color: rgb(40, 40, 40);
+  color: white;
+}
 
-  .toggle-icon{
-    cursor: pointer;
-  }
+.toggle-icon{
+  cursor: pointer;
+}
 
-  .header-container{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    #stats-overview-title {
-      font-size: 1.4em;
-      font-weight: 500;
-    }
-
-    .toggle-icon:hover{
-      transform: scale(1.1);
-    }
-  }
-
- 
-
-  #list-header {
-    font-size: 1.1em;
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-
-  .most-extremes-container {
-    display: flex;
-    gap: 15px;
-
-    .top-five-extreme-container{
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-
-
-      .top-five-list {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-
-        .location-container{
-          cursor: pointer;
-          width: 150px;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          padding: 6px;
-          gap: 10px;
-          border-radius: 5px;
-        }
-
-        .location-container:hover{
-          background-color: rgb(40, 40, 40);
-          color: white;
-        }
-      }
-
-      
-    }
-  }
-
+/** VERY IMPORTANT, DON'T REMOVE*/
+.css-142xza3-MuiGrid-root>.MuiGrid-item{
+  padding: 0px !important;
 }

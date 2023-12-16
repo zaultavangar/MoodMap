@@ -4,8 +4,9 @@ export type ArticleEntity = {
   webTitle: string;
   webUrl: string;
   sentimentScore: number;
-  associatedLocation: string[];
+  associatedLocations: string[];
   thumbnail: string;
+  webPublicationDate: string
   //url: string;
 };
 

@@ -21,6 +21,15 @@ export const searchResultsState: RecoilState<ArticleEntity[]> = atom({
   default: [] as ArticleEntity[]
 })
 
+export const searchDateRangeOptionOpenState: RecoilState<boolean> = atom({
+  key: 'searchDateRangeOptionOpen',
+  default: false
+})
+
+export const searchByDateRangeState: RecoilState<boolean> = atom({
+  key: 'searchByDateRange',
+  default: false
+})
 
 export const searchDateFilterPopoverAnchorElState: RecoilState<HTMLButtonElement | null> =
   atom({

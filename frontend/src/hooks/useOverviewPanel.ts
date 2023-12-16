@@ -80,6 +80,8 @@ export function useOverviewPanel() {
   return {
     getOverviewPanelMap,
     getDateStr,
+    isExpandedOverviewPanel,
+    setIsExpandedOverviewPanel,
     toggleOverviewPanelDisplay
   }
 }
