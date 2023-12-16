@@ -32,6 +32,10 @@ class GeocodingServiceTest {
   @Mock
   private GeocodingConfig config;
 
+  /**
+   * Tests successful geocoding response for a given location. Mocks the RestTemplate
+   * call and asserts that no exception is thrown and the response matches expected values.
+   */
   @Test
   void testGetGeocodeResultsForLocationSuccess(){
     GeocodeGeometry geometry = new GeocodeGeometry(Map.of(
@@ -54,6 +58,10 @@ class GeocodingServiceTest {
     verify(restTemplate).getForEntity(any(String.class), eq(GeocodeResponse.class));
   }
 
+  /**
+   * Tests the handling of a failed geocoding response. Mocks a failed response from RestTemplate
+   * and asserts that a GeocodeApiException is thrown by the service.
+   */
   @Test
   void testGeoGeocodeResultsForLocationFailure(){
     GeocodeGeometry geometry = new GeocodeGeometry(Map.of(

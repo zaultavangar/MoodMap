@@ -23,6 +23,10 @@ class ScheduledArticleTaskTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Tests if the scheduled task correctly triggers the processing of articles for the current day.
+     * It verifies that the processor is called with the correct date parameters.
+     */
     @Test
     void testScheduledTask() {
         // Arrange

@@ -11,6 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ArticleEntityTest {
 
+  /**
+   * Validates the clearBodyText method of ArticleEntity.
+   * Ensures that after clearing, the body text of the article entity is an empty string.
+   */
   @Test
   void testClearBodyText() {
     ArticleEntity article = ArticleEntity.builder()

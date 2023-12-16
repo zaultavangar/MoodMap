@@ -33,6 +33,10 @@ class NerServiceTest {
   @Mock
   private HuggingFaceConfig config;
 
+  /**
+   * Tests the successful execution of a sentiment analysis request using the Hugging Face API.
+   * Validates the correct processing and mapping of sentiment scores from the API response.
+   */
   @Test
   void testMakeHuggingFaceSentimentRequest() {
 
@@ -68,6 +72,10 @@ class NerServiceTest {
     verify(restTemplate).postForEntity(eq(API_URL), any(HttpEntity.class), eq(String.class));
   }
 
+  /**
+   * Tests the behavior of the sentiment analysis request when receiving a non-2xx response from the Hugging Face API.
+   * Expects an exception to be thrown, simulating API failure scenarios.
+   */
   // HG = Hugging Face
   @Test
   void makeHuggingFaceSentimentRequestWhenNon2xxResponseFromHG() {
@@ -80,30 +88,52 @@ class NerServiceTest {
       nerService.makeHuggingFaceSentimentRequest("Text to analyze");
     });
   }
+
+  /**
+   * Tests the getEntities method with empty input.
+   * Ensures that no entities are extracted and an empty list is returned.
+   */
   @Test
   void testGetEntitiesOnEmptyInput() {
     List<String> locations = nerService.getEntities(" ");
     assertEquals(new ArrayList<>(), locations);
   }
 
+  /**
+   * Tests the extraction of entities (locations) from an input without any identifiable locations.
+   * Verifies the correctness of the empty result list.
+   */
   @Test
   void testGetEntitiesOnInputWithNoLocations() {
     List<String> locations = nerService.getEntities("A stream of water");
     assertEquals(new ArrayList<>(), locations);
   }
 
+  /**
+   * Tests the entity extraction functionality for a given input text with identifiable locations.
+   * Checks for accurate identification and extraction of location entities.
+   */
   @Test
   void testGetEntitiesExtractsLocations() {
     List<String> locations = nerService.getEntities("Tension between Germany and Brazil escalates");
     assertEquals(List.of("Germany", "Brazil"), locations);
   }
 
+  /**
+   * Tests the entity extraction, including locations and nationalities, from a given input text.
+   * Validates the extraction of multiple entity types from the input.
+   */
   @Test
   void testGetEntitiesExtractsLocationsAndNationalities() {
     List<String> locations = nerService.getEntities(
         "Tension between Germany and Brazil escalates, deal with French looming");
     assertEquals(List.of("Germany", "Brazil", "France"), locations);
   }
+
+  /**
+   * Tests the successful calculation of an overall sentiment score from a given text.
+   * Validates the accuracy and correctness of the sentiment score based on the API response.
+   */
   @Test
   void getSentimentScoreSuccess() {
     String mockScores = "[[" +
@@ -126,6 +156,10 @@ class NerServiceTest {
     verify(restTemplate).postForEntity(eq(API_URL), any(HttpEntity.class), eq(String.class));
   }
 
+  /**
+   * Tests the calculation of sentiment score with an invalid format in the API response.
+   * Ensures that the method handles format errors correctly, throwing an appropriate exception.
+   */
   @Test
   void getSentimentScoreFailure() {
     String mockScores = "[[" +

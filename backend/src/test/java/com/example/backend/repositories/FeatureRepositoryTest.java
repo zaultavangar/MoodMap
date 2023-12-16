@@ -54,6 +54,13 @@ class FeatureRepositoryTest {
     featureRepository.deleteAll();
   }
 
+  /**
+   * Tests the findByLocation method to ensure it successfully retrieves a feature entity based on a specific location.
+   * This test checks if the repository can accurately find and return a feature entity with the location 'France'.
+   * It first verifies that the returned Optional is not empty, indicating that a match was found.
+   * The test then confirms that the ID of the retrieved feature entity matches the expected ID, ensuring the correct entity is retrieved.
+   * This test is crucial for validating the repository's ability to query feature entities based on geographical location.
+   */
   @Test
   void testFindByLocationSuccessfullyFindsFeature() {
     Optional<FeatureEntity> featureEntity = featureRepository.findByLocation("France");
@@ -63,6 +70,13 @@ class FeatureRepositoryTest {
     assertThat(featureEntity.get().get_id()).isEqualTo((FEATURE_1.get_id()));
   }
 
+  /**
+   * Tests the findByLocation method to validate its behavior when no matching feature entity is found for a given location.
+   * In this case, the test checks the scenario where the repository is queried for a location 'Germany', which does not exist in the setup data.
+   * The test asserts that the returned Optional is empty, signifying no match was found in the repository.
+   * This test is important to ensure that the repository correctly handles queries for non-existing locations, returning an empty result instead of incorrect data.
+   * It confirms the repository's ability to handle negative cases where the requested data is not present.
+   */
   @Test
   void testFindByLocationReturnsNoFeaturesWhenNoMatchIsFound() {
     Optional<FeatureEntity> featureEntity = featureRepository.findByLocation("Germany");
