@@ -45,6 +45,11 @@ public class FeatureDbUpdaterServiceTest {
   @InjectMocks
   private FeatureDbUpdaterService featureDbUpdaterService;
 
+  /**
+   * Verifies the behavior of updateFeaturesForArticle when valid article data is provided.
+   * It tests location extraction, geocoding, and feature entity creation. Asserts proper handling
+   * of sentiment score and associated locations in ArticleNerProperties.
+   */
   @Test
   void testUpdateFeaturesForArticle(){
     try {
@@ -134,6 +139,11 @@ public class FeatureDbUpdaterServiceTest {
 
   }
 
+  /**
+   * Tests updateFeaturesForArticle with an article having no identifiable locations.
+   * Ensures no interactions with geocoding or feature services and validates the resulting
+   * ArticleNerProperties with zero features and the original sentiment score.
+   */
   @Test
   void testUpdateFeaturesForArticleWithNoLocationsFound(){
     try {
@@ -170,6 +180,11 @@ public class FeatureDbUpdaterServiceTest {
 
   }
 
+  /**
+   * Assesses updateFeaturesForArticle's response to a null geocode result for a location.
+   * Checks feature creation for valid responses and handles missing data, verifying
+   * the resultant ArticleNerProperties.
+   */
   @Test
   void testUpdateFeaturesForArticleWithNullGeocodeResponse(){
     try {

@@ -21,6 +21,10 @@ public class JsonUtilityTest {
     private String name;
     private int age;
   }
+  /**
+   * Tests readJson method with a simple class type.
+   * Validates if the JSON string is correctly deserialized into a Person object with expected name and age.
+   */
   @Test
   void testReadJsonWithClass(){
     try {
@@ -37,6 +41,10 @@ public class JsonUtilityTest {
 
   }
 
+  /**
+   * Tests readJson method with a specified Type (List of Persons).
+   * Verifies if the JSON array is accurately deserialized into a list of Person objects with correct attributes.
+   */
   @Test
   void testReadJsonWithType(){
     try {
@@ -54,6 +62,10 @@ public class JsonUtilityTest {
     }
   }
 
+  /**
+   * Tests the serialize method.
+   * Confirms if a Person object is correctly serialized into a JSON string with matching name and age values.
+   */
   @Test
   void testSerialize(){
     try {

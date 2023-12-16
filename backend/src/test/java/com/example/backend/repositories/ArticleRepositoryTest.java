@@ -74,6 +74,10 @@ class ArticleRepositoryTest {
     articleRepository.deleteAll();
   }
 
+  /**
+   * Verifies that findById successfully retrieves an article when provided with a valid ID.
+   * Asserts that the retrieved article matches the expected values.
+   */
   @Test
   void testFindByIdRetrievesArticleForValidId() {
     Optional<ArticleEntity> articleEntity = articleRepository.findById(ARTICLE_1.get_id());
@@ -89,6 +93,10 @@ class ArticleRepositoryTest {
     assertThat(articleEntity.get().getAssociatedLocations()).isEqualTo(ARTICLE_1.getAssociatedLocations());
   }
 
+  /**
+   * Tests that findById does not retrieve an article for an invalid or non-existent ID.
+   * Asserts that the returned Optional is empty and accessing it throws NoSuchElementException.
+   */
   @Test
   void testFindByIdDoesNotRetrieveArticleForInvalidId(){
     Optional<ArticleEntity> articleEntity = articleRepository.findById(new ObjectId());
@@ -96,6 +104,10 @@ class ArticleRepositoryTest {
     assertThrows(NoSuchElementException.class, articleEntity::get);
   }
 
+  /**
+   * Tests the deleteById method by providing a valid ID.
+   * Ensures that the specified article is successfully deleted from the repository.
+   */
   @Test
   void testShouldDeleteByIdWhenGivenValidId() {
     // delete
@@ -107,6 +119,11 @@ class ArticleRepositoryTest {
 
   }
 
+
+  /**
+   * Tests deleteById with an invalid ID, ensuring that it does not affect other articles.
+   * Verifies that the method call does not throw any exception.
+   */
   @Test
   void testShouldIgnoreDeleteByIdWhenGivenInvalidId(){
     ObjectId objectId = new ObjectId();
@@ -120,7 +137,10 @@ class ArticleRepositoryTest {
   }
 
 
-
+  /**
+   * Tests findByDateRange for successfully finding articles within a given date range.
+   * Asserts that the correct number of articles are retrieved and match the expected results.
+   */
   @Test
   void testFindByDateRangeSuccessfullyFindsArticlesInGivenRange() {
     Month month = Month.NOVEMBER;
@@ -138,6 +158,10 @@ class ArticleRepositoryTest {
 
   }
 
+  /**
+   * Tests findByDateRange for a single day, verifying correct article retrieval.
+   * Ensures the method returns only articles published within the specific date range.
+   */
   @Test
   void testFindByDateRangeSuccessfullyFindsArticlesForASingleDay() {
     Month month = Month.NOVEMBER;
@@ -151,6 +175,10 @@ class ArticleRepositoryTest {
     assertThat(expectedArticle1.get_id()).isEqualTo(ARTICLE_2.get_id());
   }
 
+  /**
+   * Tests findByDateRange when no articles match the given date range.
+   * Verifies that the method returns an empty list in such cases.
+   */
   @Test
   void testFindByDateRangeReturnsNoArticlesWhenNoMatchFind(){
     Month month = Month.NOVEMBER;
@@ -161,6 +189,11 @@ class ArticleRepositoryTest {
     assertThat(articles.isEmpty()).isTrue();
   }
 
+
+  /**
+   * Tests searchByInput for successfully finding articles matching a given input.
+   * Ensures the correct articles are retrieved based on the search criteria.
+   */
   @Test
   void testSearchByInputFindsArticlesWhenMatchIsFound() {
     Month month = Month.NOVEMBER;
@@ -174,12 +207,20 @@ class ArticleRepositoryTest {
 
   }
 
+  /**
+   * Tests searchByInput with a search term that matches no articles.
+   * Verifies that the method returns an empty list when no matches are found.
+   */
   @Test
   void testSearchByInputReturnsNoArticlesWhenNoMatchIsFound() {
     List<ArticleEntity> articles = articleRepository.searchByInput("Mozambique");
     assertThat(articles.isEmpty()).isTrue();
   }
 
+  /**
+   * Tests searchByInputAndDateRange for filtering articles based on both input and date range.
+   * Verifies that only articles matching both criteria are returned.
+   */
   @Test
   void testSearchByInputAndDateRangeSuccessfullyFiltersOutBasedOnDate() {
     Month month = Month.NOVEMBER;
@@ -194,6 +235,13 @@ class ArticleRepositoryTest {
     assertThat(expectedArticle.get_id()).isEqualTo(ARTICLE_1.get_id());
   }
 
+  /**
+   * Tests the searchByInputAndDateRange method to check its efficiency in filtering articles based on input and a specific date range.
+   * This test ensures that the method filters out articles accurately when both a specific input ("Russia") and a precise date range (a single day in November 2023) are provided.
+   * The test asserts that the correct number of articles, which match the given input and fall within the specified date range, are retrieved.
+   * It further verifies that the retrieved articles' IDs match the expected IDs, ensuring the method's effectiveness in simultaneously filtering by text input and date range.
+   * This test is vital to confirm the repository's capability in handling complex queries that involve both textual and temporal criteria.
+   */
   @Test
   void testSearchByInputAndDateRangeSuccessfullyFiltersOutBasedOnInput() {
     Month month = Month.NOVEMBER;
@@ -208,6 +256,10 @@ class ArticleRepositoryTest {
     assertThat(expectedArticle.get_id()).isEqualTo(ARTICLE_4.get_id());
   }
 
+  /**
+   * Tests searchByLocation for successfully finding articles related to a specific location.
+   * Checks if the retrieved articles are accurately associated with the given location.
+   */
   @Test
   void testSearchByInputAndDateRangeReturnsNoArticlesWhenNoMatchIsFound() {
     Month month = Month.NOVEMBER;
@@ -218,6 +270,10 @@ class ArticleRepositoryTest {
     assertThat(articles.isEmpty()).isTrue();
   }
 
+  /**
+   * Tests searchByLocation when no articles are associated with a given location.
+   * Verifies that the method returns an empty list in such cases.
+   */
   @Test
   void testSearchByLocationFindsArticlesWhenMatchIsFound() {
     Month month = Month.NOVEMBER;
@@ -229,12 +285,20 @@ class ArticleRepositoryTest {
 
   }
 
+  /**
+   * Tests searchByLocationAndDateRange for correctly filtering articles based on location and date.
+   * Asserts that only articles matching both location and date range criteria are returned.
+   */
   @Test
   void testSearchByLocationReturnsNoArticlesWhenNoMatchIsFound() {
     List<ArticleEntity> articles = articleRepository.searchByLocation("Mozambique");
     assertThat(articles.isEmpty()).isTrue();
   }
 
+  /**
+   * Tests searchByLocationAndDateRange for cases where no articles match the criteria.
+   * Ensures that an empty list is returned when no matching articles are found.
+   */
   @Test
   void testSearchByLocationAndDateRangeSuccessfullyFiltersOutBasedOnDate() {
     Month month = Month.NOVEMBER;
@@ -249,6 +313,12 @@ class ArticleRepositoryTest {
     assertThat(expectedArticle.get_id()).isEqualTo(ARTICLE_1.get_id());
   }
 
+  /**
+   * Tests the searchByLocationAndDateRange method to ensure it correctly filters articles based on both location and a specified date range.
+   * In this test, it verifies that the method successfully filters out articles that do not match the input location ("Russia") within the given date range.
+   * Asserts that only one article, which matches the criteria of being related to "Russia" and falls within the specified date range, is returned.
+   * Checks that the returned article's ID matches the expected article's ID, confirming correct filtering based on location and date range.
+   */
   @Test
   void testSearchByLocationAndDateRangeSuccessfullyFiltersOutBasedOnInput() {
     Month month = Month.NOVEMBER;
@@ -263,6 +333,10 @@ class ArticleRepositoryTest {
     assertThat(expectedArticle.get_id()).isEqualTo(ARTICLE_4.get_id());
   }
 
+  /**
+   * Tests searchByLocationAndDateRange for cases where no articles match the criteria.
+   * Ensures that an empty list is returned when no matching articles are found.
+   */
   @Test
   void testSearchByLocationAndDateRangeReturnsNoArticlesWhenNoMatchIsFound() {
     Month month = Month.NOVEMBER;

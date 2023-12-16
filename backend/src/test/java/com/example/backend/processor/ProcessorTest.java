@@ -44,6 +44,12 @@ public class ProcessorTest {
     @InjectMocks
     private Processor processor;
 
+    /**
+     * Tests processing of articles with valid date ranges. This method checks if the processor
+     * correctly fetches and processes articles from The Guardian API within the specified date range.
+     * It verifies that the GuardianService is called the expected number of times and that articles
+     * are processed with NER and sentiment analysis.
+     */
     @Test
     void testProcessArticles_ValidDateRangeWithArticles() {
         // Arrange
@@ -79,7 +85,11 @@ public class ProcessorTest {
 
     }
 
-
+    /**
+     * Tests the processor's response to invalid or blank date inputs. This method ensures that
+     * no API calls are made to fetch articles when provided with invalid or empty date strings.
+     *
+     */
     @Test
     void testProcessArticles_InvalidOrBlankDates() throws Exception {
         // Arrange
@@ -91,6 +101,11 @@ public class ProcessorTest {
         verify(guardianService, never()).fetchArticlesByDateRange(anyString(), anyString(), anyInt());
     }
 
+    /**
+     * Tests the processor's behavior when The Guardian API returns an empty optional or a failure response.
+     * This method checks if the processor correctly identifies and handles cases where the API response
+     * indicates a failure, ensuring no erroneous processing of articles.
+     */
     @Test
     void testProcessArticles_ApiReturnsEmptyOptional() throws Exception {
         // Arrange
@@ -105,6 +120,11 @@ public class ProcessorTest {
         verify(guardianService).fetchArticlesByDateRange(eq(fromDate), eq(toDate), eq(1));
     }
 
+    /**
+     * Tests processing of an individual article with associated features such as locations.
+     * This method verifies that the processor correctly extracts features, assigns sentiment scores,
+     * and creates an ArticleEntity with the relevant data extracted from an API response item.
+     */
     @Test
     void testProcessArticle_WithAssociatedFeatures(){
         try {
@@ -161,6 +181,11 @@ public class ProcessorTest {
         }
     }
 
+    /**
+     * Tests the processing of an individual article when no associated locations are found.
+     * This method checks if the processor correctly handles cases where NER analysis yields no locations,
+     * ensuring proper handling of such articles without location data.
+     */
     @Test
     void testProcessArticle_WithNoAssociatedLocations(){
         try {
