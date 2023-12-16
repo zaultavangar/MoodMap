@@ -44,7 +44,7 @@ public class NerService {
 
     Path currentRelativePath = Paths.get("");
     String absolutePath = currentRelativePath.toAbsolutePath().toString();
-     loadNationalityToCountryMap("./backend/data/countries.csv");
+     loadNationalityToCountryMap("/Users/zaultavangar/Desktop/School/Fall 2023/CSCI 1340/MoodMap/MoodMap/backend/data/countries.csv");
   }
 
   public List<List<NerResponseScore>> makeHuggingFaceSentimentRequest(String text) throws HuggingFaceApiException, IOException {

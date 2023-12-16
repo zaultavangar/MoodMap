@@ -75,8 +75,6 @@ public class ApiController {
         boolean inputRequired,
         boolean datesRequired) {
         return RequestValidator.isInputValid(inputRequired)
-            .and(RequestValidator.isFromDateValid(datesRequired))
-            .and(RequestValidator.isToDateValid(datesRequired))
             .and(RequestValidator.isDateRangeValid(datesRequired))
             .apply(searchRequest);
     }
