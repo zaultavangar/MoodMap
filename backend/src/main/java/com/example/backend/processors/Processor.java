@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 
-// STATUS: NOT TESTED
 @Service
 @Slf4j
 public class Processor {
@@ -62,7 +61,7 @@ public class Processor {
       return;
     }
     Optional<AugmentedContentResponse> currentResponse = fetchArticlesFromGuardianAPI(fromDate, toDate, 1);
-    if (currentResponse == null || currentResponse.isEmpty()) return;
+    if (currentResponse.isEmpty()) return;
     int total = currentResponse.get().getTotal();
     int MAX_BATCH_ARTICLE_SIZE = 200;
     for (int i=1; i<(total/ MAX_BATCH_ARTICLE_SIZE) +2; i++) {

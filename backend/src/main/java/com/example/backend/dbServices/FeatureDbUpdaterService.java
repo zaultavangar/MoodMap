@@ -15,7 +15,6 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-// STATUS: Not tested
 @Service
 @Slf4j
 public class FeatureDbUpdaterService {
@@ -42,11 +41,12 @@ public class FeatureDbUpdaterService {
       return ArticleNerProperties.builder()
           .locations(new ArrayList<>())
           .numAssociatedFeatures(0)
-          .sentimentScore(null)
+          .sentimentScore(0.5)
           .build();
     }
     Thread.sleep(300); // for rate-limiting issues
-    Double articleSentimentScore = nerService.getSentimentScore(headline.concat(bodyText).substring(0, 512));
+    String concatText = headline.concat(bodyText);
+    Double articleSentimentScore = nerService.getSentimentScore(concatText.length() >=512 ? headline.concat(bodyText).substring(0, 512) : concatText);
     LocalDateTime articleWebPublicationDate = article.getWebPublicationDate();
     String formattedFullDate = getFormattedDateString(articleWebPublicationDate);
     String formattedYearDate = formattedFullDate.substring(3, 7);
