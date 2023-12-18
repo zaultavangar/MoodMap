@@ -30,6 +30,8 @@ const LocationPopup = ({
     }
   }, [info])
 
+  console.error("Info: ", info)
+
 
   return (
         <Popup

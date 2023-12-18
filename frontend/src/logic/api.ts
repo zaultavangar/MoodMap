@@ -167,7 +167,7 @@ export class RealAPI implements API {
       .then((response) => {
         // console.error("Response", response);
         return {
-          data: response.data,
+          data: response.data.data,
         };
       })
       .catch((error) =>

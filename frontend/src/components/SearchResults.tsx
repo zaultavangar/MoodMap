@@ -8,13 +8,18 @@ import {
   ListItemText,
   Paper,
   Stack,
+  Typography,
 } from "@mui/material";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import CircleIcon from "@mui/icons-material/Circle";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import IconButton from '@mui/material/IconButton';
 import {
   searchByDateRangeState,
   searchQueryState,
+  searchResultsPageState,
   searchResultsState,
   selectedMonthState,
   selectedYearState,
@@ -28,18 +33,23 @@ const SearchResults = () => {
   const selectedMonth = useRecoilValue(selectedMonthState);
   const selectedYear = useRecoilValue(selectedYearState);
   const searchByDateRange = useRecoilValue(searchByDateRangeState);
+  const [searchResultsPage, setSearchResultsPage] = useRecoilState(searchResultsPageState);
 
   const { search } = useSearch();
 
   useEffect(() => {
+    setSearchResultsPage(0);
     search(searchQuery);
   }, [searchQuery]);
 
   useEffect(() => {
     if (searchQuery.length > 0) {
+      setSearchResultsPage(0);
       search(searchQuery);
     }
   }, [selectedMonth, selectedYear, searchByDateRange]);
+
+  const numPages = searchResults.length/10;
 
   const interpolater = d3.interpolateRgbBasis(["red", "yellow", "green"]);
 
@@ -50,8 +60,9 @@ const SearchResults = () => {
       data-testid="search-results"
     >
       <List dense={false}>
-        {searchResults.map((result, index) => (
+        {searchResults.slice(searchResultsPage*10, (searchResultsPage*10)+10).map((result, index) => (
           <Link
+            key={index}
             href={result.webUrl}
             target="_blank"
             underline="none"
@@ -65,13 +76,15 @@ const SearchResults = () => {
                 <ListItemText
                   primary={result.webTitle}
                   secondary={
-                    <Stack
-                      direction="column"
-                      justifyContent={"center"}
-                      spacing={1}
-                    >
+                    <Typography 
+                      variant="body2" 
+                      component="div"
+                      fontWeight={400}
+                      color={'rgba(0, 0, 0, 0.6)'}
+                      lineHeight={1.43}
+                      >
                       {result.webPublicationDate.substring(0, 10)}
-                    </Stack>
+                    </Typography>
                   }
                 />
                 <CircleIcon
@@ -91,6 +104,33 @@ const SearchResults = () => {
           </Link>
         ))}
       </List>
+      {searchResults.length>0 &&
+        <Stack
+        direction='row'
+        justifyContent={'flex-end'}
+        alignItems={'center'}
+        spacing={1}
+        padding={'10px'}
+        >
+        <IconButton
+          disabled={searchResultsPage === 0}
+          onClick={() => setSearchResultsPage(searchResultsPage-1)}
+        >
+          <NavigateBeforeIcon/>
+        </IconButton>
+        <Typography variant="body2" component="div">
+          {searchResultsPage+1} of {Math.ceil(numPages)}
+        </Typography>
+        <IconButton
+          disabled={searchResultsPage >= numPages-1}
+          onClick={() => setSearchResultsPage(searchResultsPage+1)}
+        >
+          <NavigateNextIcon/>
+        </IconButton>
+      </Stack>
+      
+      }
+      
     </Paper>
   );
 };

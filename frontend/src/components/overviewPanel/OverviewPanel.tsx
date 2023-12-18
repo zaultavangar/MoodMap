@@ -34,7 +34,7 @@ export const OverviewPanel = ({
     if (searchResults.length > 0) {
       setIsExpandedOverviewPanel(false);
     }
-  }, searchResults);
+  }, [searchResults]);
 
   const handleLocationClick = (coordinates: number[]) => {
     if (mapRef.current) {
@@ -58,7 +58,7 @@ export const OverviewPanel = ({
           {label}
         </Typography>
       </Grid>
-      <Grid item spacing={1}>
+      <Grid item >
         {list.map((m, idx) => {
           const location = Object.keys(m)[0];
           const locationName =
@@ -112,6 +112,7 @@ export const OverviewPanel = ({
       justifyContent="center"
       alignItems={isExpandedOverviewPanel ? "flex-start" : "center"}
       spacing={2}
+      borderRadius={5}
       sx={{
         zIndex: 5,
         position: "absolute",
@@ -122,6 +123,7 @@ export const OverviewPanel = ({
         maxWidth: "70vw",
         padding: isExpandedOverviewPanel ? "0px" : "5px",
         paddingBottom: isExpandedOverviewPanel ? "5px" : "0px",
+        paddingRight: isExpandedOverviewPanel ? "5px" : "0px"
       }}
     >
       {isExpandedOverviewPanel ? (
@@ -174,6 +176,7 @@ export const OverviewPanel = ({
               <Link
                 href="https://open-platform.theguardian.com/explore/"
                 target="_blank"
+                color={'#6f19d2'}
               >
                 The Guardian Open Platform
               </Link>

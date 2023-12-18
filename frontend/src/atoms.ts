@@ -21,6 +21,11 @@ export const searchResultsState: RecoilState<ArticleEntity[]> = atom({
   default: [] as ArticleEntity[]
 })
 
+export const searchResultsPageState: RecoilState<number> = atom({
+  key: 'searchResultsPage',
+  default: 0
+})
+
 export const searchDateRangeOptionOpenState: RecoilState<boolean> = atom({
   key: 'searchDateRangeOptionOpen',
   default: false
