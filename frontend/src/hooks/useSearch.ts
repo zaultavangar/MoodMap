@@ -18,7 +18,15 @@ export function useSearch() {
   const selectedMonth = useRecoilValue(selectedMonthState);
   const selectedYear = useRecoilValue(selectedYearState);
 
-  const search = async (input: string) => {
+  function debounce(func: Function, timeout = 300){
+    let debounceTimer;
+    return (...args) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+  }
+
+  const search = debounce(async (input: string) => {
     let res: FrontendApiResponse<ArticleEntity[]>;
     if (searchByDateRange) {
       let startMonth: string;
@@ -37,23 +45,15 @@ export function useSearch() {
         `${formattedYear}-${startMonth}-01`,
         `${formattedYear}-${endMonth}-${lastDayOfMonth.toString()}`
       );
-      // res = await handleApiResponse<"search", ArticleEntity[]>("search", {
-      //   input: input,
-      //   fromDate: `${formattedYear}-${startMonth}-01`,
-      //   toDate: `${formattedYear}-${endMonth}-${lastDayOfMonth.toString()}`,
-      // });
     } else {
       res = await api.search(input);
-      // res = await handleApiResponse<"search", ArticleEntity[]>("search", {
-      //   input: input,
-      // });
     }
 
     // console.error(res.data);
     if (isSuccessfulResponse(res)) {
       setSearchResults(res.data);
     }
-  };
+  }, 300);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);

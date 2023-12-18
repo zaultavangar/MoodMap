@@ -96,6 +96,7 @@ export function useMapManager() {
     const toDate = lastDay.toISOString().split("T")[0];
 
     const res = await searchByLocation(location, fromDate, toDate);
+    
     if (isSuccessfulResponse(res)) {
       handlePopupOpen({
         longitude: lng,

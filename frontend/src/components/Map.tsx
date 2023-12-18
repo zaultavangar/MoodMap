@@ -80,17 +80,13 @@ const Map = () => {
   };
 
   useEffect(() => {
-    console.log("hello");
     loadFeatures();
   }, []);
 
   useEffect(() => {
     setLayer();
-  }, [featureCollection]);
+  }, [featureCollection, selectedMonth, selectedYear]);
 
-  useEffect(() => {
-    setLayer();
-  }, [selectedYear, selectedMonth]);
 
   return (
     <main>
