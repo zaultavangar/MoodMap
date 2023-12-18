@@ -31,7 +31,13 @@ export const updateHeatMapLayer = (
     "-count";
 
   const maxCount = getMaxArticleCount(countKey, features);
-  if (maxCount > 10 && maxCount <= 15) return null;
+
+  const MIN_ZOOM_MIN_CIRCLE_SIZE = 1;
+  const MIN_ZOOM_MAX_CIRCLE_SIZE = 50;
+
+  const MED_ZOOM_MIN_CIRCLE_SIZE = 5;
+  const MED_ZOOM_MAX_CIRCLE_SIZE = 15;
+
   const circleLayer: CircleLayer = {
     id: "heatmap",
     type: "circle",
@@ -44,31 +50,23 @@ export const updateHeatMapLayer = (
         ["zoom"],
         0,
         [
-          "step",
+          "interpolate",
+          ["linear"],
           ["get", countKey],
-          3,
-          5,
-          10,
-          10,
-          20,
-          15,
-          30,
-          80,
-          20, // default value
+          0,
+          MIN_ZOOM_MIN_CIRCLE_SIZE,
+          maxCount,
+          MIN_ZOOM_MAX_CIRCLE_SIZE,
         ],
         8,
         [
-          "step",
+          "interpolate",
+          ["linear"],
           ["get", countKey],
-          5,
-          10,
-          10,
-          12,
-          20,
-          13,
-          30,
-          15,
-          20, // default value
+          0,
+          MED_ZOOM_MIN_CIRCLE_SIZE,
+          maxCount,
+          MED_ZOOM_MAX_CIRCLE_SIZE,
         ],
       ],
       // color of the circle based on sentiment
@@ -77,9 +75,11 @@ export const updateHeatMapLayer = (
         ["linear"],
         ["get", sentimentKey],
         0.2,
-        "#ff0000", // Low sentiment
-        0.7,
-        "#00ff00", // High sentiment
+        "#ff0000", // low sentiment (red)
+        0.5,
+        "#ffff00", // medium sentiment (yellow)
+        0.8,
+        "#00ff00", // high sentiment (green)
       ],
       "circle-opacity": 0.75,
     },
@@ -87,7 +87,7 @@ export const updateHeatMapLayer = (
   return circleLayer;
 };
 
-export const circleLayerr: CircleLayer = {
+export const circleLayerDefault: CircleLayer = {
   id: "heatmap",
   type: "circle",
   paint: {
@@ -135,65 +135,3 @@ export const circleLayerr: CircleLayer = {
     "circle-opacity": 0.75,
   },
 };
-
-// export const heatmapLayer: HeatmapLayer = {
-//   id: "heatmap",
-//   maxzoom: 9,
-//   type: "heatmap",
-//   paint: {
-//     // Increase the heatmap weight based on frequency and property magnitude
-//     "heatmap-weight": [
-//       "interpolate",
-//       ["linear"],
-//       ["get", "sentiment"],
-//       0,
-//       0,
-//       1,
-//       1,
-//     ],
-//     // Increase the heatmap color weight weight by zoom level
-//     // heatmap-intensity is a multiplier on top of heatmap-weight
-//     "heatmap-intensity": [
-//       "interpolate",
-//       ["linear"],
-//       ["zoom"],
-//       0,
-//       1,
-//       MAX_ZOOM_LEVEL,
-//       3,
-//     ],
-
-//     // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-//     // Begin color ramp at 0-stop with a 0-transparancy color
-//     // to create a blur-like effect.
-//     "heatmap-color": [
-//       "interpolate",
-//       ["linear"],
-//       ["heatmap-density"],
-//       0,
-//       "rgba(33,102,172,0)",
-//       0.2,
-//       "#af8dc3",
-//       0.4,
-//       "#e7d4e8",
-//       0.6,
-//       "#d9f0d3",
-//       0.8,
-//       "#7fbf7b",
-//       0.9,
-//       "#1b7837",
-//     ],
-//     // Adjust the heatmap radius by zoom level
-//     "heatmap-radius": [
-//       "interpolate",
-//       ["linear"],
-//       ["zoom"],
-//       0,
-//       2,
-//       MAX_ZOOM_LEVEL,
-//       20,
-//     ],
-//     // Transition from heatmap to circle layer by zoom level
-//     "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 7, 1, 9, 0],
-//   },
-// };

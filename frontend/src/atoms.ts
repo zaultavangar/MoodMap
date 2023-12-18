@@ -1,7 +1,7 @@
 import { RecoilState, atom } from "recoil";
 import { LocationPopupInfo } from "./hooks/useLocationPopup";
 import { CircleLayer } from "mapbox-gl";
-import { circleLayerr } from "./heatmapLayer";
+import { circleLayerDefault } from "./heatmapLayer";
 import {
   Feature,
   FeatureCollection,
@@ -70,7 +70,7 @@ export const locationPopupInfoState: RecoilState<LocationPopupInfo | null> =
 
 export const circleLayerState: RecoilState<CircleLayer> = atom({
   key: "circleLayer",
-  default: circleLayerr,
+  default: circleLayerDefault,
 });
 
 export const mapViewStateState: RecoilState<any> = atom({
