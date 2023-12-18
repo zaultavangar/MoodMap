@@ -53,7 +53,7 @@ public class ApiControllerIntegrationTest {
     @Test
     public void testSearchSuccessWithoutData() throws Exception {
         mockMvc.perform(get("http://localhost:8080/api/search")
-                        .param("input", "university"))
+                        .param("input", "random input that won't appear in any articles"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.status").value(200))
@@ -271,8 +271,8 @@ public class ApiControllerIntegrationTest {
     @Test
     public void testSearchByDateRangeSuccessWithoutData() throws Exception {
         mockMvc.perform(get("http://localhost:8080/api/searchByDateRange")
-                        .param("fromDate", "2020-01-01")
-                        .param("toDate", "2020-01-31"))
+                        .param("fromDate", "2018-01-01") // no articles in 2018
+                        .param("toDate", "2018-01-31"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.status").value(200))

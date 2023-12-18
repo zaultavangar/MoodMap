@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 import static org.mockito.Mockito.*;
 
-class ScheduledArticleTaskTest {
+public class ScheduledArticleTaskTest {
 
     @Mock
     private Processor processor;

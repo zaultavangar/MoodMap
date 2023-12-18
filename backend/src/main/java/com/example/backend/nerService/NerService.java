@@ -42,8 +42,6 @@ public class NerService {
     this.restTemplate = restTemplate;
     this.nationalityToCountryMap = new HashMap<>();
 
-    Path currentRelativePath = Paths.get("");
-    String absolutePath = currentRelativePath.toAbsolutePath().toString();
      loadNationalityToCountryMap("/Users/zaultavangar/Desktop/School/Fall 2023/CSCI 1340/MoodMap/MoodMap/backend/data/countries.csv");
   }
 

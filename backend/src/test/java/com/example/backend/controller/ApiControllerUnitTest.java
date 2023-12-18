@@ -20,13 +20,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.UncategorizedMongoDbException;
 
 // UNIT TESTS FOR REST CONTROLLER
 
-//@AutoConfigureMockMvc(addFilters = false) // disable security, don't have to worry about adding token
 @ExtendWith(MockitoExtension.class)
-class ApiControllerUnitTest {
+public class ApiControllerUnitTest {
 
   @InjectMocks
   private ApiController apiController;

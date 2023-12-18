@@ -5,6 +5,7 @@ import com.example.backend.exceptions.GuardianApiException;
 import com.example.backend.guardianService.responseRelated.AugmentedContentResponse;
 import com.example.backend.jsonUtility.JsonUtility;
 import com.squareup.moshi.Types;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +28,13 @@ import javax.annotation.Resource;
 @RequiredArgsConstructor
 public class GuardianService {
 
-//    @Resource
-//    private GuardianApi guardianClient;
-
     @Value("${guardian.key}")
     private String guardianKey;
 
     private final RestTemplate restTemplate;
 
-//    public GuardianService(RestTemplate restTemplate){
-//      this.restTemplate = restTemplate;
-//    }
 
-    public AugmentedContentResponse fetchArticlesByDateRange(String fromDate, String toDate, int pageNum) throws Exception{
+    public AugmentedContentResponse fetchArticlesByDateRange(String fromDate, String toDate, int pageNum) throws GuardianApiException, IOException {
       // Error handling for dates?
 
       String queryUrlTemplate = UriComponentsBuilder.fromHttpUrl("https://content.guardianapis.com/search")
@@ -55,7 +50,7 @@ public class GuardianService {
 
       ResponseEntity<String> response = restTemplate.getForEntity(queryUrlTemplate, String.class);
       if (!response.getStatusCode().is2xxSuccessful()){
-        throw new Exception("Error calling Guardian API");
+        throw new GuardianApiException("Error calling Guardian API");
       }
       JsonUtility<Map<String, AugmentedContentResponse>> jsonUtil = new JsonUtility<>();
       Type type = Types.newParameterizedType(Map.class, String.class, AugmentedContentResponse.class);
