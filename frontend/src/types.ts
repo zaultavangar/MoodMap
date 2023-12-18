@@ -6,7 +6,7 @@ export type ArticleEntity = {
   sentimentScore: number;
   associatedLocations: string[];
   thumbnail: string;
-  webPublicationDate: string
+  webPublicationDate: string;
   //url: string;
 };
 
@@ -17,22 +17,22 @@ export type FeatureEntity = {
 };
 
 export type MonthDateInfo = {
-  selected: boolean,
-  month: number
-}
+  selected: boolean;
+  month: number;
+};
 
 export type StatsOverviewMap = {
-  mostMentioned: LocationToDetailsMap[]
-  mostPositive: LocationToDetailsMap[]
-  mostNegative: LocationToDetailsMap[]
+  mostMentioned: LocationToDetailsMap[];
+  mostPositive: LocationToDetailsMap[];
+  mostNegative: LocationToDetailsMap[];
 };
 
 export type LocationToDetailsMap = {
   [key: string]: LocationStats;
-}
+};
 
 export type LocationStats = {
-  count: number
-  sentiment: number
-  coordinates: number[]
+  count: number;
+  sentiment: number;
+  coordinates: number[];
 };
