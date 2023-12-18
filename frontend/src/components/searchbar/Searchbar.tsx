@@ -43,6 +43,7 @@ const Searchbar = () => {
       <IconButton
         type="button"
         aria-label="search"
+        id="search-date-range-button"
         data-testid="search-date-range-button"
         style={{ marginRight: "5px" }}
         onClick={() => setSearchDateRangeOptionOpen(!searchDateRangeOptionOpen)}
@@ -81,9 +82,11 @@ const Searchbar = () => {
           autoComplete="off"
           sx={{ ml: 1, flex: 1 }}
           id="outlined-basic"
-          data-testid="searchbar-input"
           placeholder="Search the news by keyword"
-          inputProps={{ "aria-label": "search the news by keyword" }}
+          inputProps={{
+            "aria-label": "search the news by keyword",
+            "data-testid": "searchbar-input",
+          }}
           value={searchQuery}
           onChange={handleSearchChange}
         />
@@ -93,6 +96,7 @@ const Searchbar = () => {
           <FormControlLabel
             control={
               <Checkbox
+                id="search-date-range-option-checkbox"
                 data-test-id="search-date-range-option-checkbox"
                 onClick={() => {
                   setSearchByDateRange(!searchByDateRange);

@@ -10,7 +10,9 @@ vi.mock("axios");
 describe("API", () => {
   describe("getFeatures", () => {
     it("should be able to successfully retrieve features", async () => {
-      vi.mocked(axios.get).mockResolvedValueOnce(mockFeaturesResponse);
+      vi.mocked(axios.get).mockResolvedValueOnce({
+        data: mockFeaturesResponse,
+      });
       const result = await api.getFeatures();
       expect(result).toStrictEqual({
         data: mockFeaturesResponse.data,
@@ -32,7 +34,9 @@ describe("API", () => {
 
   describe("searchByLocation", () => {
     it("should be able to successfully search by location based on a given date range", async () => {
-      vi.mocked(axios.get).mockResolvedValueOnce(mockLocationResponse);
+      vi.mocked(axios.get).mockResolvedValueOnce({
+        data: mockLocationResponse,
+      });
       const result = await api.searchByLocation(
         "Berlin, Germany",
         "2023-12-01",
@@ -82,7 +86,7 @@ describe("API", () => {
 
   describe("search", () => {
     it("should be able to successfully search by keyword given an input", async () => {
-      vi.mocked(axios.get).mockResolvedValueOnce(mockKeywordResponse);
+      vi.mocked(axios.get).mockResolvedValueOnce({ data: mockKeywordResponse });
       const result = await api.search("Gaza", "2023-11-01", "2023-11-20");
       expect(result).toStrictEqual({
         data: mockKeywordResponse.data,

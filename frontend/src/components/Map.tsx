@@ -11,7 +11,14 @@ import {
 import { useMapManager } from "~/hooks/useMapManager";
 import LocationPopup from "./locationPopup/LocationPopup";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { locationPopupInfoState, searchDateRangeOptionOpenState, searchQueryState, searchResultsState, selectedMonthState, selectedYearState } from "~/atoms";
+import {
+  locationPopupInfoState,
+  searchDateRangeOptionOpenState,
+  searchQueryState,
+  searchResultsState,
+  selectedMonthState,
+  selectedYearState,
+} from "~/atoms";
 import { OverviewPanel } from "./overviewPanel/OverviewPanel";
 
 // Accesing the mapbox API token
@@ -39,7 +46,9 @@ const Map = () => {
   const selectedMonth = useRecoilValue(selectedMonthState);
 
   const setSearchQuery = useSetRecoilState(searchQueryState);
-  const setSearchDateRangeOptionOpen = useSetRecoilState(searchDateRangeOptionOpenState);
+  const setSearchDateRangeOptionOpen = useSetRecoilState(
+    searchDateRangeOptionOpenState
+  );
 
   const _mapRef = useRef<MapRef>(null);
 
@@ -47,10 +56,9 @@ const Map = () => {
   const handleMouseEventOperation = async (e: MapLayerMouseEvent) => {
     e.preventDefault();
 
-    console.error("hi")
+    console.error("hi");
     setSearchQuery("");
     setSearchDateRangeOptionOpen(false);
-    
 
     const area = e.features && e.features[0];
 
@@ -69,7 +77,7 @@ const Map = () => {
           center: [e.lngLat.lng, e.lngLat.lat],
         });
       }
-      
+
       await getArticlesAndOpenPopup(
         area.properties["location"],
         e.lngLat.lng,
@@ -87,7 +95,6 @@ const Map = () => {
     setLayer();
   }, [featureCollection, selectedMonth, selectedYear]);
 
-
   return (
     <main>
       <ReactMap
@@ -96,6 +103,7 @@ const Map = () => {
         {...mapViewState}
         minZoom={1}
         maxZoom={8}
+        id="map"
         data-testid="map"
         interactiveLayerIds={["heatmap"]}
         mapStyle={`mapbox://styles/mapbox/${COLOR_MODE}-v10`}

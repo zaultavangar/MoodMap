@@ -6,6 +6,6 @@ import { test, expect } from "@playwright/test";
 test.describe("Map component", () => {
   test("should be visible", async ({ page }) => {
     await page.goto("http://localhost:5173/");
-    await expect(page.getByTestId("map")).toBeVisible();
+    await expect(page.locator("#map")).toBeVisible();
   });
 });

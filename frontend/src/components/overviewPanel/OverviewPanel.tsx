@@ -46,9 +46,9 @@ export const OverviewPanel = ({
   };
 
   const colorScale = d3.scaleLinear(
-    [0, 0.2, 0.5, 0.8, 1],  // input values
+    [0, 0.2, 0.5, 0.8, 1], // input values
     ["red", "red", "yellow", "green", "green"] // output colors
-  ); 
+  );
 
   const renderTopFiveList = (
     list: LocationToDetailsMap[],
@@ -61,7 +61,7 @@ export const OverviewPanel = ({
           {label}
         </Typography>
       </Grid>
-      <Grid item >
+      <Grid item>
         {list.map((m, idx) => {
           const location = Object.keys(m)[0];
           const locationName =
@@ -126,12 +126,12 @@ export const OverviewPanel = ({
         maxWidth: "70vw",
         padding: isExpandedOverviewPanel ? "0px" : "5px",
         paddingBottom: isExpandedOverviewPanel ? "5px" : "0px",
-        paddingRight: "5px"
+        paddingRight: "5px",
       }}
     >
       {isExpandedOverviewPanel ? (
         <>
-          <Grid item width='100%'>
+          <Grid item width="100%">
             <Stack
               className="header-container"
               direction="row"
@@ -160,6 +160,7 @@ export const OverviewPanel = ({
               justifyContent="flex-start"
               alignItems="center"
               spacing={2}
+              id="overview-categories"
               data-test-id="overview-categories"
             >
               <Grid item>
@@ -179,7 +180,7 @@ export const OverviewPanel = ({
               <Link
                 href="https://open-platform.theguardian.com/explore/"
                 target="_blank"
-                color={'#6f19d2'}
+                color={"#6f19d2"}
               >
                 The Guardian Open Platform
               </Link>
@@ -187,9 +188,7 @@ export const OverviewPanel = ({
           </Grid>
         </>
       ) : (
-        <Grid 
-          className='unfold-more-container'
-          item>
+        <Grid className="unfold-more-container" item>
           <UnfoldMoreIcon
             className="toggle-icon"
             data-testid="overview-maximize-button"

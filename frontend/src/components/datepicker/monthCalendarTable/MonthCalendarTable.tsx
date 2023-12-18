@@ -37,6 +37,7 @@ export const MonthCalendarTable = () => {
               monthIndex === selectedMonth! - 1 ? "month-selected" : ""
             }`}
             data-test-id="month-button"
+            aria-role="button"
             key={monthIndex}
             onClick={() => onMonthChange(monthIndex)}
           >

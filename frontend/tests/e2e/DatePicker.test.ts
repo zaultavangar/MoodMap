@@ -20,7 +20,7 @@ test.describe("DatePicker component", () => {
     await expect(currentYear).toHaveText("2023");
   });
   test("should be able to click on a month", async ({ page }) => {
-    const monthButton = page.getByTestId("month-button");
-    await monthButton.click();
+    const button = page.getByTestId("month-calendar-table").getByText("Nov");
+    await button.click();
   });
 });
