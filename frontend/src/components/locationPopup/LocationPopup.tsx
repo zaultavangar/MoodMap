@@ -21,8 +21,10 @@ const LocationPopup = ({
   const selectedYear = useRecoilValue(selectedYearState);
   const selectedMonth = useRecoilValue(selectedMonthState);
 
-  const sentimentKey = (selectedMonth ? `${selectedMonth.toString()}-${selectedYear.toString()}` : `${selectedYear.toString()}`) + '-sentiment';
+  const sentimentKey = (selectedMonth ? `${selectedMonth.toString().padStart(2, "0")}-${selectedYear.toString()}` : `${selectedYear.toString()}`) + '-sentiment';
   const scrollRef = useRef<mapboxgl.Popup>(null);
+
+  console.error(sentimentKey);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -58,6 +60,9 @@ const LocationPopup = ({
               <Typography component="p">{article.description}</Typography>
             </>
           ))} */}
+          {
+
+          }
           <Stack>
             <Typography
               variant="h3"
@@ -65,7 +70,7 @@ const LocationPopup = ({
               fontWeight="bold"
               color="primary"
             >
-              {info.properties && info.properties[sentimentKey].toFixed(2)}
+              {info.properties && info.properties[sentimentKey] && info.properties[sentimentKey].toFixed(2)}
             </Typography>
             <Typography component="p" color="primary">
               Avg. Sentiment

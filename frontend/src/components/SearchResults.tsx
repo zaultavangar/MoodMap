@@ -51,7 +51,10 @@ const SearchResults = () => {
 
   const numPages = searchResults.length/10;
 
-  const interpolater = d3.interpolateRgbBasis(["red", "yellow", "green"]);
+  const colorScale = d3.scaleLinear(
+    [0, 0.2, 0.5, 0.8, 1],  // input values
+    ["red", "red", "yellow", "green", "green"] // output colors
+  ); 
 
   return (
     <Paper
@@ -72,8 +75,14 @@ const SearchResults = () => {
               <ListItemIcon>
                 <NewspaperIcon />
               </ListItemIcon>
-              <Stack alignItems={"center"} direction="row" spacing={2}>
+              <Stack 
+                alignItems={"center"} 
+                justifyContent={"space-between"} 
+                direction="row" 
+                width="100%"
+                spacing={2}>
                 <ListItemText
+                  style={{flexGrow: 1}}
                   primary={result.webTitle}
                   secondary={
                     <Typography 
@@ -87,18 +96,21 @@ const SearchResults = () => {
                     </Typography>
                   }
                 />
-                <CircleIcon
-                  style={{
-                    color: interpolater(result.sentimentScore),
-                    fontSize: "20px",
-                  }}
-                />
-                <img
-                  src={result.thumbnail}
-                  alt="Article image"
-                  width="100px"
-                  style={{ borderRadius: "5px" }}
-                />
+                <Stack direction="row" alignItems={"center"} spacing={2}>
+                  <CircleIcon
+                    style={{
+                      color: colorScale(result.sentimentScore),
+                      fontSize: "20px",
+                    }}
+                  />
+                  <img
+                    src={result.thumbnail}
+                    alt="Article image"
+                    width="100px"
+                    style={{ borderRadius: "5px" }}
+                  />
+                </Stack>
+                
               </Stack>
             </ListItemButton>
           </Link>

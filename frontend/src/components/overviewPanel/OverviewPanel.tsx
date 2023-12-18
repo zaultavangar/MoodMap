@@ -45,7 +45,10 @@ export const OverviewPanel = ({
     }
   };
 
-  const interpolater = d3.interpolateRgbBasis(["red", "yellow", "green"]);
+  const colorScale = d3.scaleLinear(
+    [0, 0.2, 0.5, 0.8, 1],  // input values
+    ["red", "red", "yellow", "green", "green"] // output colors
+  ); 
 
   const renderTopFiveList = (
     list: LocationToDetailsMap[],
@@ -87,7 +90,7 @@ export const OverviewPanel = ({
               {isCountList && (
                 <CircleIcon
                   style={{
-                    color: interpolater(sentimentScore),
+                    color: colorScale(sentimentScore),
                     fontSize: "10px",
                   }}
                 />
@@ -123,12 +126,12 @@ export const OverviewPanel = ({
         maxWidth: "70vw",
         padding: isExpandedOverviewPanel ? "0px" : "5px",
         paddingBottom: isExpandedOverviewPanel ? "5px" : "0px",
-        paddingRight: isExpandedOverviewPanel ? "5px" : "0px"
+        paddingRight: "5px"
       }}
     >
       {isExpandedOverviewPanel ? (
         <>
-          <Grid item>
+          <Grid item width='100%'>
             <Stack
               className="header-container"
               direction="row"
@@ -184,7 +187,9 @@ export const OverviewPanel = ({
           </Grid>
         </>
       ) : (
-        <Grid item>
+        <Grid 
+          className='unfold-more-container'
+          item>
           <UnfoldMoreIcon
             className="toggle-icon"
             data-testid="overview-maximize-button"

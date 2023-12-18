@@ -172,7 +172,7 @@ export function getCountKey(
 ): string {
   return (
     (selectedMonth
-      ? `${selectedMonth.toString()}-${selectedYear.toString()}`
+      ? `${selectedMonth.toString().padStart(2, "0")}-${selectedYear.toString()}`
       : `${selectedYear.toString()}`) + "-count"
   );
 }
@@ -183,7 +183,7 @@ export function getSentimentKey(
 ): string {
   return (
     (selectedMonth
-      ? `${selectedMonth.toString()}-${selectedYear.toString()}`
+      ? `${selectedMonth.toString().padStart(2, "0")}-${selectedYear.toString()}`
       : `${selectedYear.toString()}`) + "-sentiment"
   );
 }

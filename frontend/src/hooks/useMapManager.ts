@@ -4,9 +4,10 @@ import { updateHeatMapLayer } from "~/heatmapLayer";
 import api from "~logic/api";
 import { isSuccessfulResponse } from "~/logic/api";
 import { useLocationPopup } from "./useLocationPopup";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   circleLayerState,
+  isExpandedOverviewPanelState,
   mapFeatureCollectionState,
   mapViewStateState,
   selectedMonthState,
@@ -34,6 +35,8 @@ export function useMapManager() {
   const [mapViewState, setMapViewState] = useRecoilState(mapViewStateState);
 
   const [circleLayer, setCircleLayer] = useRecoilState(circleLayerState);
+
+  const setIsExpandedOverviewPanel = useSetRecoilState(isExpandedOverviewPanelState);
 
   const setLayer = () => {
     console.log(featureCollection.features);
@@ -91,13 +94,14 @@ export function useMapManager() {
       0
     ); // set day to 0 to get last day of the previous month
 
-    // format dates to YYYY-MM-DD
+  // format dates to YYYY-MM-DD
     const fromDate = firstDay.toISOString().split("T")[0];
     const toDate = lastDay.toISOString().split("T")[0];
 
     const res = await searchByLocation(location, fromDate, toDate);
     
     if (isSuccessfulResponse(res)) {
+      setIsExpandedOverviewPanel(false);
       handlePopupOpen({
         longitude: lng,
         latitude: lat,
