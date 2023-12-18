@@ -1,13 +1,25 @@
-import React from 'react';
+import React from "react";
 import { useRecoilValue } from "recoil";
-import './MonthCalendarTable.css';
+import "./MonthCalendarTable.css";
 import { selectedMonthState } from "~/atoms";
 import { useDatePicker } from "~/hooks/useDatePicker";
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "July",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 export const MonthCalendarTable = () => {
-
   const selectedMonth = useRecoilValue(selectedMonthState);
 
   const { onMonthChange } = useDatePicker();
@@ -20,10 +32,14 @@ export const MonthCalendarTable = () => {
         const monthIndex = row * 4 + col;
         const month = MONTHS[monthIndex];
         tableCells.push(
-          <td 
-            className={`${monthIndex === selectedMonth! -1 ? 'month-selected': ''}`}
-            key={monthIndex} 
-            onClick={() => onMonthChange(monthIndex)}>
+          <td
+            className={`${
+              monthIndex === selectedMonth! - 1 ? "month-selected" : ""
+            }`}
+            data-test-id="month-button"
+            key={monthIndex}
+            onClick={() => onMonthChange(monthIndex)}
+          >
             {month}
           </td>
         );
@@ -31,15 +47,11 @@ export const MonthCalendarTable = () => {
       tableRows.push(<tr key={row}>{tableCells}</tr>);
     }
     return (
-      <table className='calendar-table'>
+      <table className="calendar-table" data-testid="month-calendar-table">
         <tbody>{tableRows}</tbody>
       </table>
-    )
-  }
+    );
+  };
 
-  return (
-    <>
-      {renderMonthsTable()}
-    </>
-  )
-}
+  return <>{renderMonthsTable()}</>;
+};
