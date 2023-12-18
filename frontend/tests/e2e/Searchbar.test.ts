@@ -16,19 +16,20 @@ test.describe("SearchBar component", () => {
   test("should be able to enter a keyword and see results", async ({
     page,
   }) => {
-    await page.getByTestId("searchbar-input").click();
-    await page.getByTestId("searchbar-input").fill("gaza");
+    const input = page.getByTestId("searchbar-input");
+    await input.click();
+    await input.fill("gaza");
     await expect(page.getByTestId("search-results")).toBeVisible();
   });
   test("should be able to click on a date range button to toggle search options", async ({
     page,
   }) => {
-    const dateRangeButton = page.getByTestId("searchbar-date-range-button");
+    const dateRangeButton = page.locator("#search-date-range-button");
     await expect(dateRangeButton).toBeVisible();
     await dateRangeButton.click();
 
-    const dateRangeCheckbox = page.getByTestId(
-      "search-date-range-option-checkbox"
+    const dateRangeCheckbox = page.locator(
+      "#search-date-range-option-checkbox"
     );
     await expect(dateRangeCheckbox).toBeVisible();
     await dateRangeCheckbox.click();

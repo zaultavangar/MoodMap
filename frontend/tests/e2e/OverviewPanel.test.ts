@@ -6,7 +6,7 @@ test.describe("OverviewPanel component", () => {
   });
   test("should be visible with list of categories", async ({ page }) => {
     await expect(page.getByTestId("overview-panel")).toBeVisible();
-    await expect(page.getByTestId("overview-categories")).toBeVisible();
+    await expect(page.locator("#overview-categories")).toBeVisible();
   });
   test("should be able to minimize and then maximize panel", async ({
     page,
