@@ -5,7 +5,7 @@ import { MapRef } from "react-map-gl";
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import CircleIcon from "@mui/icons-material/Circle";
-import { Grid, Stack, Typography } from "@mui/material";
+import { Grid, Link, Stack, Typography } from "@mui/material";
 import { LocationToDetailsMap } from "~/types";
 import { useRecoilValue } from "recoil";
 import { searchResultsState } from "~/atoms";
@@ -167,6 +167,17 @@ export const OverviewPanel = ({
                 {renderTopFiveList(mostNegative.reverse(), "Most Negative")}
               </Grid>
             </Grid>
+          </Grid>
+          <Grid item>
+            <Typography variant="caption" component="p">
+              All articles sourced from{" "}
+              <Link
+                href="https://open-platform.theguardian.com/explore/"
+                target="_blank"
+              >
+                The Guardian Open Platform
+              </Link>
+            </Typography>
           </Grid>
         </>
       ) : (
