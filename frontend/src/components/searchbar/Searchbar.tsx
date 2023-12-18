@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import DateRangeIcon from '@mui/icons-material/DateRange';
+import DateRangeIcon from "@mui/icons-material/DateRange";
 import {
   Box,
   Checkbox,
@@ -18,7 +18,7 @@ import {
   searchResultsState,
 } from "~/atoms";
 import { useSearch } from "~/hooks/useSearch";
-import './Searchbar.css';
+import "./Searchbar.css";
 
 /**
  * Searchbar component allows users to search news articles based on a given keyword
@@ -26,24 +26,28 @@ import './Searchbar.css';
 const Searchbar = () => {
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryState);
   const setSearchResults = useSetRecoilState(searchResultsState);
-  const [searchDateRangeOptionOpen, setSearchDateRangeOptionOpen] = useRecoilState(searchDateRangeOptionOpenState);
-  const [searchByDateRange, setSearchByDateRange] = useRecoilState(searchByDateRangeState);
+  const [searchDateRangeOptionOpen, setSearchDateRangeOptionOpen] =
+    useRecoilState(searchDateRangeOptionOpenState);
+  const [searchByDateRange, setSearchByDateRange] = useRecoilState(
+    searchByDateRangeState
+  );
 
-  const { handleSearchChange} = useSearch();
+  const { handleSearchChange } = useSearch();
 
   const onDateRangeClick = (e: React.MouseEventHandler<HTMLButtonElement>) => {
     setSearchDateRangeOptionOpen(true);
-  }
+  };
 
   const DateRangeOptionButton = () => {
     return (
-      <IconButton 
-        type="button" 
-        aria-label="search" 
-        style={{marginRight: '5px'}}
+      <IconButton
+        type="button"
+        aria-label="search"
+        data-testid="search-date-range-button"
+        style={{ marginRight: "5px" }}
         onClick={() => setSearchDateRangeOptionOpen(!searchDateRangeOptionOpen)}
-        >
-        <DateRangeIcon/>
+      >
+        <DateRangeIcon />
       </IconButton>
     );
   };
@@ -57,7 +61,6 @@ const Searchbar = () => {
   //   setSearchDateFilterPopoverAnchorEl(event.currentTarget);
   // };
 
-
   // const open = Boolean(searchDateFilterPopoverAnchorEl);
 
   // const handleClose = () => {
@@ -65,45 +68,44 @@ const Searchbar = () => {
   // };
 
   return (
-    <Stack
-      direction={'column'}
-      spacing={1}
-    >
+    <Stack direction={"column"} spacing={1}>
       <Paper
         component="form"
         elevation={2}
         sx={{ p: "2px 4px", display: "flex", alignItems: "center" }}
         data-testid="searchbar"
       >
-        <DateRangeOptionButton/>
+        <DateRangeOptionButton />
         {/* Input field to search for keyword */}
         <InputBase
           autoComplete="off"
           sx={{ ml: 1, flex: 1 }}
           id="outlined-basic"
+          data-testid="searchbar-input"
           placeholder="Search the news by keyword"
           inputProps={{ "aria-label": "search the news by keyword" }}
           value={searchQuery}
           onChange={handleSearchChange}
         />
       </Paper>
-      {searchDateRangeOptionOpen && 
-        <Paper className='search-date-range-option-container'>
+      {searchDateRangeOptionOpen && (
+        <Paper className="search-date-range-option-container">
           <FormControlLabel
-            control={<Checkbox 
+            control={
+              <Checkbox
+                data-test-id="search-date-range-option-checkbox"
                 onClick={() => {
-                  setSearchByDateRange(!searchByDateRange)
+                  setSearchByDateRange(!searchByDateRange);
                 }}
                 checked={searchByDateRange}
-              />}
+              />
+            }
             label="Search by currently selected date range?"
             labelPlacement="start"
           />
         </Paper>
-      }
-      
+      )}
     </Stack>
-
   );
 };
 

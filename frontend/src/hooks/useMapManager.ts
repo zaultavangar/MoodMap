@@ -1,10 +1,8 @@
 import { Feature, FeatureCollection, GeoJsonProperties } from "geojson";
 import { type ViewStateChangeEvent } from "react-map-gl";
 import { updateHeatMapLayer } from "~/heatmapLayer";
-import {
-  handleApiResponse,
-  isSuccessfulResponse,
-} from "~/logic/api";
+import api from "~logic/api";
+import { isSuccessfulResponse } from "~/logic/api";
 import { useLocationPopup } from "./useLocationPopup";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -37,15 +35,13 @@ export function useMapManager() {
 
   const [circleLayer, setCircleLayer] = useRecoilState(circleLayerState);
 
-  const createFeatureCollection = (features: Feature[]): FeatureCollection => {
-    return {
-      type: "FeatureCollection",
-      features: features,
-    };
-  };
-
   const setLayer = () => {
-    const h = updateHeatMapLayer(featureCollection.features, selectedYear, selectedMonth);
+    console.log(featureCollection.features);
+    const h = updateHeatMapLayer(
+      featureCollection.features,
+      selectedYear,
+      selectedMonth
+    );
     if (h !== null) setCircleLayer(h);
   };
 
@@ -54,29 +50,30 @@ export function useMapManager() {
   );
 
   const loadFeatures = async () => {
-    const res = await handleApiResponse<"getFeatures", FeatureEntity[]>(
-      "getFeatures",
-      {}
-    );
+    const res = await api.getFeatures();
+    // const res = await handleApiResponse<"getFeatures", FeatureEntity[]>(
+    //   "getFeatures",
+    //   {}
+    // );
     if (isSuccessfulResponse(res)) {
       setFeatureCollection(createFeatureCollection(res.data));
     }
   };
-
 
   const searchByLocation = async (
     location: string,
     fromDate: string,
     toDate: string
   ) => {
-    const res = await handleApiResponse<"searchByLocation", ArticleEntity[]>(
-      "searchByLocation",
-      {
-        location: location,
-        fromDate: fromDate,
-        toDate: toDate,
-      }
-    );
+    const res = await api.searchByLocation(location, fromDate, toDate);
+    // const res = await handleApiResponse<"searchByLocation", ArticleEntity[]>(
+    //   "searchByLocation",
+    //   {
+    //     location: location,
+    //     fromDate: fromDate,
+    //     toDate: toDate,
+    //   }
+    // );
     return res;
   };
 
@@ -89,9 +86,10 @@ export function useMapManager() {
     const month = selectedMonth ? selectedMonth : 1;
     const firstDay = new Date(selectedYear, month - 1, 1);
     const lastDay = new Date(
-        selectedYear, 
-        selectedMonth ? month+1 : month+12, 
-        0); // set day to 0 to get last day of the previous month
+      selectedYear,
+      selectedMonth ? month + 1 : month + 12,
+      0
+    ); // set day to 0 to get last day of the previous month
 
     // format dates to YYYY-MM-DD
     const fromDate = firstDay.toISOString().split("T")[0];
@@ -126,5 +124,14 @@ export function useMapManager() {
     getArticlesAndOpenPopup,
     updateHeatMapLayer,
     handlePopupClose,
+  };
+}
+
+export function createFeatureCollection(
+  features: Feature[]
+): FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: features,
   };
 }

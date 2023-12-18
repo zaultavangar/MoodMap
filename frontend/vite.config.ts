@@ -9,9 +9,14 @@ export default defineConfig({
   plugins: [react(), ViteAliases()],
   test: {
     include: ["tests/unit/*.test.ts"],
+    globals: true,
     environment: "jsdom",
   },
   optimizeDeps: {
-    include: ['@mui/material/Tooltip', '@emotion/styled', '@mui/material/Unstable_Grid2'],
+    include: [
+      "@mui/material/Tooltip",
+      "@emotion/styled",
+      "@mui/material/Unstable_Grid2",
+    ],
   },
 });

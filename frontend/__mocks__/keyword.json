@@ -1,0 +1,22 @@
+{
+    "timestamp": "2023-12-17T20:02:29.2606194",
+    "status": 200,
+    "result": "success",
+    "data": [
+        {
+            "_id": {
+                "timestamp": 1702434826,
+                "date": "2023-12-13T02:33:46.000+00:00"
+            },
+            "webPublicationDate": "2023-12-12T18:29:10",
+            "webTitle": "War has left Gaza economy at almost total standstill, says World Bank",
+            "webUrl": "https://www.theguardian.com/world/2023/dec/12/war-has-left-gaza-economy-at-almost-total-standstill-says-world-bank",
+            "thumbnail": "https://media.guim.co.uk/2e0c6d7335d86a5a22af10ea0413ec5eb4d45d7c/0_200_6000_3600/500.jpg",
+            "bodyText": "",
+            "sentimentScore": 0.1203038115054369,
+            "associatedLocations": [
+                "Gaza"
+            ]
+        }
+    ]
+}

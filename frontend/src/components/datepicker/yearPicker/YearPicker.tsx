@@ -1,11 +1,11 @@
-import React from 'react';
-import './YearPicker.css';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { useRecoilValue } from 'recoil';
-import { IconButton } from '@mui/material';
-import { selectedYearState } from '~/atoms';
-import { useDatePicker } from '~/hooks/useDatePicker';
+import React from "react";
+import "./YearPicker.css";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { useRecoilValue } from "recoil";
+import { IconButton } from "@mui/material";
+import { selectedYearState } from "~/atoms";
+import { useDatePicker } from "~/hooks/useDatePicker";
 
 const MIN_YEAR = 2019; // TODO: subject to change
 const MAX_YEAR = new Date().getFullYear();
@@ -21,17 +21,26 @@ export const YearPicker = () => {
   const { nextYear, prevYear } = useDatePicker();
 
   return (
-    <div className='year-container'>
-      <IconButton onClick={prevYear} disabled={prevYearButtonDisabled} className='navigation-button'>
-        <NavigateBeforeIcon/>
+    <div className="year-container">
+      <IconButton
+        onClick={prevYear}
+        data-testid="prev-year-button"
+        disabled={prevYearButtonDisabled}
+        className="navigation-button"
+      >
+        <NavigateBeforeIcon />
       </IconButton>
-      <div id='current-date'>
+      <div id="current-date" data-testid="current-year">
         {selectedYear.toString()}
       </div>
-      <IconButton onClick={nextYear} disabled={nextYearButtonDisabled} className='navigation-button'>
-        <NavigateNextIcon/>
+      <IconButton
+        onClick={nextYear}
+        data-testid="next-year-button"
+        disabled={nextYearButtonDisabled}
+        className="navigation-button"
+      >
+        <NavigateNextIcon />
       </IconButton>
     </div>
-
   );
-}
+};
