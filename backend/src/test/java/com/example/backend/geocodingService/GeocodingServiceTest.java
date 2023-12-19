@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
-class GeocodingServiceTest {
+public class GeocodingServiceTest {
 
   private static final String API_URL = "https://google-maps-geocoding.p.rapidapi.com/geocode/json";
 

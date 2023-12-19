@@ -44,7 +44,7 @@ public class FeatureDbUpdaterService {
           .sentimentScore(0.5)
           .build();
     }
-    Thread.sleep(300); // for rate-limiting issues
+    Thread.sleep(200); // for rate-limiting issues
     String concatText = headline.concat(bodyText);
     Double articleSentimentScore = nerService.getSentimentScore(concatText.length() >=512 ? headline.concat(bodyText).substring(0, 512) : concatText);
     LocalDateTime articleWebPublicationDate = article.getWebPublicationDate();

@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 // TODO: Configure ArticleDbService to handle exceptions better and add tests for that functionality
 @ExtendWith(MockitoExtension.class)
-class ArticleDbServiceTest {
+public class ArticleDbServiceTest {
 
   @Mock
   private ArticleRepository articleRepository;

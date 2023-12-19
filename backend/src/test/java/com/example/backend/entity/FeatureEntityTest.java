@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FeatureEntityTest {
+public class FeatureEntityTest {
 
   /**
    * Tests if the setPropertiesLocation method successfully adds a location
