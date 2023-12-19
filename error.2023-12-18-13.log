@@ -1,0 +1,2 @@
+2023-12-18 13:07:41,996 ERROR [Preprocessor.java:56] - Could not process article 6580862b343c9702f0799501. 503 Service Unavailable: "{"error":"Model nlptown/bert-base-multilingual-uncased-sentiment is currently loading","estimated_time":26.779653549194336}"
+2023-12-18 13:29:54,801 ERROR [Preprocessor.java:56] - Could not process article 65808db513716407a5e8e963. 503 Service Unavailable: "{"error":"Model nlptown/bert-base-multilingual-uncased-sentiment is currently loading","estimated_time":26.779653549194336}"

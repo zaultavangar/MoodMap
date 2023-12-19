@@ -203,9 +203,7 @@ public class ApiController {
 
     @GetMapping("/processArticles")
     public void handleProcess() throws Exception{
-//      AugmentedContentResponse contentResponse = guardianService.fetchArticlesByDateRange("2023-11-30", "2023-12-01", 1);
-//      return contentResponse;
-      processor.processArticles("2023-06-01", "2023-12-31", true);
+      processor.processArticles("2020-01-01", "2020-05-31", true);
 
     }
 

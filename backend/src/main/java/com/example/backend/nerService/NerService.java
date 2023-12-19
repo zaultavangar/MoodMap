@@ -33,7 +33,6 @@ public class NerService {
   private final RestTemplate restTemplate;
   private final Map<String, String> nationalityToCountryMap;
 
-  // STATUS: Tested
   public NerService (
       HuggingFaceConfig config,
       RestTemplate restTemplate
