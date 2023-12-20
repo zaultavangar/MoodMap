@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import the.guardian.api.http.content.ContentItem;
 
+/**
+ * Represents an enhanced version of a content item from The Guardian API.
+ * Includes details about the article and additional fields.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

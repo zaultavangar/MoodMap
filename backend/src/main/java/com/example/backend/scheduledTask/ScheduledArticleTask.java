@@ -8,13 +8,19 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-// STATUS: Not officially tested
+/**
+ * Component for scheduling article processing tasks.
+ */
 @Component
 public class ScheduledArticleTask {
 
     @Resource
     private Processor processor;
 
+    /**
+     * Executes a scheduled task every day at 5 AM EST to process articles.
+     * Fetches and processes articles for the current day.
+     */
     @Scheduled(cron = "0 0 5 * * *", zone = "America/New_York")
     public void scheduledTask() {
         System.out.println("Running scheduled task at 5 AM EST");

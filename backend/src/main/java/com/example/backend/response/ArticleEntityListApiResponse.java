@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * API response class specifically for a list of ArticleEntity objects.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

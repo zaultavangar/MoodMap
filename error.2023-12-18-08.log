@@ -1,2 +1,0 @@
-2023-12-18 08:44:52,553 ERROR [Preprocessor.java:56] - Could not process article 658047b5a795f36b3af90320. 503 Service Unavailable: "{"error":"Model nlptown/bert-base-multilingual-uncased-sentiment is currently loading","estimated_time":26.779653549194336}"
-2023-12-18 08:48:58,982 ERROR [Preprocessor.java:56] - Could not process article 658047c1a795f36b3af90439. 500 Internal Server Error: "{"error":"Internal Server Error"}"

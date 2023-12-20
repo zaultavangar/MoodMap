@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents the geometry of a geocoding result, primarily containing the location coordinates.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

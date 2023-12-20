@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents the geometry in GeoJSON format, typically used in geospatial data.
+ */
 @Data
 @Builder
 @AllArgsConstructor

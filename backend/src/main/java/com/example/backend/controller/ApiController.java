@@ -31,9 +31,11 @@ import com.example.backend.validator.RequestValidator;
 import com.example.backend.validator.SearchRequest;
 import com.example.backend.validator.ValidationResult;
 
-// STATUS: UNIT TESTED
-// TODO: Integration Testing
-
+/**
+ * ApiController is a REST controller that provides API endpoints for managing and querying
+ * articles and features. It supports operations like searching for articles based on input phrases,
+ * locations, and date ranges,as well as retrieving features (locations) from the database.
+ */
 @RestController
 @EnableCaching
 @Slf4j
@@ -42,12 +44,16 @@ import com.example.backend.validator.ValidationResult;
 public class ApiController {
 
     private final ArticleDbService articleDbService;
-
-//    private final GuardianService guardianService;
-
     private final FeatureDbService featureDbService;
     private final Processor processor;
 
+  /**
+   * Constructs a new ApiController with specified services and processor.
+   *
+   * @param processor The processor for article processing.
+   * @param articleDbService The database service for articles.
+   * @param featureDbService The database service for features.
+   */
     public ApiController(
         Processor processor,
         ArticleDbService articleDbService,
@@ -58,6 +64,14 @@ public class ApiController {
         this.featureDbService = featureDbService;
     }
 
+  /**
+   * Creates a complete search request with optional parameters.
+   *
+   * @param input The input phrase for search.
+   * @param fromDate The start date of the search range.
+   * @param toDate The end date of the search range.
+   * @return A SearchRequest object populated with the provided parameters.
+   */
     private SearchRequest createCompleteSearchRequest(String input, String fromDate, String toDate){
         return new SearchRequest(
             Optional.ofNullable(input),
@@ -65,11 +79,25 @@ public class ApiController {
             Optional.ofNullable(toDate));
     }
 
+  /**
+   * Checks if both fromDate and toDate are present in the search request.
+   *
+   * @param searchRequest The search request containing date parameters.
+   * @return ValidationResult indicating whether both dates are present, not present, or inconsistent.
+   */
     private ValidationResult getDatesPresent(SearchRequest searchRequest){
         return RequestValidator.areDatesPresent()
             .apply(searchRequest);
     }
 
+  /**
+   * Validates the search request based on the requirements for input and date range.
+   *
+   * @param searchRequest The search request to be validated.
+   * @param inputRequired Indicates if input is a required parameter.
+   * @param datesRequired Indicates if dates are required parameters.
+   * @return ValidationResult indicating the result of the validation (success or type of failure).
+   */
     private ValidationResult validateSearchRequest(
         SearchRequest searchRequest,
         boolean inputRequired,
@@ -79,9 +107,11 @@ public class ApiController {
             .apply(searchRequest);
     }
 
-
-
-
+  /**
+   * Retrieves the list of features from the database.
+   *
+   * @return A RestApiResponse containing a list of FeatureDTOs if successful, or an error message if an exception occurs.
+   */
     @Operation(summary = "To retrieve the features, aka locations, in the database.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful retrieval of features",
@@ -97,6 +127,14 @@ public class ApiController {
       }
     }
 
+  /**
+   * Searches for articles based on a given input phrase and optional date range.
+   *
+   * @param input The input phrase for the search.
+   * @param fromDate The start date of the search range (optional).
+   * @param toDate The end date of the search range (optional).
+   * @return A RestApiResponse containing a list of ArticleEntities if successful, or an error message if validation fails or an exception occurs.
+   */
     @Operation(summary = "To search for articles based on some input phrase. Can narrow down using a date range as well.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful retrieval of articles",
@@ -134,6 +172,14 @@ public class ApiController {
         }
     }
 
+  /**
+   * Searches for articles based on a given location and optional date range.
+   *
+   * @param location The location to search articles for.
+   * @param fromDate The start date of the search range (optional).
+   * @param toDate The end date of the search range (optional).
+   * @return A RestApiResponse containing a list of ArticleEntities if successful, or an error message if validation fails or an exception occurs.
+   */
     @Operation(summary = "To search for articles based on a location (e.g. 'France'). Can narrow down using a date range as well.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful retrieval of articles",
@@ -171,6 +217,13 @@ public class ApiController {
         }
    }
 
+  /**
+   * Searches for articles within a specified date range.
+   *
+   * @param fromDate The start date of the search range (required).
+   * @param toDate The end date of the search range (required).
+   * @return A RestApiResponse containing a list of ArticleEntities if successful, or an error message if validation fails or an exception occurs.
+   */
     @Operation(summary = "To search for articles based on a specified date range. Query params fromDate and toDate must "
         + "be in the following format: yyyy-mm-dd (e.g. 2023-11-20).")
     @ApiResponses(value = {
@@ -201,9 +254,15 @@ public class ApiController {
     }
 
 
+  /**
+   * Processes articles for a given date range. Note: this endpoint is only for our own processing
+   * purposes, and is not to be used by the frontend.
+   *
+   * @throws Exception if there is an error during processing.
+   */
     @GetMapping("/processArticles")
     public void handleProcess() throws Exception{
-      processor.processArticles("2020-01-01", "2020-05-31", true);
+      processor.processArticles("2023-12-19", "2023-12-20", true);
 
     }
 

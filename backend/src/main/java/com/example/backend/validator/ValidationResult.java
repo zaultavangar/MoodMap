@@ -2,6 +2,9 @@ package com.example.backend.validator;
 
 import lombok.Getter;
 
+/**
+ * Enumeration of possible validation results with associated messages.
+ */
 @Getter
 public enum ValidationResult {
   SUCCESS("Success"),
@@ -15,6 +18,11 @@ public enum ValidationResult {
 
   private final String message;
 
+  /**
+   * Constructs a ValidationResult with a specific message.
+   *
+   * @param message The message associated with the validation result.
+   */
   ValidationResult(String message){
     this.message = message;
   }

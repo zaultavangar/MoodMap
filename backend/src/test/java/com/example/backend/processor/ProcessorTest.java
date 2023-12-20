@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 import com.example.backend.dbServices.ArticleDbService;
-import com.example.backend.dbServices.FeatureDbUpdaterService;
+import com.example.backend.dbServices.DbUpdaterService;
 import com.example.backend.entity.ArticleEntity;
 import com.example.backend.guardianService.GuardianService;
 import com.example.backend.guardianService.responseRelated.AugmentedContentItem;
@@ -19,13 +19,10 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
@@ -39,7 +36,7 @@ public class ProcessorTest {
     private ArticleDbService articleDbService; // need this even though not used for tests to work
 
     @Mock
-    private FeatureDbUpdaterService featureDbUpdaterService;
+    private DbUpdaterService dbUpdaterService;
 
     @InjectMocks
     private Processor processor;
@@ -69,7 +66,7 @@ public class ProcessorTest {
                 .locations(List.of("Israel", "Gaza"))
                 .build();
 
-            when(featureDbUpdaterService.updateFeaturesForArticle(any(ArticleEntity.class)))
+            when(dbUpdaterService.updateFeaturesForArticle(any(ArticleEntity.class)))
                 .thenReturn(articleNerProperties)
                 .thenReturn(articleNerProperties)
                 .thenReturn(articleNerProperties);
@@ -147,7 +144,7 @@ public class ProcessorTest {
 
             Map<String, String> articleFields = Map.of("thumbnail", "www.thumb-nail.com", "bodyText", "Article Body Text");
 
-            when(featureDbUpdaterService.updateFeaturesForArticle(any(ArticleEntity.class)))
+            when(dbUpdaterService.updateFeaturesForArticle(any(ArticleEntity.class)))
                 .thenReturn(articleNerProperties);
 
             AugmentedContentItem augmentedContentItem = new AugmentedContentItem(
@@ -197,7 +194,7 @@ public class ProcessorTest {
 
             Map<String, String> articleFields = Map.of("thumbnail", "www.thumb-nail.com", "bodyText", "Article Body Text");
 
-            when(featureDbUpdaterService.updateFeaturesForArticle(any(ArticleEntity.class)))
+            when(dbUpdaterService.updateFeaturesForArticle(any(ArticleEntity.class)))
                 .thenReturn(articleNerProperties);
 
             AugmentedContentItem augmentedContentItem = new AugmentedContentItem(

@@ -5,9 +5,19 @@ import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+/**
+ * Configuration class for SpringDoc.
+ * Sets up OpenAPI for API documentation.
+ */
 @Configuration
 public class SpringDocConfig {
 
+  /**
+   * Configures GroupedOpenApi for API documentation.
+   *
+   * @return A GroupedOpenApi instance.
+   */
   @Bean
   public GroupedOpenApi api() {
     return GroupedOpenApi.builder()
@@ -16,6 +26,11 @@ public class SpringDocConfig {
         .build();
   }
 
+  /**
+   * Creates a custom OpenAPI configuration.
+   *
+   * @return An OpenAPI instance with custom settings.
+   */
   @Bean
   public OpenAPI customOpenAPI() {
     return new OpenAPI()

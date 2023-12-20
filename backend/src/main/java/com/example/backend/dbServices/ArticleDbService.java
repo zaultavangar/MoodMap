@@ -19,13 +19,21 @@ import com.example.backend.exceptions.UsageException;
 import com.example.backend.repositories.ArticleRepository;
 
 
-// STATUS: TESTED (TODO: may need to add better exception handling though)
+/**
+ * Service class for handling database operations related to Article entities.
+ * Provides methods for saving, deleting, finding, and searching articles in the database.
+ */
 @Service
 public class ArticleDbService{
 
    @Resource
    private ArticleRepository articleRepository;
 
+  /**
+   * Saves a list of articles to the database.
+   *
+   * @param articlesList The list of ArticleEntity objects to be saved.
+   */
    public void saveManyArticles(List<ArticleEntity> articlesList){
       try {
          if (articlesList != null && !CollectionUtils.isEmpty(articlesList)){
@@ -38,11 +46,22 @@ public class ArticleDbService{
       }
    }
 
+  /**
+   * Finds an article by its ID.
+   *
+   * @param articleId The ObjectId of the article.
+   * @return An Optional containing the found ArticleEntity or empty if not found.
+   */
    public Optional<ArticleEntity> findById(ObjectId articleId){
      if (articleId == null) return Optional.empty();
      return articleRepository.findById(articleId);
    }
 
+  /**
+   * Deletes an article by its ID.
+   *
+   * @param articleId The ObjectId of the article to be deleted.
+   */
    public void deleteById(ObjectId articleId){
       System.out.println("Deleting " + articleId);
       try {
@@ -52,6 +71,11 @@ public class ArticleDbService{
       }
    }
 
+  /**
+   * Saves a single article to the database.
+   *
+   * @param article The ArticleEntity object to be saved.
+   */
    public void saveArticle(ArticleEntity article){
       try { // maybe check if article is null
          articleRepository.save(article);
@@ -60,17 +84,37 @@ public class ArticleDbService{
       }
    }
 
-   //@Cacheable(cacheNames = "articles", key = "{#fromDate, #toDate}")
+  /**
+   * Searches for articles within a specific date range.
+   *
+   * @param fromDate The start date of the search range.
+   * @param toDate The end date of the search range.
+   * @return A list of ArticleEntity objects within the specified date range.
+   */
    public List<ArticleEntity> searchByDateRange(String fromDate, String toDate){
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
          return articleRepository.findByDateRange(from, to);
    }
 
+  /**
+   * Searches for articles based on a given input phrase.
+   *
+   * @param input The input phrase for the search.
+   * @return A list of ArticleEntity objects matching the input phrase.
+   */
    public List<ArticleEntity> searchByInput(String input) {
       return articleRepository.searchByInput(input);
    }
 
+  /**
+   * Searches for articles based on a given input phrase and date range.
+   *
+   * @param input The input phrase for the search.
+   * @param fromDate The start date of the search range.
+   * @param toDate The end date of the search range.
+   * @return A list of ArticleEntity objects matching the input phrase and date range.
+   */
    public List<ArticleEntity> searchByInput(String input, String fromDate, String toDate)  {
          LocalDateTime from = convertLocalTime(fromDate);
          LocalDateTime to = convertLocalTime(toDate);
@@ -80,16 +124,23 @@ public class ArticleDbService{
 
 
   /**
-   * Searches the articles collection in MongoDB by a location (e.g. France, Brazil).
-   * Can limit the search within a date range if specified.
-   * @param location the location to search for
-   * @return a list of articles associated with the location and matching the date range (if present)
+   * Searches for articles by a specific location (e.g. France, Brazil).
+   *
+   * @param location The location to search articles for.
+   * @return A list of ArticleEntity objects associated with the location.
    */
-
   public List<ArticleEntity> searchByLocation(String location){
      return articleRepository.searchByLocation(location);
   }
 
+  /**
+   * Searches for articles by a specific location and date range.
+   *
+   * @param location The location to search articles for.
+   * @param fromDate The start date of the search range.
+   * @param toDate The end date of the search range.
+   * @return A list of ArticleEntity objects associated with the location and within the date range.
+   */
   public List<ArticleEntity> searchByLocation(String location, String fromDate, String toDate){
      LocalDateTime from = convertLocalTime(fromDate);
      LocalDateTime to = convertLocalTime(toDate);
@@ -97,7 +148,12 @@ public class ArticleDbService{
   }
 
 
-  // TODO: Handle exceptions here??
+  /**
+   * Converts a date string to LocalDateTime.
+   *
+   * @param inputTime The date string to be converted.
+   * @return LocalDateTime representation of the input date string.
+   */
    private LocalDateTime convertLocalTime(String inputTime) {
       LocalDate localDate = LocalDate.parse(inputTime);
       return localDate.atStartOfDay();
