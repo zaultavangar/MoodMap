@@ -22,8 +22,9 @@ import the.guardian.api.http.content.ContentResponse;
 
 import javax.annotation.Resource;
 
-
-// STATUS: Tested
+/**
+ * Service class for interacting with The Guardian's API to fetch articles.
+ */
 @Service
 @RequiredArgsConstructor
 public class GuardianService {
@@ -33,9 +34,17 @@ public class GuardianService {
 
     private final RestTemplate restTemplate;
 
-
+  /**
+   * Fetches articles from The Guardian API within a specified date range.
+   *
+   * @param fromDate The start date of the range (inclusive).
+   * @param toDate The end date of the range (inclusive).
+   * @param pageNum The page number of the results to fetch.
+   * @return An AugmentedContentResponse containing the fetched articles and metadata.
+   * @throws GuardianApiException if there is an issue with the API call.
+   * @throws IOException if there is an issue reading the response.
+   */
     public AugmentedContentResponse fetchArticlesByDateRange(String fromDate, String toDate, int pageNum) throws GuardianApiException, IOException {
-      // Error handling for dates?
 
       String queryUrlTemplate = UriComponentsBuilder.fromHttpUrl("https://content.guardianapis.com/search")
           .queryParam("api-key", guardianKey)

@@ -6,7 +6,17 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+/**
+ * Interface representing a function that validates search requests based on different criteria.
+ */
 public interface RequestValidator extends Function<SearchRequest, ValidationResult> {
+
+  /**
+   * Validates if the input is present and non-empty, based on the 'required' flag.
+   *
+   * @param required Indicates if the input is required.
+   * @return A RequestValidator that checks the input validity.
+   */
   static RequestValidator isInputValid(boolean required){
     return searchRequest -> {
       Optional<String> input = searchRequest.input();
@@ -16,6 +26,12 @@ public interface RequestValidator extends Function<SearchRequest, ValidationResu
   }
 
 
+  /**
+   * Validates if the date range is valid and consistent, based on the 'required' flag.
+   *
+   * @param required Indicates if the date range is required.
+   * @return A RequestValidator that checks the date range validity.
+   */
   static RequestValidator isDateRangeValid(boolean required) {
     return searchRequest -> {
       Optional<String> fromDateStr = searchRequest.fromDate();
@@ -58,6 +74,11 @@ public interface RequestValidator extends Function<SearchRequest, ValidationResu
     };
   }
 
+  /**
+   * Checks if both dates are present or absent, ensuring consistency.
+   *
+   * @return A RequestValidator that checks the presence of dates.
+   */
   static RequestValidator areDatesPresent() {
     return searchRequest -> {
       Optional<String> fromDate = searchRequest.fromDate();
@@ -74,6 +95,12 @@ public interface RequestValidator extends Function<SearchRequest, ValidationResu
     };
   }
 
+  /**
+   * Combines two validators, applying the second one if the first one succeeds.
+   *
+   * @param other The other RequestValidator to be applied.
+   * @return A RequestValidator that combines the logic of two validators.
+   */
   default RequestValidator and(RequestValidator other){
     return searchRequest -> {
       ValidationResult result = this.apply(searchRequest);

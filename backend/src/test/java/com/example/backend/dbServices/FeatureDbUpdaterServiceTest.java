@@ -43,7 +43,7 @@ public class FeatureDbUpdaterServiceTest {
   private GeocodingService geocodingService;
 
   @InjectMocks
-  private FeatureDbUpdaterService featureDbUpdaterService;
+  private DbUpdaterService dbUpdaterService;
 
   /**
    * Verifies the behavior of updateFeaturesForArticle when valid article data is provided.
@@ -127,7 +127,7 @@ public class FeatureDbUpdaterServiceTest {
 
         doNothing().when(featureDbService).saveOne(any(FeatureEntity.class));
 
-        ArticleNerProperties articleNerProperties = featureDbUpdaterService.updateFeaturesForArticle(
+        ArticleNerProperties articleNerProperties = dbUpdaterService.updateFeaturesForArticle(
             article);
 
         assertEquals(2, articleNerProperties.numAssociatedFeatures());
@@ -165,7 +165,7 @@ public class FeatureDbUpdaterServiceTest {
           .thenReturn(new ArrayList<>());
 
 
-      ArticleNerProperties articleNerProperties = featureDbUpdaterService.updateFeaturesForArticle(
+      ArticleNerProperties articleNerProperties = dbUpdaterService.updateFeaturesForArticle(
           article);
 
       verifyNoInteractions(geocodingService);
@@ -242,7 +242,7 @@ public class FeatureDbUpdaterServiceTest {
 
       doNothing().when(featureDbService).saveOne(any(FeatureEntity.class));
 
-      ArticleNerProperties articleNerProperties = featureDbUpdaterService.updateFeaturesForArticle(
+      ArticleNerProperties articleNerProperties = dbUpdaterService.updateFeaturesForArticle(
           article);
 
       assertEquals(1, articleNerProperties.numAssociatedFeatures());

@@ -6,6 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+/**
+ * Spring Boot application entry point.
+ * Enables caching and scheduling functionalities.
+ */
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling

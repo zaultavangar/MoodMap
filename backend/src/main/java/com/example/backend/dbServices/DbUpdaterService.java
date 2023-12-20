@@ -15,15 +15,26 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for updating feature entities based on article data.
+ * Extracts Named Entities and performs geocoding to associate articles with features.
+ */
 @Service
 @Slf4j
-public class FeatureDbUpdaterService {
+public class DbUpdaterService {
 
   private final FeatureDbService featureDbService;
   private final NerService nerService;
   private final GeocodingService geocodingService;
 
-  public FeatureDbUpdaterService(
+  /**
+   * Constructs a DbUpdaterService with specified services.
+   *
+   * @param featureDbService The database service for features.
+   * @param nerService The Named Entity Recognition service.
+   * @param geocodingService The geocoding service.
+   */
+  public DbUpdaterService(
       FeatureDbService featureDbService,
       NerService nerService,
       GeocodingService geocodingService){
@@ -32,6 +43,14 @@ public class FeatureDbUpdaterService {
     this.geocodingService = geocodingService;
   }
 
+  /**
+   * Updates feature entities based on the content of an article.
+   * Extracts locations from the article and updates/creates features.
+   *
+   * @param article The ArticleEntity to process.
+   * @return ArticleNerProperties containing information about the processed entities.
+   * @throws Exception if an error occurs during processing.
+   */
   public ArticleNerProperties updateFeaturesForArticle(
       ArticleEntity article) throws Exception{
     String headline = article.getWebTitle();
@@ -88,6 +107,17 @@ public class FeatureDbUpdaterService {
         .build();
   }
 
+  /**
+   * Finds an existing FeatureEntity based on location or creates a new one if it doesn't exist.
+   *
+   * @param formattedLocation The location name.
+   * @param formattedYearDate The year extracted from the article's publication date.
+   * @param formattedFullDate The full date extracted from the article's publication date.
+   * @param lng The longitude of the location.
+   * @param lat The latitude of the location.
+   * @param articleSentimentScore The sentiment score of the article.
+   * @return An existing or newly created FeatureEntity.
+   */
   private FeatureEntity findOrCreateFeatureEntity(
       String formattedLocation,
       String formattedYearDate,
@@ -110,6 +140,14 @@ public class FeatureDbUpdaterService {
     }
   }
 
+  /**
+   * Updates the properties of a feature entity based on the article's sentiment score and publication date.
+   *
+   * @param feature The feature entity to be updated.
+   * @param formattedFullDate The full date extracted from the article's publication date.
+   * @param formattedYearDate The year extracted from the article's publication date.
+   * @param articleSentimentScore The sentiment score of the article.
+   */
   private void updateFeatureProperties(
       FeatureEntity feature,
       String formattedFullDate,
@@ -136,6 +174,14 @@ public class FeatureDbUpdaterService {
 
   }
 
+  /**
+   * Sets the count and sentiment score properties of a feature entity for a specific date.
+   *
+   * @param feature The feature entity to be updated.
+   * @param date The date string (either full date or year).
+   * @param count The count to be set for the date.
+   * @param sentimentScore The sentiment score to be set for the date.
+   */
   private void setCountSentimentProperties(
       FeatureEntity feature,
       String date,
@@ -145,6 +191,12 @@ public class FeatureDbUpdaterService {
     feature.setDoubleProperty(date+"-sentiment", sentimentScore);
   }
 
+  /**
+   * Formats the publication date of an article into a string.
+   *
+   * @param articleWebPublicationDate The publication date of the article.
+   * @return A string representing the formatted date.
+   */
   private String getFormattedDateString(LocalDateTime articleWebPublicationDate){
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-yyyy");
     return articleWebPublicationDate.format(formatter);

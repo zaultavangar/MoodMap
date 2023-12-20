@@ -33,7 +33,7 @@ export const searchDateRangeOptionOpenState: RecoilState<boolean> = atom({
 
 export const searchByDateRangeState: RecoilState<boolean> = atom({
   key: 'searchByDateRange',
-  default: false
+  default: true
 })
 
 export const searchDateFilterPopoverAnchorElState: RecoilState<HTMLButtonElement | null> =

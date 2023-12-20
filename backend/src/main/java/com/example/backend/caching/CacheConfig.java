@@ -8,10 +8,19 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for setting up caching in the application.
+ * Enables caching and configures the cache manager with Caffeine.
+ */
 @Configuration
 @EnableCaching
 public class CacheConfig {
 
+  /**
+   * Creates and configures a CacheManager with Caffeine.
+   *
+   * @return A CacheManager instance for caching.
+   */
   @Bean
   public CacheManager cacheManager(){
     CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
@@ -19,6 +28,12 @@ public class CacheConfig {
     return caffeineCacheManager;
   }
 
+  /**
+   * Configures and builds a Caffeine cache.
+   * Sets the maximum size and expiration time for the cache.
+   *
+   * @return A Caffeine cache builder.
+   */
   @Bean
   public Caffeine<Object, Object> caffeineCacheBuilder() {
     int MAX_CACHE_SIZE = 1000;

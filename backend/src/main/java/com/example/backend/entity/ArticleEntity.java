@@ -14,6 +14,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Represents an article entity in the MongoDB database.
+ * Includes details like publication date, title, URL, and associated locations.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,6 +49,9 @@ public class ArticleEntity {
     @Schema(example = "['France', 'Germany']")
     private List<String> associatedLocations;
 
+    /**
+     * Clears the body text of the article.
+     */
     public void clearBodyText(){
         this.bodyText = "";
     }

@@ -1,6 +1,6 @@
 package com.example.backend.processors;
 
-import com.example.backend.dbServices.FeatureDbUpdaterService;
+import com.example.backend.dbServices.DbUpdaterService;
 import com.example.backend.guardianService.responseRelated.AugmentedContentItem;
 import com.example.backend.guardianService.responseRelated.AugmentedContentResponse;
 import com.example.backend.nerService.ArticleNerProperties;
@@ -29,6 +29,10 @@ import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service class for processing articles.
+ * Handles fetching, processing, and storing articles from The Guardian API.
+ */
 @Service
 @Slf4j
 public class Processor {
@@ -37,12 +41,22 @@ public class Processor {
   private final String routingKey;
   private final GuardianService guardianService;
   private final ArticleDbService articleDbService;
-  private final FeatureDbUpdaterService featureDbUpdaterService;
+  private final DbUpdaterService dbUpdaterService;
 
+  /**
+   * Constructor for Processor.
+   *
+   * @param guardianService Service for interacting with The Guardian API.
+   * @param articleDbService Service for database operations related to articles.
+   * @param dbUpdaterService Service for updating the database with article and feature information.
+   * @param rabbitTemplate RabbitMQ template for sending messages.
+   * @param exchangeName Name of the RabbitMQ exchange.
+   * @param routingKey Routing key for RabbitMQ messages.
+   */
   public Processor(
       GuardianService guardianService,
       ArticleDbService articleDbService,
-      FeatureDbUpdaterService featureDbUpdaterService,
+      DbUpdaterService dbUpdaterService,
       RabbitTemplate rabbitTemplate,
       @Qualifier("rabbitExchangeName") String exchangeName,
       @Qualifier("rabbitRoutingKey") String routingKey){
@@ -50,12 +64,19 @@ public class Processor {
       this.articleDbService = articleDbService;
       this.rabbitTemplate = rabbitTemplate;
       this.exchangeName = exchangeName;
-      this.featureDbUpdaterService = featureDbUpdaterService;
+      this.dbUpdaterService = dbUpdaterService;
       this.routingKey = routingKey;
 
   }
 
-  // first check the total number and then use for loop to get each page of articles
+  /**
+   * Processes articles from The Guardian API within a given date range.
+   * Depending on the preprocessing flag, it either preprocesses or directly processes the articles.
+   *
+   * @param fromDate The start date for fetching articles.
+   * @param toDate The end date for fetching articles.
+   * @param isPreprocessing Flag indicating whether to preprocess or directly process the articles.
+   */
   public void processArticles(String fromDate, String toDate, boolean isPreprocessing){
     if (StringUtils.isBlank(fromDate) || StringUtils.isBlank(toDate)) {
       return;
@@ -79,6 +100,14 @@ public class Processor {
     }
   }
 
+  /**
+   * Fetches articles from The Guardian API for a specific page within a date range.
+   *
+   * @param fromDate The start date for the articles.
+   * @param toDate The end date for the articles.
+   * @param pageNum The page number to fetch.
+   * @return An Optional containing the AugmentedContentResponse or empty if an error occurs.
+   */
   private Optional<AugmentedContentResponse> fetchArticlesFromGuardianAPI(String fromDate, String toDate, int pageNum){
     try {
       AugmentedContentResponse response = guardianService.fetchArticlesByDateRange(fromDate, toDate, pageNum);
@@ -93,16 +122,34 @@ public class Processor {
     }
   }
 
+  /**
+   * Validates the response received from The Guardian API.
+   *
+   * @param contentResponse The content response from The Guardian API.
+   * @return true if the response is valid, false otherwise.
+   */
   public boolean responseIsValid(AugmentedContentResponse contentResponse){
     return contentResponse != null && contentResponse.getStatus().equals("ok");
   }
 
+  /**
+   * Processes the current batch of articles for regular processing.
+   * Inserts articles and their features into the database.
+   *
+   * @param currentResponse The current batch of articles from The Guardian API.
+   * @param batchNum The batch number for logging purposes.
+   */
   private void processCurrentBatch(AugmentedContentResponse currentResponse, int batchNum){
     insertArticlesAndFeaturesIntoDB(currentResponse.getResults());
     System.out.println("Finished processing batch: " + batchNum);
     log.info("Finished processing batch: {}", batchNum);
   }
 
+  /**
+   * Inserts a list of articles and their associated features into the database.
+   *
+   * @param articles An array of AugmentedContentItems representing the articles.
+   */
   public void insertArticlesAndFeaturesIntoDB(AugmentedContentItem[] articles){
     List<ArticleEntity> articleEntityList = Stream.of(articles).map(contentItem -> {
       if (contentItem.getType().equals("liveblog")){
@@ -113,6 +160,12 @@ public class Processor {
     articleDbService.saveManyArticles(articleEntityList);
   }
 
+  /**
+   * Processes a single article and its features.
+   *
+   * @param contentItem The AugmentedContentItem representing the article.
+   * @return An ArticleEntity object if processing is successful, null otherwise.
+   */
   public ArticleEntity processArticle(AugmentedContentItem contentItem) {
     ArticleEntity article = ArticleEntity.builder()
         ._id(null)
@@ -125,7 +178,7 @@ public class Processor {
         .sentimentScore(0.5)
         .build();
     try {
-      ArticleNerProperties articleNerProperties = featureDbUpdaterService.updateFeaturesForArticle(article);
+      ArticleNerProperties articleNerProperties = dbUpdaterService.updateFeaturesForArticle(article);
       if (articleNerProperties.numAssociatedFeatures() > 0){
         article.setSentimentScore(articleNerProperties.sentimentScore());
         article.setAssociatedLocations(articleNerProperties.locations());
@@ -138,6 +191,12 @@ public class Processor {
     return null;
   }
 
+  /**
+   * Processes the current batch of articles for preprocessing.
+   * Inserts articles into the database and sends messages for further processing.
+   *
+   * @param currentResponse The current batch of articles from The Guardian API.
+   */
   private void processCurrentBatchForPreprocessing(AugmentedContentResponse currentResponse) {
     for (AugmentedContentItem article: currentResponse.getResults()){
       if (article.getType().equals("liveblog")) continue;
@@ -151,7 +210,12 @@ public class Processor {
       }
     }
   }
-
+  /**
+   * Inserts a single article into the database.
+   *
+   * @param contentItem The AugmentedContentItem representing the article.
+   * @return The ObjectId of the inserted article, or null if insertion fails.
+   */
   private ObjectId insertArticleIntoDB(AugmentedContentItem contentItem){
     ArticleEntity articleEntity = ArticleEntity.builder()
         ._id(null)
@@ -169,11 +233,23 @@ public class Processor {
     return articleEntity.get_id();
   }
 
+  /**
+   * Formats a date string to LocalDateTime.
+   *
+   * @param date The date string to format.
+   * @return LocalDateTime representation of the date string.
+   * @throws DateTimeParseException if the date string cannot be parsed.
+   */
   private LocalDateTime formatDate(String date) throws DateTimeParseException{
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
     return LocalDateTime.parse(date, formatter);
   }
 
+  /**
+   * Sends a message to the database updater queue with the article ID.
+   *
+   * @param articleId The ObjectId of the article.
+   */
   public void sentMessageToDbUpdater(ObjectId articleId){
     String articleIdStr = articleId.toString();
     log.info("Sending message. Article ID: {}", articleIdStr);

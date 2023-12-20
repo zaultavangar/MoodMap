@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// STATUS: Tested
+/**
+ * Service class for performing geocoding operations, using an external geocoding API.
+ */
 @Service
 @EnableCaching
 public class GeocodingService {
-
-//  private static final String API_BASE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
 
   private static final String API_BASE_URL = "https://google-maps-geocoding.p.rapidapi.com/geocode/json";
   @Resource
@@ -23,6 +23,13 @@ public class GeocodingService {
   @Resource
   private RestTemplate restTemplate;
 
+  /**
+   * Retrieves geocoding results for a specified location. Cacheable based on location string passed in.
+   *
+   * @param location The location for which to obtain geocoding results.
+   * @return A GeocodeResponse object containing geocoding data.
+   * @throws GeocodeApiException if there is an error in calling the Geocoding API.
+   */
   @Cacheable(value="locationCache", key="#location")
   public GeocodeResponse getGeocodeResultsForLocation(String location) throws GeocodeApiException {
     String encodedLocation = UriComponentsBuilder

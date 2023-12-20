@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import the.guardian.api.http.content.ContentItem;
 import the.guardian.api.http.content.ContentResponse;
 
+/**
+ * Represents an enhanced version of the content response from The Guardian API.
+ * Includes metadata about the response and the articles fetched.
+ */
 @Data
 @Builder
 @AllArgsConstructor
