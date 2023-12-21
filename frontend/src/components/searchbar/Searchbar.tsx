@@ -38,6 +38,9 @@ const Searchbar = () => {
     setSearchDateRangeOptionOpen(true);
   };
 
+  /**
+   * DateRangeOptionButton component allows the user to constrain the search to a given date range. The date range is selected using the DatePicker component
+   */
   const DateRangeOptionButton = () => {
     return (
       <IconButton
@@ -52,21 +55,6 @@ const Searchbar = () => {
       </IconButton>
     );
   };
-
-  // const [searchDateFilterPopoverAnchorEl, setSearchDateFilterPopoverAnchorEl] =
-  //   useRecoilState(searchDateFilterPopoverAnchorElState);
-
-  // const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   setSearchDateFilterPopoverAnchorEl(event.currentTarget);
-  // };
-
-  // const open = Boolean(searchDateFilterPopoverAnchorEl);
-
-  // const handleClose = () => {
-  //   setSearchDateFilterPopoverAnchorEl(null);
-  // };
 
   return (
     <Stack direction={"column"} spacing={1}>

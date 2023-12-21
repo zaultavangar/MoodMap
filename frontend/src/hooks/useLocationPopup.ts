@@ -11,7 +11,7 @@ export type LocationPopupInfo = {
 };
 
 /**
- * A custom React hook that helps display a popup on the map given a certain redlined area
+ * useLocationPopup is a custom React hook that helps display a popup on the map given a certain redlined area
  */
 export function useLocationPopup() {
   const setLocationPopupInfo = useSetRecoilState(locationPopupInfoState);

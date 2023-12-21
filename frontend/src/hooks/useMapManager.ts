@@ -16,16 +16,14 @@ import {
 import { ArticleEntity, FeatureEntity } from "~/types";
 
 // Default location of the map
-// const ProvidenceLatLong = {
-//   long: -71.4141362441059,
-//   lat: 41.82454500035089,
-// };
-
 export const GazaLatLong = {
   long: 34.47,
   lat: 31.5,
 };
 
+/**
+ * useMapManager is a custom React hook that contains the logic for the Map component.  Separating the logic from the component allows to more easily make changes to the view and to test the logic.
+ */
 export function useMapManager() {
   const { handlePopupOpen, handlePopupClose } = useLocationPopup();
 
@@ -36,7 +34,9 @@ export function useMapManager() {
 
   const [circleLayer, setCircleLayer] = useRecoilState(circleLayerState);
 
-  const setIsExpandedOverviewPanel = useSetRecoilState(isExpandedOverviewPanelState);
+  const setIsExpandedOverviewPanel = useSetRecoilState(
+    isExpandedOverviewPanelState
+  );
 
   const setLayer = () => {
     console.log(featureCollection.features);
@@ -54,10 +54,6 @@ export function useMapManager() {
 
   const loadFeatures = async () => {
     const res = await api.getFeatures();
-    // const res = await handleApiResponse<"getFeatures", FeatureEntity[]>(
-    //   "getFeatures",
-    //   {}
-    // );
     if (isSuccessfulResponse(res)) {
       setFeatureCollection(createFeatureCollection(res.data));
     }
@@ -69,14 +65,6 @@ export function useMapManager() {
     toDate: string
   ) => {
     const res = await api.searchByLocation(location, fromDate, toDate);
-    // const res = await handleApiResponse<"searchByLocation", ArticleEntity[]>(
-    //   "searchByLocation",
-    //   {
-    //     location: location,
-    //     fromDate: fromDate,
-    //     toDate: toDate,
-    //   }
-    // );
     return res;
   };
 
@@ -94,12 +82,12 @@ export function useMapManager() {
       0
     ); // set day to 0 to get last day of the previous month
 
-  // format dates to YYYY-MM-DD
+    // format dates to YYYY-MM-DD
     const fromDate = firstDay.toISOString().split("T")[0];
     const toDate = lastDay.toISOString().split("T")[0];
 
     const res = await searchByLocation(location, fromDate, toDate);
-    
+
     if (isSuccessfulResponse(res)) {
       setIsExpandedOverviewPanel(false);
       handlePopupOpen({

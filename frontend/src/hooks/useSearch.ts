@@ -10,6 +10,9 @@ import api from "~logic/api";
 import { FrontendApiResponse, isSuccessfulResponse } from "~/logic/api";
 import { ArticleEntity } from "~/types";
 
+/**
+ * useSearch is a custom React hook that contains the logic for the Searchbar component.  Separating the logic from the component allows to more easily make changes to the view and to test the logic.
+ */
 export function useSearch() {
   const setSearchResults = useSetRecoilState(searchResultsState);
   const setSearchQuery = useSetRecoilState(searchQueryState);
@@ -18,11 +21,17 @@ export function useSearch() {
   const selectedMonth = useRecoilValue(selectedMonthState);
   const selectedYear = useRecoilValue(selectedYearState);
 
-  function debounce(func: Function, timeout = 300){
+  /**
+   * Debouncing introduces the ability to wait for a period of times before calling a function.
+   * This is useful in the case of searching because it helps limit the amount of calls to the backend API, increasing performance on the frontend.
+   */
+  function debounce(func: Function, timeout = 300) {
     let debounceTimer;
     return (...args) => {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => { func.apply(this, args); }, timeout);
+      debounceTimer = setTimeout(() => {
+        func.apply(this, args);
+      }, timeout);
     };
   }
 

@@ -11,6 +11,10 @@ import { useRecoilValue } from "recoil";
 import { searchResultsState } from "~/atoms";
 import * as d3 from "d3";
 
+/**
+ * OverviewPanel component displays trending news categories. The categories are split based on most mentioned, most positive, and most negative. Each category displays the top 5 locations that represent the category.
+ * The OverviewPanel component also displays the source attribution (where the data was sourced from).
+ */
 export const OverviewPanel = ({
   mapRef,
 }: {
@@ -36,6 +40,10 @@ export const OverviewPanel = ({
     }
   }, [searchResults]);
 
+  /**
+   * The handleLocationClick function does a nice zooming animation to a heatmap point when a news category item is clicked
+   * @param coordinates The coordinates of the heatmap point
+   */
   const handleLocationClick = (coordinates: number[]) => {
     if (mapRef.current) {
       mapRef.current.flyTo({
@@ -45,11 +53,19 @@ export const OverviewPanel = ({
     }
   };
 
+  // The color scale that represents the sentiment of a given news category item
   const colorScale = d3.scaleLinear(
     [0, 0.2, 0.5, 0.8, 1], // input values
     ["red", "red", "yellow", "green", "green"] // output colors
   );
 
+  /**
+   * Displays the grid of the news categories
+   * @param list
+   * @param label The label for the news category
+   * @param isCountList Checks whether the category displays the amount of articles in the location or
+   * @returns
+   */
   const renderTopFiveList = (
     list: LocationToDetailsMap[],
     label: string,
@@ -57,6 +73,7 @@ export const OverviewPanel = ({
   ) => (
     <Grid container direction="column" spacing={1}>
       <Grid item>
+        {/* The label of the category*/}
         <Typography variant="subtitle1" component="h6" fontSize={"1.3em"}>
           {label}
         </Typography>
@@ -129,6 +146,7 @@ export const OverviewPanel = ({
         paddingRight: "5px",
       }}
     >
+      {/** The case when the overview panel is expanded */}
       {isExpandedOverviewPanel ? (
         <>
           <Grid item width="100%">
@@ -175,6 +193,7 @@ export const OverviewPanel = ({
             </Grid>
           </Grid>
           <Grid item>
+            {/** The source attribution */}
             <Typography variant="caption" component="p">
               All articles sourced from{" "}
               <Link

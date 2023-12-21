@@ -19,6 +19,10 @@ const MONTHS = [
   "Dec",
 ];
 
+/**
+ * MonthCalendarTable component only displays the table of months for the date picker component
+ * @returns
+ */
 export const MonthCalendarTable = () => {
   const selectedMonth = useRecoilValue(selectedMonthState);
 
