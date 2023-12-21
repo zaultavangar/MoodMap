@@ -10,11 +10,15 @@ import { useDatePicker } from "~/hooks/useDatePicker";
 const MIN_YEAR = 2019; // TODO: subject to change
 const MAX_YEAR = new Date().getFullYear();
 
+/**
+ * YearPicker component allows the ability to switch the year on the date picker component
+ */
 export const YearPicker = () => {
   // State to track the current date
 
   const selectedYear = useRecoilValue(selectedYearState);
 
+  // Disabling the buttons makes it useful to constrain the selectable years to a min and max year range
   const prevYearButtonDisabled: boolean = selectedYear == MIN_YEAR;
   const nextYearButtonDisabled: boolean = selectedYear == MAX_YEAR;
 

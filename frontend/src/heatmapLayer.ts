@@ -1,6 +1,9 @@
 import { Feature } from "geojson";
 import type { CircleLayer } from "mapbox-gl";
 
+/**
+ * Calculates the number of articles within a given date for a certain location
+ */
 const getMaxArticleCount = (countKey: string, features: Feature[]): number => {
   const counts: number[] = features.map((feature, index) => {
     if (
@@ -16,6 +19,9 @@ const getMaxArticleCount = (countKey: string, features: Feature[]): number => {
   return Math.max(...counts);
 };
 
+/**
+ * Updates the heatmap points. It scales them according to the number of articles within a location, and colors them based on the average sentiment
+ */
 export const updateHeatMapLayer = (
   features: Feature[],
   year: number,

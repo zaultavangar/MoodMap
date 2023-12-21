@@ -97,6 +97,7 @@ const Map = () => {
 
   return (
     <main>
+      {/** Displays the map */}
       <ReactMap
         ref={_mapRef}
         mapboxAccessToken={MAPBOX_API_TOKEN}
@@ -121,14 +122,18 @@ const Map = () => {
         onMove={handleMapMove}
         onClick={handleMouseEventOperation}
       >
+        {/** Displays the heatmap locations */}
         <Source type="geojson" data={featureCollection}>
           <Layer {...circleLayer} />
         </Source>
         {locationPopupInfo && (
           <LocationPopup info={locationPopupInfo} onClose={handlePopupClose} />
         )}
+        {/** Displays the overview panel */}
         <OverviewPanel mapRef={_mapRef} />
+        {/** Allows the user to zoom in and out using keyboard controls */}
         <NavigationControl position="bottom-left" />
+        {/** Displays the scale of the map */}
         <ScaleControl />
       </ReactMap>
     </main>

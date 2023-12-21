@@ -8,12 +8,18 @@ import {
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 
+/**
+ * useDatePicker is a custom React hook that contains the logic for the DatePicker component. Separating the logic from the component allows to more easily make changes to the view and to test the logic.
+ */
 export function useDatePicker() {
   const [isFullCalendar, setIsFullCalendar] =
     useRecoilState(isFullCalendarState);
   const [selectedMonth, setSelectedMonth] = useRecoilState(selectedMonthState);
   const [selectedYear, setSelectedYear] = useRecoilState(selectedYearState);
 
+  /**
+   * Resizes the DatePicker depending on the screen size
+   */
   const handleResize = () =>
     setIsFullCalendar(needsResizing(window.innerWidth));
 
@@ -21,6 +27,9 @@ export function useDatePicker() {
     setIsFullCalendar(!isFullCalendar);
   };
 
+  /**
+   * Changes the icon to be displayed depending on whether the DatePicker is expanded or not
+   */
   const getIcon = (): JSX.Element => {
     return (
       <div
@@ -42,19 +51,22 @@ export function useDatePicker() {
     );
   };
 
+  // Changes the selected month and deals with the initial state
   const onSelectMonthChange = () => {
     setSelectedMonth(changeSelectedMonth(selectedMonth));
   };
 
+  // Changes the month based on the month's index
   const onMonthChange = (monthIndex: number) => {
     setSelectedMonth(changeMonth(monthIndex));
   };
 
+  // Function to move to the next month
   const nextYear = () => {
     setSelectedYear(changeToNextYear(selectedYear));
   };
 
-  // Function to move to previous month
+  // Function to move to the previous month
   const prevYear = () => {
     setSelectedYear(changeToPrevYear(selectedYear));
   };
@@ -68,6 +80,10 @@ export function useDatePicker() {
     prevYear,
   };
 }
+
+/**
+ * Pure functions were abstracted away from the hook so that functionality could be more easily tested in isolation and reduce the dependence on React's state management
+ */
 
 export function changeSelectedMonth(selectedMonth: number): number | undefined {
   return selectedMonth ? undefined : new Date().getMonth() + 1;

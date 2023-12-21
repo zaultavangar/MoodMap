@@ -4,19 +4,13 @@ import Map from "~/components/Map";
 import Header from "~/components/Header";
 import { DatePicker } from "./components/datepicker/DatePicker";
 import { RecoilRoot } from "recoil";
-// const theme = createTheme({
-//   palette: {
-//     mode: "dark"
-//   }
-// })
-
+/**
+ * App component is the root component for the web app
+ */
 const App = () => {
   return (
     <>
-      {/* <ThemeProvider theme={theme}>
-        <Header />
-        <Map />
-      </ThemeProvider> */}
+      {/**RecoilRoot is necessary to share state management context between hooks and components */}
       <RecoilRoot>
         <Header />
 
