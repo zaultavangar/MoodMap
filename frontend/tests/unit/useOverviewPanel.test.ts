@@ -6,6 +6,7 @@ import {
   getSentimentKey,
   isValidGeometryPoint,
 } from "../../src/hooks/useOverviewPanel";
+import { FeatureCollection } from "geojson";
 
 describe("getCountKey", () => {
   it("should return `<selected_year>-count` if the selected month is null", () => {
@@ -58,7 +59,7 @@ describe("getDateStr", () => {
 
 describe("computerOverviewPanelMap", () => {
   it("should filter features into most mentioned, most positive, and most negative based on a selected month and year", () => {
-    const featureCollection = {
+    const featureCollection: FeatureCollection = {
       type: "FeatureCollection",
       features: [
         {
